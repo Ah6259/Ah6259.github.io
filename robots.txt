@@ -1,0 +1,39 @@
+# Règles pour les robots de TOUS les sites de ah6259.github.io (seul fichier lu par les robots).
+# Moteurs de recherche : bienvenus. Robots d'IA et aspirateurs de sites : interdits.
+
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: anthropic-ai
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: PerplexityBot
+User-agent: Bytespider
+User-agent: Amazonbot
+User-agent: Meta-ExternalAgent
+User-agent: FacebookBot
+User-agent: Diffbot
+User-agent: Omgilibot
+User-agent: cohere-ai
+User-agent: ImagesiftBot
+User-agent: HTTrack
+User-agent: WebCopier
+User-agent: WebZIP
+User-agent: Offline Explorer
+User-agent: Wget
+User-agent: SiteSnagger
+Disallow: /
+
+User-agent: *
+Allow: /
+Disallow: /code-route-tunisie/relecture/
+
+Sitemap: https://ah6259.github.io/sitemap.xml
+Sitemap: https://ah6259.github.io/prix-eaux-tunisie/sitemap.xml
+Sitemap: https://ah6259.github.io/outils-pratiques-tunisie/sitemap.xml
+Sitemap: https://ah6259.github.io/appels-offres-tunisie/sitemap.xml
+Sitemap: https://ah6259.github.io/code-route-tunisie/sitemap.xml
+Sitemap: https://ah6259.github.io/documents-tunisie/sitemap.xml
