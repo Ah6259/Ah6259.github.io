@@ -37,3 +37,8 @@ Sitemap: https://ah6259.github.io/outils-pratiques-tunisie/sitemap.xml
 Sitemap: https://ah6259.github.io/appels-offres-tunisie/sitemap.xml
 Sitemap: https://ah6259.github.io/code-route-tunisie/sitemap.xml
 Sitemap: https://ah6259.github.io/documents-tunisie/sitemap.xml
+Sitemap: https://ah6259.github.io/professionnels-tunisie/sitemap.xml
+Sitemap: https://ah6259.github.io/auto-ecoles-tunisie/sitemap.xml
+Sitemap: https://ah6259.github.io/avocats-notaires-tunisie/sitemap.xml
+Sitemap: https://ah6259.github.io/comptables-tunisie/sitemap.xml
+Sitemap: https://ah6259.github.io/mariage-tunisie/sitemap.xml
