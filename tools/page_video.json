@@ -1,0 +1,30 @@
+{
+ "site": "https://ah6259.github.io/",
+ "logo": "",
+ "defaut": "fr",
+ "modele": "index.html",
+ "nom": {
+  "fr": "Des services gratuits pour la Tunisie"
+ },
+ "partager": {
+  "fr": "Partager la vidéo · شارك الفيديو"
+ },
+ "pages": [
+  {
+   "chemin": "video/",
+   "video": "presentation",
+   "couverture": "couverture.jpg",
+   "apercu": "apercu-video.jpg",
+   "site": "",
+   "titre": {
+    "fr": "Vidéo de présentation"
+   },
+   "description": {
+    "fr": "Vidéo de présentation : des services gratuits pour la Tunisie, en français et en arabe — prix de l'eau, calculs, appels d'offres, code de la route, documents et annuaires de professionnels."
+   },
+   "bouton": {
+    "fr": "Ouvrir le site · افتح الموقع"
+   }
+  }
+ ]
+}

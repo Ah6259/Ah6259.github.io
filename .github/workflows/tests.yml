@@ -1,0 +1,23 @@
+# Robot « Tests » du portail : à chaque envoi sur GitHub, vérifie la vidéo de présentation, la page video/ et le bouton Partager.
+name: tests
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Installer jsdom (sans fichier package)
+        run: npm install --no-save --no-package-lock jsdom
+      - name: Test de la vidéo de présentation et du bouton Partager
+        run: node tools/test_video.mjs
