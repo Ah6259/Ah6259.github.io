@@ -46,3 +46,4 @@ Sitemap: https://ah6259.github.io/mariage-tunisie/sitemap.xml
 Sitemap: https://ah6259.github.io/mes-comptes-tunisie/sitemap.xml
 Sitemap: https://ah6259.github.io/alerte-concours-tunisie/sitemap.xml
 Sitemap: https://ah6259.github.io/ma-voiture-tunisie/sitemap.xml
+Sitemap: https://ah6259.github.io/points-eau-tunisie/sitemap.xml
