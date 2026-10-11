@@ -48,3 +48,4 @@ Sitemap: https://concours.clicvia.com/sitemap.xml
 Sitemap: https://voiture.clicvia.com/sitemap.xml
 Sitemap: https://eau.clicvia.com/sitemap.xml
 Sitemap: https://mosquees.clicvia.com/sitemap.xml
+Sitemap: https://immobilier.clicvia.com/sitemap.xml
