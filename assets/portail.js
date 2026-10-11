@@ -5,7 +5,7 @@ window.VIDEO_SITE = {"base": "/", "defaut": "fr", "nom": {"fr": "Des services gr
    affichent l'aperçu de la page vidéo (grande image, vidéo lisible sur Facebook). Menu de partage du téléphone, sinon WhatsApp.
    Espace professionnels des annuaires : page « video-pro/ ». Réglages : window.VIDEO_SITE (juste au-dessus). */
 (function () {
-  var S = window.VIDEO_SITE, ORIGINE = "https://ah6259.github.io";
+  var S = window.VIDEO_SITE, ORIGINE = "https://clicvia.com";
   function langue() { return document.documentElement.lang || S.defaut; }
   function M(o) { return o[langue()] || o[S.defaut] || o.fr; }
   // page vidéo à partager (et page du site correspondante) selon la page où l'on est

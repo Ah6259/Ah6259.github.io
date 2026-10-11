@@ -31,7 +31,7 @@ User-agent: *
 Allow: /
 Disallow: /code-route-tunisie/relecture/
 
-Sitemap: https://ah6259.github.io/sitemap.xml
+Sitemap: https://clicvia.com/sitemap.xml
 Sitemap: https://prix-eau.clicvia.com/sitemap.xml
 Sitemap: https://outils.clicvia.com/sitemap.xml
 Sitemap: https://appels-offres.clicvia.com/sitemap.xml

@@ -20,3 +20,5 @@ Ajouter un nouveau site : une carte dans index.html + une ligne `Sitemap:` dans 
   le lien de la page vidéo + l'adresse du portail. CSP : `script-src 'self'` ajouté pour ce fichier, `media-src 'self'`.
   Test : `node tools/test_video.mjs` (robot `tests.yml`). Pour refaire la vidéo : `python fabriquer.py portail` dans le dossier
   PRIVÉ du PC `videos (outil)/`.
+
+- **Adresse depuis le 11/10/2026 : https://clicvia.com/** (fichier CNAME ; Cloudflare : `@` et `www` en CNAME → ah6259.github.io, nuage gris). Les 16 sites ont chacun leur sous-domaine (fichier CNAME propre), ils ne bougent pas avec le portail. Logos des sites copiés dans assets/sites/.
