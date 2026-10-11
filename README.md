@@ -9,8 +9,8 @@ Ajouter un nouveau site : une carte dans index.html + une ligne `Sitemap:` dans 
 
 - Statistiques **GoatCounter** (anonymes, sans cookies) : compteur partagé `https://prix-eaux-tunisie.goatcounter.com`
   (chaque site est séparé par son chemin). CSP : `script-src https://gc.zgo.at` seulement, `connect-src` / `img-src` + le compteur.
-- Image d'aperçu `og-image-v1.jpg` (1200 × 630, JPEG < 250 Ko, sinon WhatsApp n'affiche qu'une petite vignette) :
-  capture Chrome sans écran d'une petite page HTML aux couleurs de l'accueil (liste des 5 sites), puis conversion JPEG.
+- Image d'aperçu `og-image-v2.jpg` (11/10/2026 : adresse clicvia.com, « 17 services », l'immobilier en tête ; 1200 × 630, JPEG < 250 Ko,
+  sinon WhatsApp n'affiche qu'une petite vignette) : modèle `tools/og-image.html`, capture Chrome sans écran puis `convert` en JPEG.
   Si on la change : **nouveau nom** (`og-image-v2.jpg`), WhatsApp/Facebook gardent l'ancienne en cache.
 
 - **Vidéo de présentation** (06/10/2026) : `assets/video/presentation.mp4` (1080 × 1920, vraies captures de chaque site et annuaire ;
