@@ -1,0 +1,35 @@
+# Robot « page Facebook Clicvia » : une publication par jour, toute seule (un site à tour de rôle : Concours, Code de la
+# route, Prix des Eaux, Documents). Dépôt public : minutes gratuites. Secrets du dépôt : FB_PAGE_ID et FB_PAGE_TOKEN
+# (Settings → Secrets and variables → Actions). Sans ces secrets, le robot affiche seulement le message (rien n'est publié).
+name: facebook
+on:
+  schedule:
+    - cron: "5 17 * * *"   # 18h05 à Tunis
+  workflow_dispatch:
+    inputs:
+      site:
+        description: "Site à publier (vide = celui du jour) : concours, code, prix-eau, documents"
+        default: ""
+      essai:
+        description: "1 = ne rien publier, afficher seulement"
+        default: "0"
+permissions:
+  contents: read
+concurrency:
+  group: facebook
+  cancel-in-progress: false
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node tools/facebook.mjs
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          SITE: ${{ github.event.inputs.site }}
+          ESSAI: ${{ github.event.inputs.essai || '0' }}
