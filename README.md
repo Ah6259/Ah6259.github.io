@@ -29,3 +29,5 @@ https://message.clicvia.com/ (dépôt sur un autre compte GitHub : lemessageleme
 - **Robot `indexnow`** (`tools/indexnow.mjs`, chaque jour 14h37) : prévient Bing / Yandex des pages nouvelles de tous les sites ; nouveau site = l'ajouter à sa liste `SITES`.
 
 - **Robot `facebook`** (`tools/facebook.mjs`, chaque jour 18h05) : une publication par jour sur la page Facebook Clicvia, un site à tour de rôle (Concours — seulement ceux encore ouverts —, Code de la route, Prix des Eaux, Documents) ; titre et description lus sur la page, message FR + AR, lien. Secrets du dépôt : `FB_PAGE_ID`, `FB_PAGE_TOKEN` (sans eux : essai, rien n'est publié). Essai : `ESSAI=1 node tools/facebook.mjs`. Nouveau site : l'ajouter à `SITES` et `TOUR`.
+
+- **Page Facebook Clicvia (12/10/2026)** : https://www.facebook.com/1327283777142447 — le robot `facebook` du dépôt du portail (`Ah6259.github.io`, `tools/facebook.mjs`, chaque jour 18h05) publie tout seul une page de ce site à son tour (titre, description et image `og:image` lus sur la page : les garder soignés). Ahmed ne publie rien à la main. Détail et dépannage : `nouveau site - procedure.md` § 4 étape 6 (dépôt projets-ahmed).
