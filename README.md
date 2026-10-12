@@ -24,3 +24,6 @@ https://message.clicvia.com/ (dépôt sur un autre compte GitHub : lemessageleme
   PRIVÉ du PC `videos (outil)/`.
 
 - **Adresse depuis le 11/10/2026 : https://clicvia.com/** (fichier CNAME ; Cloudflare : `@` et `www` en CNAME → ah6259.github.io, nuage gris). Les 16 sites ont chacun leur sous-domaine (fichier CNAME propre), ils ne bougent pas avec le portail. Logos des sites copiés dans assets/sites/.
+
+- **Visibilité Google (12/10/2026, règle commune § 8)** : liens vers nos autres sites en `https://<site>.clicvia.com/` (jamais `ah6259.github.io`), lien « Tous nos services » → https://clicvia.com/ dans le pied de page, `robots.txt` avec ligne Sitemap, `sitemap.xml` daté, JSON-LD sur l'accueil, clé IndexNow `377f054ba9c5ed40d6796adc8d87d1e8.txt` à la racine (ne pas supprimer : robot `indexnow` du portail). Contrôle : `node "outils visibilite/controle.mjs"` (dépôt projets-ahmed). Sitemap envoyé dans Search Console par Ahmed le 12/10/2026.
+- **Robot `indexnow`** (`tools/indexnow.mjs`, chaque jour 14h37) : prévient Bing / Yandex des pages nouvelles de tous les sites ; nouveau site = l'ajouter à sa liste `SITES`.
