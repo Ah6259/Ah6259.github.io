@@ -1,4 +1,4 @@
-# Règles pour les robots de TOUS les sites de ah6259.github.io (seul fichier lu par les robots).
+# Règles pour les robots du portail clicvia.com (chaque site a son propre robots.txt sur son sous-domaine).
 # Moteurs de recherche : bienvenus. Robots d'IA et aspirateurs de sites : interdits.
 
 User-agent: GPTBot
@@ -29,7 +29,6 @@ Disallow: /
 
 User-agent: *
 Allow: /
-Disallow: /code-route-tunisie/relecture/
 
 Sitemap: https://clicvia.com/sitemap.xml
 Sitemap: https://prix-eau.clicvia.com/sitemap.xml

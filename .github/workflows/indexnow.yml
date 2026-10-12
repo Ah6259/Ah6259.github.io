@@ -1,0 +1,28 @@
+# Robot IndexNow : chaque jour, prévient Bing / Yandex (et DuckDuckGo, Yahoo qui lisent Bing) des pages nouvelles ou
+# modifiées de tous les sites clicvia.com ; le lundi, de toutes les pages. Dépôt public : minutes gratuites. Aucun secret.
+name: indexnow
+on:
+  schedule:
+    - cron: "37 13 * * *"   # 14h37 à Tunis : après les robots du matin et de midi
+  workflow_dispatch:
+    inputs:
+      tout:
+        description: "1 = envoyer toutes les adresses"
+        default: "0"
+permissions:
+  contents: read
+concurrency:
+  group: indexnow
+  cancel-in-progress: true
+jobs:
+  prevenir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node tools/indexnow.mjs
+        env:
+          TOUT: ${{ github.event.inputs.tout || '0' }}
