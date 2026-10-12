@@ -6,7 +6,7 @@
 - Fichier de vérification Google Search Console (propriété « préfixe d'URL » https://ah6259.github.io/ = tous les sites).
 
 Ajouter un nouveau site : une carte dans index.html + une ligne `Sitemap:` dans robots.txt.
-Le Message (islam, multilingue) : carte ajoutée le 11/10/2026 (thème « Religion et patrimoine ») ; depuis le 12/10/2026 son adresse est
+The Message (islam, multilingue ; nom unique dans toutes les langues depuis le 12/10/2026) : carte ajoutée le 11/10/2026 (thème « Religion et patrimoine ») ; depuis le 12/10/2026 son adresse est
 https://message.clicvia.com/ (dépôt sur un autre compte GitHub : lemessagelemessage8-lab) ; icône `assets/sites/le-message.svg`.
 
 - Statistiques **GoatCounter** (anonymes, sans cookies) : compteur partagé `https://prix-eaux-tunisie.goatcounter.com`
