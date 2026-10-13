@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Page introuvable — Clicvia</title>
+<script>
+// Page servie par GitHub pour toute adresse inconnue de clicvia.com.
+// 1) Les liens du tableau de bord GoatCounter ouvrent « clicvia.com/<préfixe du site>/… ». GitHub renvoie seul vers le bon
+//    sous-domaine pour nos dépôts, mais PAS pour The Message (autre compte GitHub) : on le fait ici.
+// 2) Les lignes « partage/… » et « lien-site/… » de GoatCounter sont des CLICS comptés, pas des pages : on l'explique.
+(function () {
+  var p = location.pathname, SITES = { "/le-message": "https://message.clicvia.com" };
+  for (var k in SITES) if (p === k || p.indexOf(k + "/") === 0) { location.replace(SITES[k] + (p.slice(k.length) || "/") + location.search + location.hash); return; }
+  window.CLIC_COMPTE = /^\/(partage|lien-site)(\/|$)/.test(p);
+})();
+</script>
+<style>
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#F4F6FB;color:#1B2340;display:grid;min-height:100vh;place-items:center;padding:20px;box-sizing:border-box}
+main{max-width:520px;background:#fff;border:1px solid #DDE2EF;border-radius:18px;padding:26px 22px;text-align:center;box-shadow:0 8px 24px rgba(27,35,64,.08)}
+h1{font-size:22px;margin:0 0 10px} p{margin:0 0 14px;line-height:1.55;color:#4A5372}
+a.btn{display:inline-block;background:#2B3990;color:#fff;font-weight:700;text-decoration:none;border-radius:12px;padding:12px 18px}
+[dir="rtl"]{font-family:"Noto Kufi Arabic",system-ui,sans-serif}
+</style>
+</head>
+<body>
+<main>
+  <h1>Page introuvable</h1>
+  <p id="texte">Cette adresse n'existe pas (ou plus).</p>
+  <p dir="rtl" lang="ar">هذه الصفحة غير موجودة.</p>
+  <a class="btn" href="https://clicvia.com/">Tous nos services · كل خدماتنا</a>
+</main>
+<script>
+if (window.CLIC_COMPTE) document.getElementById("texte").textContent = "Cette ligne des statistiques n'est pas une page : c'est le compte des clics sur un bouton (« Partager » ou un lien vers un autre de nos sites).";
+</script>
+</body>
+</html>
