@@ -1,0 +1,48 @@
+# Clicvia — services pratiques gratuits pour la Tunisie
+
+> Clicvia : des services gratuits pour la Tunisie, en français et en arabe : annonces immobilières dans les 24 gouvernorats, prix de l'eau minérale comparés chaque jour, calculateurs (salaire, impôt, crédit), appels d'offres et concours publics, code de la route, documents prêts à remplir, annuaires de professionnels.
+
+Portail de 18 sites gratuits et indépendants (non officiels), en français et en arabe pour la plupart ; adresse : https://clicvia.com/ (aussi https://clicvia.com/ar/ et https://clicvia.com/en/).
+Chaque site a son propre fichier llms.txt à sa racine (exemple : https://concours.clicvia.com/llms.txt).
+
+## Permis et voiture
+
+- [Code de la route Tunisie](https://code.clicvia.com/) : Leçons, panneaux, entraînement, examen blanc et amendes.
+- [Auto-écoles Tunisie](https://auto-ecoles.clicvia.com/) : Trouver une auto-école près de chez vous, dans les 24 gouvernorats.
+- [Ma voiture Tunisie](https://voiture.clicvia.com/) : Vignette, visite technique, assurance, vidange : vos échéances et des rappels dans l'agenda. Prix des carburants.
+
+## Papiers, démarches et justice
+
+- [Documents Tunisie](https://documents.clicvia.com/) : Modèles prêts à remplir en PDF (français et arabe) et les étapes expliquées.
+- [Avocats et notaires Tunisie](https://avocats.clicvia.com/) : Avocats, notaires, huissiers et traducteurs, par gouvernorat.
+
+## Travail, argent et entreprises
+
+- [Outils pratiques Tunisie](https://outils.clicvia.com/) : Salaire net, impôt sur le revenu, crédit, auto-entrepreneur, retenue à la source.
+- [Comptables Tunisie](https://comptables.clicvia.com/) : Comptables, experts-comptables et conseillers fiscaux, par gouvernorat.
+- [Appels d'offres Tunisie](https://appels-offres.clicvia.com/) : Les appels d'offres publics du jour, par métier et par gouvernorat, et les ventes aux enchères.
+- [Alerte Concours Tunisie](https://concours.clicvia.com/) : Tous les concours publics ouverts, par gouvernorat et par métier : date limite, postes et lien officiel.
+
+## Maison, famille et artisans
+
+- [Immobilier Tunisie](https://immobilier.clicvia.com/) : Logements, bureaux, commerces, usines et terrains à vendre ou à louer dans les 24 gouvernorats ; déposez votre annonce gratuitement.
+- [Prix des Eaux de Tunisie](https://prix-eau.clicvia.com/) : Les prix de l'eau minérale dans les magasins, comparés chaque jour.
+- [Mes comptes](https://comptes.clicvia.com/) : Loyers, salaire, dépenses, impôt et rappels sur votre téléphone. Gratuit 3 mois.
+- [Professionnels Tunisie](https://pros.clicvia.com/) : Annuaire gratuit des artisans et professionnels, gouvernorat par gouvernorat.
+- [Mariage Tunisie](https://mariage.clicvia.com/) : Salles des fêtes, photographes, traiteurs, pâtisseries, coiffure et beauté.
+
+## Religion et patrimoine
+
+- [Mosquées en Tunisie](https://mosquees.clicvia.com/) : Toutes les mosquées et salles de prière sur une carte, la plus proche de vous, et l'histoire des grandes mosquées (21 langues).
+- [Points d'eau Tunisie](https://eau.clicvia.com/) : Carte des sources, fontaines, robinets publics et majels ; trouvez le plus proche, signalez-en un.
+- [The Message — الرسالة](https://message.clicvia.com/) : Découvrir l'Islam, le Coran et son message, en 19 langues (français, anglais, espagnol…).
+
+## Enseignants et chercheurs
+
+- [Conference Radar · Radar des conférences](https://conferences.clicvia.com/) : Conférences scientifiques à venir et dates limites, dont comptabilité, finance et finance islamique (EN, FR, AR).
+
+## À savoir
+
+- Les données (prix, concours, appels d'offres, annonces) sont relevées automatiquement ; la date de mise à jour et la source officielle sont écrites sur les pages.
+- Pour citer : le nom du site et le lien de la page utilisée.
+- Les assistants IA qui répondent à une question en citant leur source sont les bienvenus ; l'aspiration du contenu pour entraîner un modèle n'est pas autorisée (voir robots.txt).

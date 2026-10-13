@@ -229,6 +229,22 @@ def main():
     ecrire("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
            + "".join(f'<url><loc>{BASE if l == "fr" else BASE + l + "/"}</loc><lastmod>{jour}</lastmod>{liens}</url>\n' for l in LANGUES)
            + f'  <url><loc>{BASE}video/</loc></url>\n</urlset>\n')
+    # llms.txt : présentation du portail et de ses sites pour les assistants IA (référencement sur les IA, 13/10/2026)
+    ia = ["# Clicvia — services pratiques gratuits pour la Tunisie", "", "> " + TEXTES["description"]["fr"], "",
+          f"Portail de {len(SITES)} sites gratuits et indépendants (non officiels), en français et en arabe pour la plupart ; adresse : {BASE} (aussi {BASE}ar/ et {BASE}en/).",
+          "Chaque site a son propre fichier llms.txt à sa racine (exemple : https://concours.clicvia.com/llms.txt).", ""]
+    theme = None
+    for th, sous, _, regle, nom, desc in SITES:
+        if th != theme:
+            theme = th
+            ia += ["## " + THEMES[th]["fr"], ""]
+        ia.append(f"- [{nom['fr']}](https://{sous}.clicvia.com/) : {desc['fr']}")
+        if all(x[0] != th for x in SITES[SITES.index((th, sous, _, regle, nom, desc)) + 1:]):
+            ia.append("")
+    ia += ["## À savoir", "", "- Les données (prix, concours, appels d'offres, annonces) sont relevées automatiquement ; la date de mise à jour et la source officielle sont écrites sur les pages.",
+           "- Pour citer : le nom du site et le lien de la page utilisée.",
+           "- Les assistants IA qui répondent à une question en citant leur source sont les bienvenus ; l'aspiration du contenu pour entraîner un modèle n'est pas autorisée (voir robots.txt).", ""]
+    ecrire("llms.txt", chr(10).join(ia))
     print(f"portail : {len(LANGUES)} pages ({', '.join(LANGUES)}), {len(SITES)} sites, plan du site à jour")
 
 
