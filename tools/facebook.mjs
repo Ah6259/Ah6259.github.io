@@ -1,8 +1,12 @@
-// Robot « page Facebook Clicvia » : UNE publication par jour, toute seule (décision d'Ahmed du 12/10/2026 : il n'a pas le
-// temps de publier). Chaque jour un site à tour de rôle ; le robot choisit une page du site dans son plan du site, lit son
+// Robot « page Facebook Clicvia » : DEUX publications par jour (matin et après-midi), toutes seules, deux sites différents
+// (décisions d'Ahmed : 12/10/2026 « je n'ai pas le temps de publier », 13/10/2026 « deux par jour, avec d'autres sites »).
+// Chaque créneau a son site, à tour de rôle sur 7 jours (TOUR) ; le robot choisit une page du site dans son plan du site, lit son
 // titre et sa description (ceux que Google voit) et publie un message court FR + AR avec le lien — Facebook affiche l'aperçu
 // de la page (image og:image). Aucune mémoire à garder : le choix se calcule d'après la date, donc jamais deux fois la même
 // page avant d'avoir fait le tour. Concours : les pages les plus récentes d'abord.
+// Sécurité contre les doublons (GitHub lance parfois avec des heures de retard) : avant de publier, le robot relit les
+// dernières publications de la page ; si le lien y est déjà, il prend la page suivante du même site.
+// CRENEAU=0 (matin) ou 1 (après-midi) : donné par le robot facebook.yml selon l'horaire qui l'a lancé.
 //
 // Secrets GitHub du dépôt (jamais dans un fichier) : FB_PAGE_ID (numéro de la page) et FB_PAGE_TOKEN (jeton de page).
 // Sans ces secrets, ou avec ESSAI=1 : rien n'est publié, le message est seulement affiché.
@@ -17,12 +21,29 @@ const SITES = {
     fr: "Prix de l'eau en bouteille en Tunisie, comparés chaque jour :", ar: "أسعار الماء المعدني في تونس، مقارنة كل يوم:", mots: "#PrixEau #Tunisie #أسعار #تونس" },
   documents: { hote: "documents.clicvia.com", garder: /^\/[^/]+\/$/, sauf: /^\/(a-propos|pass|video|modeles)\/$/,
     fr: "Modèle de document tunisien prêt à remplir (PDF, français et arabe) :", ar: "نموذج وثيقة تونسية جاهز للتعمير (PDF، بالعربية والفرنسية):", mots: "#Documents #Tunisie #نماذج #وثائق" },
+  // ajoutés le 13/10/2026 (demande d'Ahmed : deux publications par jour, avec d'autres sites)
+  immobilier: { hote: "immobilier.clicvia.com", garder: /^\/[a-z-]+\/[^/]+\/$/, sauf: /^\/(video|a-propos|deposer|alertes)\//,
+    fr: "Immobilier en Tunisie — annonces de vente et de location, gratuites :", ar: "عقارات في تونس — إعلانات بيع وكراء، مجانًا:", mots: "#Immobilier #Tunisie #عقارات #تونس" },
+  "appels-offres": { hote: "appels-offres.clicvia.com", garder: /^\/((gouvernorat|metier)\/[^/]+|encheres)\/$/,
+    fr: "Appels d'offres publics en Tunisie, mis à jour chaque jour :", ar: "طلبات العروض العمومية في تونس، تُحيَّن كل يوم:", mots: "#AppelsDoffres #Tunisie #طلبات_العروض #تونس" },
+  voiture: { hote: "voiture.clicvia.com", garder: /^\/(visite-technique|vignette|entretien|carburant|achat-vente)\/$/,
+    fr: "Votre voiture en Tunisie — vignette, visite technique, carburant : calculez et n'oubliez plus rien :", ar: "سيارتك في تونس — معلوم الجولان، الفحص الفني، الوقود: احسب ولا تنسَ شيئًا:", mots: "#Voiture #Vignette #Tunisie #سيارة" },
+  outils: { hote: "outils.clicvia.com", garder: /^\/(salaire-net|retenue-source|impot-revenu|credit|auto-entrepreneur)\/$/,
+    fr: "Calculateur gratuit pour la Tunisie (salaire, impôt, crédit) :", ar: "حاسبة مجانية لتونس (الأجر، الضريبة، القرض):", mots: "#Salaire #Impot #Tunisie #حاسبة" },
+  mosquees: { hote: "mosquees.clicvia.com", garder: /^\/mosquee\/[^/]+\/$/,
+    fr: "Une mosquée de Tunisie — son histoire, ses photos, la carte :", ar: "مسجد من مساجد تونس — تاريخه، صوره والخريطة:", mots: "#Mosquée #Tunisie #مساجد #تونس" },
+  eau: { hote: "eau.clicvia.com", garder: /^\/(coran-et-eau\/|majels-et-puits\/)?$/,
+    fr: "Où trouver de l'eau en Tunisie — sources, fontaines et majels sur une carte :", ar: "أين تجد الماء في تونس — عيون وسبّالات ومواجل على خريطة:", mots: "#Eau #Tunisie #ماء #تونس" },
 };
-const TOUR = ["concours", "code", "prix-eau", "documents", "concours", "documents", "prix-eau"];      // un site par jour, sur 7 jours
+// deux sites par jour sur 7 jours : [matin, après-midi] × 7 (jamais le même site deux fois le même jour)
+const TOUR = ["concours", "immobilier", "code", "appels-offres", "documents", "mosquees", "prix-eau", "voiture",
+  "concours", "outils", "documents", "immobilier", "mosquees", "eau"];
 const DEPART = Date.UTC(2026, 9, 12);
 
 const jour = process.env.JOUR ? new Date(process.env.JOUR + "T00:00:00Z") : new Date();
-const n = Math.max(0, Math.floor((Date.UTC(jour.getUTCFullYear(), jour.getUTCMonth(), jour.getUTCDate()) - DEPART) / 864e5));
+const jours = Math.max(0, Math.floor((Date.UTC(jour.getUTCFullYear(), jour.getUTCMonth(), jour.getUTCDate()) - DEPART) / 864e5));
+const creneau = process.env.CRENEAU === "1" ? 1 : 0;
+const n = jours * 2 + creneau;                     // numéro du créneau depuis le départ
 const nom = process.env.SITE || TOUR[n % TOUR.length];
 const site = SITES[nom];
 if (!site) { console.log("site inconnu : " + nom); process.exit(1); }
@@ -45,7 +66,22 @@ if (site.ouverts) {      // Concours : seulement ceux dont les inscriptions sont
   pages = ouverts.map(c => parAdresse.get(`/concours/${c.id}/`)).filter(Boolean);
   if (!pages.length) { console.log("aucun concours ouvert à publier aujourd'hui"); process.exit(0); }
 }
-const page = pages[passages % pages.length];
+// dernières publications de la page (lecture seule) : pour ne jamais publier deux fois le même lien si GitHub est en retard
+const ID = process.env.FB_PAGE_ID, JETON = process.env.FB_PAGE_TOKEN;
+let recents = "";
+if (ID && JETON) {
+  try {
+    const r = await fetch(`https://graph.facebook.com/${ID}/feed?fields=message&limit=25&access_token=${encodeURIComponent(JETON)}`);
+    const d = await r.json();
+    recents = (d.data || []).map(x => x.message || "").join("\n") + "\n";
+    if (!r.ok) console.log("lecture des dernières publications impossible (" + ((d.error && d.error.code) || r.status) + ") : contrôle des doublons sauté");
+  } catch (e) { console.log("lecture des dernières publications impossible : contrôle des doublons sauté"); }
+}
+let rang = passages % pages.length, saut = 0;
+while (saut < pages.length && recents.includes("👉 " + pages[rang].url + "\n")) { rang = (rang + 1) % pages.length; saut++; }
+if (saut === pages.length) { console.log(`toutes les pages de ${nom} sont dans les dernières publications : rien à publier`); process.exit(0); }
+if (saut) console.log(`page déjà publiée récemment : on passe à la suivante (${saut} saut(s))`);
+const page = pages[rang];
 
 const h = await texte(page.url);
 const titre = propre((h.match(/<meta property="og:title" content="([^"]*)"/) || h.match(/<title>([^<]*)<\/title>/) || [])[1]).replace(/\s*[|–—-]\s*[^|–—-]*$/, m => (m.length < 45 ? "" : m));
@@ -53,8 +89,7 @@ const desc = propre((h.match(/<meta name="description" content="([^"]*)"/) || []
 if (!titre) { console.log("page sans titre : " + page.url); process.exit(1); }
 const message = [site.fr, "", titre, desc && desc !== titre ? desc.slice(0, 260) : "", "", site.ar, "", "👉 " + page.url, "", site.mots].filter((x, i, a) => !(x === "" && a[i - 1] === "")).join("\n");
 
-console.log(`Jour ${n} — site : ${nom} — page ${passages % pages.length + 1}/${pages.length} : ${page.url}\n---\n${message}\n---`);
-const ID = process.env.FB_PAGE_ID, JETON = process.env.FB_PAGE_TOKEN;
+console.log(`Jour ${jours}, ${creneau ? "après-midi" : "matin"} — site : ${nom} — page ${rang + 1}/${pages.length} : ${page.url}\n---\n${message}\n---`);
 if (process.env.ESSAI === "1" || !ID || !JETON) { console.log(ID && JETON ? "ESSAI : rien n'est publié." : "Secrets FB_PAGE_ID / FB_PAGE_TOKEN absents : rien n'est publié (essai)."); process.exit(0); }
 const r = await fetch(`https://graph.facebook.com/${ID}/feed`, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
   body: new URLSearchParams({ message, link: page.url, access_token: JETON }) });

@@ -1,15 +1,20 @@
-# Robot « page Facebook Clicvia » : une publication par jour, toute seule (un site à tour de rôle : Concours, Code de la
-# route, Prix des Eaux, Documents). Dépôt public : minutes gratuites. Secrets du dépôt : FB_PAGE_ID et FB_PAGE_TOKEN
+# Robot « page Facebook Clicvia » : deux publications par jour, toutes seules (matin et après-midi, deux sites différents,
+# à tour de rôle parmi 10 sites : liste TOUR de tools/facebook.mjs). Dépôt public : minutes gratuites. Secrets du dépôt : FB_PAGE_ID et FB_PAGE_TOKEN
 # (Settings → Secrets and variables → Actions). Sans ces secrets, le robot affiche seulement le message (rien n'est publié).
 name: facebook
 on:
   schedule:
-    - cron: "23 15 * * *"   # 16h23 à Tunis (GitHub lance souvent en retard, parfois de plusieurs heures : 6 h 30 le 12/10/2026)
+    # GitHub lance souvent en retard (8 h le 12/10/2026) : les deux horaires sont tôt pour rester dans la même journée (UTC)
+    - cron: "10 5 * * *"    # matin : 6h10 à Tunis
+    - cron: "40 12 * * *"   # après-midi : 13h40 à Tunis
   workflow_dispatch:
     inputs:
       site:
-        description: "Site à publier (vide = celui du jour) : concours, code, prix-eau, documents"
+        description: "Site à publier (vide = celui du créneau) : concours, code, prix-eau, documents, immobilier, appels-offres, voiture, outils, mosquees, eau"
         default: ""
+      creneau:
+        description: "0 = publication du matin, 1 = publication de l'après-midi"
+        default: "0"
       essai:
         description: "1 = ne rien publier, afficher seulement"
         default: "0"
@@ -33,3 +38,4 @@ jobs:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           SITE: ${{ github.event.inputs.site }}
           ESSAI: ${{ github.event.inputs.essai || '0' }}
+          CRENEAU: ${{ github.event.inputs.creneau || (github.event.schedule == '40 12 * * *' && '1') || '0' }}
