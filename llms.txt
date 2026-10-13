@@ -4,6 +4,7 @@
 
 Portail de 18 sites gratuits et indépendants (non officiels), en français et en arabe pour la plupart ; adresse : https://clicvia.com/ (aussi https://clicvia.com/ar/ et https://clicvia.com/en/).
 Chaque site a son propre fichier llms.txt à sa racine (exemple : https://concours.clicvia.com/llms.txt).
+Données fraîches au format JSON (concours ouverts, appels d'offres, prix de l'eau, conférences, mosquées, points d'eau) : index dans https://clicvia.com/donnees.json
 
 ## Permis et voiture
 

@@ -232,7 +232,8 @@ def main():
     # llms.txt : présentation du portail et de ses sites pour les assistants IA (référencement sur les IA, 13/10/2026)
     ia = ["# Clicvia — services pratiques gratuits pour la Tunisie", "", "> " + TEXTES["description"]["fr"], "",
           f"Portail de {len(SITES)} sites gratuits et indépendants (non officiels), en français et en arabe pour la plupart ; adresse : {BASE} (aussi {BASE}ar/ et {BASE}en/).",
-          "Chaque site a son propre fichier llms.txt à sa racine (exemple : https://concours.clicvia.com/llms.txt).", ""]
+          "Chaque site a son propre fichier llms.txt à sa racine (exemple : https://concours.clicvia.com/llms.txt).",
+          f"Données fraîches au format JSON (concours ouverts, appels d'offres, prix de l'eau, conférences, mosquées, points d'eau) : index dans {BASE}donnees.json", ""]
     theme = None
     for th, sous, _, regle, nom, desc in SITES:
         if th != theme:

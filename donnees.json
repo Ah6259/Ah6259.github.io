@@ -1,0 +1,55 @@
+{
+ "editeur": "Clicvia — https://clicvia.com/",
+ "note": "Données publiques relevées automatiquement sur des sources officielles ou libres. Pour citer : le nom du site et le lien de la page. Les assistants qui répondent en citant leur source sont les bienvenus ; l'aspiration pour entraîner un modèle n'est pas autorisée (voir robots.txt).",
+ "donnees": [
+  {
+   "site": "https://concours.clicvia.com/",
+   "url": "https://concours.clicvia.com/donnees/concours.json",
+   "contenu": "Concours publics tunisiens relevés sur la source officielle (ouverts et récents)",
+   "mise_a_jour": "chaque jour",
+   "champs": "concours[] : organisme, grade, postes, cloture_candidatures (date limite d'inscription), cloture_concours, metier, gouvernorat, lien (officiel) ; lu_le = date du relevé"
+  },
+  {
+   "site": "https://appels-offres.clicvia.com/",
+   "url": "https://appels-offres.clicvia.com/donnees/appels-offres.json",
+   "contenu": "Appels d'offres publics tunisiens du moment",
+   "mise_a_jour": "chaque jour",
+   "champs": "appels_offres{} : un objet par avis (objet, acheteur, date limite, gouvernorat, métier, lien officiel) ; mis_a_jour = date du relevé"
+  },
+  {
+   "site": "https://appels-offres.clicvia.com/",
+   "url": "https://appels-offres.clicvia.com/donnees/encheres.json",
+   "contenu": "Ventes aux enchères publiques (douane, administrations)",
+   "mise_a_jour": "chaque jour",
+   "champs": "ventes{} : objet, bureau, date_limite, gouvernorat, lien_avis ; derniere_lecture_reussie = date du relevé"
+  },
+  {
+   "site": "https://prix-eau.clicvia.com/",
+   "url": "https://prix-eau.clicvia.com/data/eaux.json",
+   "contenu": "Prix de l'eau minérale en bouteille dans les magasins en ligne tunisiens",
+   "mise_a_jour": "chaque jour",
+   "champs": "brands[] : name, products[] (format, prix par magasin) ; stores[] = magasins relevés ; updated = date du relevé ; currency = TND"
+  },
+  {
+   "site": "https://conferences.clicvia.com/",
+   "url": "https://conferences.clicvia.com/donnees/conferences.json",
+   "contenu": "Conférences scientifiques à venir dans le monde, avec dates limites de soumission",
+   "mise_a_jour": "chaque jour",
+   "champs": "conferences[] : acronyme, titre, debut, fin, ville, pays, domaines[], date_limite, lien (officiel) ; mis_a_jour = date du relevé"
+  },
+  {
+   "site": "https://mosquees.clicvia.com/",
+   "url": "https://mosquees.clicvia.com/donnees/mosquees.json",
+   "contenu": "Mosquées et salles de prière de Tunisie (OpenStreetMap et Wikidata)",
+   "mise_a_jour": "tous les 3 mois",
+   "champs": "lieux[] : lat, lon, type, noms{langue: nom}, ville, wikidata ; maj = date du relevé"
+  },
+  {
+   "site": "https://eau.clicvia.com/",
+   "url": "https://eau.clicvia.com/donnees/points_osm.json",
+   "contenu": "Points d'eau publics de Tunisie (sources, fontaines, robinets, citernes ; OpenStreetMap, licence ODbL)",
+   "mise_a_jour": "tous les 3 mois",
+   "champs": "points[] : type, lat, lon, nom, potable ; maj = date du relevé"
+  }
+ ]
+}
