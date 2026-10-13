@@ -26,3 +26,5 @@ jobs:
         run: npm install --no-save --no-package-lock jsdom
       - name: Test de la vidéo de présentation et du bouton Partager
         run: node tools/test_video.mjs
+      - name: Test du portail en trois langues (français, arabe, anglais)
+        run: node tools/test_portail.mjs
