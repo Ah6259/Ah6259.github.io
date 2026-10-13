@@ -4,7 +4,7 @@
 name: facebook
 on:
   schedule:
-    - cron: "5 17 * * *"   # 18h05 à Tunis
+    - cron: "23 15 * * *"   # 16h23 à Tunis (GitHub lance souvent en retard, parfois de plusieurs heures : 6 h 30 le 12/10/2026)
   workflow_dispatch:
     inputs:
       site:
