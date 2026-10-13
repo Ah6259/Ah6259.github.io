@@ -14,14 +14,14 @@ LANGUES = ["fr", "ar", "en"]
 E = lambda s: html.escape(s, quote=True)
 
 TEXTES = {
-    "titre": {"fr": "Sites pratiques pour la Tunisie — immobilier, prix de l'eau, code de la route, appels d'offres, documents",
-              "ar": "مواقع عملية لتونس — عقارات، أسعار الماء، مجلة الطرقات، طلبات العروض، وثائق",
-              "en": "Practical websites for Tunisia — property, water prices, highway code, tenders, documents"},
+    "titre": {"fr": "Clicvia — sites pratiques pour la Tunisie : immobilier, prix de l'eau, code de la route, appels d'offres, documents",
+              "ar": "Clicvia — مواقع عملية لتونس: عقارات، أسعار الماء، مجلة الطرقات، طلبات العروض، وثائق",
+              "en": "Clicvia — practical websites for Tunisia: property, water prices, highway code, tenders, documents"},
     "description": {
-        "fr": "Des services gratuits pour la Tunisie, en français et en arabe : annonces immobilières dans les 24 gouvernorats, prix de l'eau minérale comparés chaque jour, calculateurs (salaire, impôt, crédit), appels d'offres et concours publics, code de la route, documents prêts à remplir, annuaires de professionnels.",
-        "ar": "خدمات مجانية لتونس، بالعربية والفرنسية: إعلانات عقارية في الولايات الـ24، مقارنة يومية لأسعار المياه المعدنية، حاسبات (الأجر، الضريبة، القرض)، طلبات العروض والمناظرات العمومية، مجلة الطرقات، وثائق جاهزة للتعمير، ودلائل المهنيين.",
-        "en": "Free services for Tunisia: property listings in all 24 governorates, mineral water prices compared every day, calculators (salary, income tax, loan), public tenders and civil-service competitions, the highway code, ready-to-fill documents and directories of professionals."},
-    "og_titre": {"fr": "18 services gratuits pour la Tunisie", "ar": "18 خدمة مجانية لتونس", "en": "18 free services for Tunisia"},
+        "fr": "Clicvia : des services gratuits pour la Tunisie, en français et en arabe : annonces immobilières dans les 24 gouvernorats, prix de l'eau minérale comparés chaque jour, calculateurs (salaire, impôt, crédit), appels d'offres et concours publics, code de la route, documents prêts à remplir, annuaires de professionnels.",
+        "ar": "Clicvia: خدمات مجانية لتونس، بالعربية والفرنسية: إعلانات عقارية في الولايات الـ24، مقارنة يومية لأسعار المياه المعدنية، حاسبات (الأجر، الضريبة، القرض)، طلبات العروض والمناظرات العمومية، مجلة الطرقات، وثائق جاهزة للتعمير، ودلائل المهنيين.",
+        "en": "Clicvia: free services for Tunisia: property listings in all 24 governorates, mineral water prices compared every day, calculators (salary, income tax, loan), public tenders and civil-service competitions, the highway code, ready-to-fill documents and directories of professionals."},
+    "og_titre": {"fr": "Clicvia : 18 services gratuits pour la Tunisie", "ar": "Clicvia: 18 خدمة مجانية لتونس", "en": "Clicvia: 18 free services for Tunisia"},
     "og_description": {
         "fr": "Annonces immobilières (logements, bureaux, usines, terrains) dans les 24 gouvernorats, prix de l'eau minérale, calculateurs (salaire, impôt, crédit), appels d'offres et concours publics, code de la route, documents prêts à remplir — en français et en arabe.",
         "ar": "إعلانات عقارية (مساكن، مكاتب، مصانع، أراضٍ) في الولايات الـ24، أسعار المياه المعدنية، حاسبات (الأجر، الضريبة، القرض)، طلبات العروض والمناظرات العمومية، مجلة الطرقات، وثائق جاهزة للتعمير — بالعربية والفرنسية.",
@@ -194,7 +194,7 @@ def page(l, gabarit, jour):
     choix = "".join(f'<a href="{"/" if x == "fr" else "/" + x + "/"}" lang="{code}" data-langue="{x}"{" aria-current=\"true\"" if x == l else ""}>{nom}</a>' for x, nom, code in NOM_LANGUE)
     corps = [f'''<section class="hero"><div class="wrap">
   <nav class="langues" aria-label="{E(T("langue_aria"))}">{choix}</nav>
-  <img class="logo-portail" src="/assets/logo.svg" alt="" width="64" height="64">
+  <p class="marque"><img class="logo-portail" src="/assets/logo.svg" alt="" width="64" height="64"><span lang="en" dir="ltr">Clicvia</span></p>
   <h1>{E(T("h1"))}</h1>
   <p>{E(T("intro"))}</p>
   <button class="partager" type="button" data-partager-video aria-label="{E(T("partager_aria"))}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>{E(T("partager"))}</button>
