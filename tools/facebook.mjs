@@ -90,7 +90,9 @@ if (!titre) { console.log("page sans titre : " + page.url); process.exit(1); }
 const message = [site.fr, "", titre, desc && desc !== titre ? desc.slice(0, 260) : "", "", site.ar, "", "👉 " + page.url, "", site.mots].filter((x, i, a) => !(x === "" && a[i - 1] === "")).join("\n");
 
 console.log(`Jour ${jours}, ${creneau ? "après-midi" : "matin"} — site : ${nom} — page ${rang + 1}/${pages.length} : ${page.url}\n---\n${message}\n---`);
-if (process.env.ESSAI === "1" || !ID || !JETON) { console.log(ID && JETON ? "ESSAI : rien n'est publié." : "Secrets FB_PAGE_ID / FB_PAGE_TOKEN absents : rien n'est publié (essai)."); process.exit(0); }
+if (process.env.ESSAI === "1") { console.log("ESSAI : rien n'est publié."); process.exit(0); }
+// 14/10/2026 (incident du robot Telegram de Conférences, resté vert sans exister) : secrets absents = ÉCHEC, jamais un vert silencieux
+if (!ID || !JETON) { console.log("ÉCHEC : secrets FB_PAGE_ID / FB_PAGE_TOKEN absents du dépôt : rien n'est publié."); process.exit(1); }
 const r = await fetch(`https://graph.facebook.com/${ID}/feed`, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
   body: new URLSearchParams({ message, link: page.url, access_token: JETON }) });
 const rep = await r.json().catch(() => ({}));
