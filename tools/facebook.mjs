@@ -36,8 +36,10 @@ const SITES = {
     fr: "Où trouver de l'eau en Tunisie — sources, fontaines et majels sur une carte :", ar: "أين تجد الماء في تونس — عيون وسبّالات ومواجل على خريطة:", mots: "#Eau #Tunisie #ماء #تونس" },
 };
 // deux sites par jour sur 7 jours : [matin, après-midi] × 7 (jamais le même site deux fois le même jour)
-const TOUR = ["concours", "immobilier", "code", "appels-offres", "documents", "mosquees", "prix-eau", "voiture",
-  "concours", "outils", "documents", "immobilier", "mosquees", "eau"];
+// 15/10/2026 (Ahmed : « fais les deux ») : l'immobilier passe de 2 à 4 publications par semaine (une place de Documents et une de
+// Mosquées lui sont données)
+const TOUR = ["concours", "immobilier", "code", "appels-offres", "immobilier", "documents", "prix-eau", "voiture",
+  "concours", "outils", "immobilier", "mosquees", "eau", "immobilier"];
 const DEPART = Date.UTC(2026, 9, 12);
 
 const jour = process.env.JOUR ? new Date(process.env.JOUR + "T00:00:00Z") : new Date();
