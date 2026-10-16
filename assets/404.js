@@ -4,7 +4,9 @@
 //    sous-domaine pour nos dépôts, mais PAS pour The Message (autre compte GitHub) : on le fait ici.
 // 2) Les lignes « partage/… » et « lien-site/… » de GoatCounter sont des CLICS comptés, pas des pages : on l'explique.
 (function () {
-  var p = location.pathname, SITES = { "/le-message": "https://message.clicvia.com" };
+  var p = location.pathname, SITES = { "/le-message": "https://message.clicvia.com",
+    // 16/10/2026 : code de l'Immobilier devenu privé -> GitHub ne renvoie plus seul « clicvia.com/immobilier-tunis » (liens des statistiques)
+    "/immobilier-tunis": "https://immobilier.clicvia.com", "/immobilier-tunisie": "https://immobilier.clicvia.com" };
   for (var k in SITES) if (p === k || p.indexOf(k + "/") === 0) { location.replace(SITES[k] + (p.slice(k.length) || "/") + location.search + location.hash); return; }
   window.CLIC_COMPTE = /^\/(partage|lien-site)(\/|$)/.test(p);
 })();
