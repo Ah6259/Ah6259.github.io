@@ -9,6 +9,9 @@ on:
       essai:
         description: "1 = lister les pages sans rien envoyer"
         default: "0"
+      seul:
+        description: "vide = tous les sites ; sinon un seul (immobilier, prix-eau, concours, appels-offres, conferences)"
+        default: ""
 permissions:
   contents: read
 concurrency:
@@ -27,3 +30,4 @@ jobs:
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           ESSAI: ${{ github.event.inputs.essai || '0' }}
+          SEUL: ${{ github.event.inputs.seul || '' }}
