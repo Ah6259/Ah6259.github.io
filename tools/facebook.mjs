@@ -41,8 +41,8 @@ const SITES = {
     fr: "Où trouver de l'eau en Tunisie — sources, fontaines et majels sur une carte :", ar: "أين تجد الماء في تونس — عيون وسبّالات ومواجل على خريطة:", mots: "#Eau #Tunisie #ماء #تونس" },
   // seulement ses ARTICLES (rapports du mois), pas dans le tour normal (18/10/2026)
   conferences: { hote: "conferences.clicvia.com", garder: /^$/, articles: true,
-    fr: "Conférences en Tunisie :", ar: "مؤتمرات في تونس:", mots: "#Conférences #Tunisie #مؤتمرات #تونس",
-    art_fr: "📊 Conférences en Tunisie — rapport du mois :", art_ar: "📊 المؤتمرات في تونس — تقرير الشهر:" },
+    fr: "Conférences scientifiques dans le monde :", ar: "مؤتمرات علمية في العالم:", mots: "#Conférences #Recherche #مؤتمرات",
+    art_fr: "📊 Conférences scientifiques — rapport du mois :", art_ar: "📊 المؤتمرات العلمية — تقرير الشهر:" },
 };
 // deux sites par jour sur 7 jours : [matin, après-midi] × 7 (jamais le même site deux fois le même jour)
 // 15/10/2026 (Ahmed : « fais les deux ») : l'immobilier passe de 2 à 4 publications par semaine (une place de Documents et une de
