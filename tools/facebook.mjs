@@ -22,7 +22,10 @@ const SITES = {
   documents: { hote: "documents.clicvia.com", garder: /^\/[^/]+\/$/, sauf: /^\/(a-propos|pass|video|modeles)\/$/,
     fr: "Modèle de document tunisien prêt à remplir (PDF, français et arabe) :", ar: "نموذج وثيقة تونسية جاهز للتعمير (PDF، بالعربية والفرنسية):", mots: "#Documents #Tunisie #نماذج #وثائق" },
   // ajoutés le 13/10/2026 (demande d'Ahmed : deux publications par jour, avec d'autres sites)
-  immobilier: { hote: "immobilier.clicvia.com", garder: /^\/[a-z-]+\/[^/]+\/$/, sauf: /^\/(video|a-propos|deposer|alertes)\//,
+  // 18/10/2026 (« Fais » d'Ahmed) : le rapport du mois fini (bilan national des prix) est publié à la 1re place de l'immobilier de chaque mois
+  // (« prioritaire ») ; les pages de rapports ne sont pas dans le tour normal
+  immobilier: { hote: "immobilier.clicvia.com", garder: /^\/[a-z-]+\/[^/]+\/$/, sauf: /^\/(video|a-propos|deposer|alertes|rapports)\//,
+    prioritaire: j => { const d = new Date(Date.UTC(j.getUTCFullYear(), j.getUTCMonth() - 1, 1)); return `https://immobilier.clicvia.com/rapports/${d.toISOString().slice(0, 7)}/`; },
     fr: "Immobilier en Tunisie — annonces de vente et de location, gratuites :", ar: "عقارات في تونس — إعلانات بيع وكراء، مجانًا:", mots: "#Immobilier #Tunisie #عقارات #تونس" },
   "appels-offres": { hote: "appels-offres.clicvia.com", garder: /^\/((gouvernorat|metier)\/[^/]+|encheres)\/$/,
     fr: "Appels d'offres publics en Tunisie, mis à jour chaque jour :", ar: "طلبات العروض العمومية في تونس، تُحيَّن كل يوم:", mots: "#AppelsDoffres #Tunisie #طلبات_العروض #تونس" },
@@ -79,11 +82,20 @@ if (ID && JETON) {
     if (!r.ok) console.log("lecture des dernières publications impossible (" + ((d.error && d.error.code) || r.status) + ") : contrôle des doublons sauté");
   } catch (e) { console.log("lecture des dernières publications impossible : contrôle des doublons sauté"); }
 }
+// page prioritaire (rapport du mois fini) : seulement à la PREMIÈRE place de ce site dans le mois, si la page existe et n'est pas déjà publiée
+let prio = null;
+if (site.prioritaire) {
+  const u = site.prioritaire(jour);
+  let premier = true;
+  for (let k = n - 1; k >= 0 && Math.floor(k / 2) > jours - jour.getUTCDate(); k--) if (TOUR[k % TOUR.length] === nom) { premier = false; break; }
+  if (premier && plan.includes(`<loc>${u}</loc>`) && !recents.includes("👉 " + u + "\n")) prio = { url: u };
+}
 let rang = passages % pages.length, saut = 0;
 while (saut < pages.length && recents.includes("👉 " + pages[rang].url + "\n")) { rang = (rang + 1) % pages.length; saut++; }
 if (saut === pages.length) { console.log(`toutes les pages de ${nom} sont dans les dernières publications : rien à publier`); process.exit(0); }
 if (saut) console.log(`page déjà publiée récemment : on passe à la suivante (${saut} saut(s))`);
-const page = pages[rang];
+const page = prio || pages[rang];
+if (prio) console.log("rapport du mois fini : publié en priorité");
 
 const h = await texte(page.url);
 const titre = propre((h.match(/<meta property="og:title" content="([^"]*)"/) || h.match(/<title>([^<]*)<\/title>/) || [])[1]).replace(/\s*[|–—-]\s*[^|–—-]*$/, m => (m.length < 45 ? "" : m));
@@ -91,7 +103,7 @@ const desc = propre((h.match(/<meta name="description" content="([^"]*)"/) || []
 if (!titre) { console.log("page sans titre : " + page.url); process.exit(1); }
 const message = [site.fr, "", titre, desc && desc !== titre ? desc.slice(0, 260) : "", "", site.ar, "", "👉 " + page.url, "", site.mots].filter((x, i, a) => !(x === "" && a[i - 1] === "")).join("\n");
 
-console.log(`Jour ${jours}, ${creneau ? "après-midi" : "matin"} — site : ${nom} — page ${rang + 1}/${pages.length} : ${page.url}\n---\n${message}\n---`);
+console.log(`Jour ${jours}, ${creneau ? "après-midi" : "matin"} — site : ${nom} — page ${prio ? "prioritaire" : (rang + 1) + "/" + pages.length} : ${page.url}\n---\n${message}\n---`);
 if (process.env.ESSAI === "1") { console.log("ESSAI : rien n'est publié."); process.exit(0); }
 // 14/10/2026 (incident du robot Telegram de Conférences, resté vert sans exister) : secrets absents = ÉCHEC, jamais un vert silencieux
 if (!ID || !JETON) { console.log("ÉCHEC : secrets FB_PAGE_ID / FB_PAGE_TOKEN absents du dépôt : rien n'est publié."); process.exit(1); }
