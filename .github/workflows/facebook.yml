@@ -7,6 +7,9 @@ on:
     # GitHub lance souvent en retard (8 h le 12/10/2026) : les deux horaires sont tôt pour rester dans la même journée (UTC)
     - cron: "10 5 * * *"    # matin : 6h10 à Tunis
     - cron: "40 12 * * *"   # après-midi : 13h40 à Tunis
+    # 18/10/2026 (Ahmed : « chaque article publié sur Facebook ») : deux passages ARTICLES (rapports du mois des sites), un article chacun
+    - cron: "10 9 * * *"    # articles : 10h10 à Tunis
+    - cron: "10 18 * * *"   # articles : 19h10 à Tunis
   workflow_dispatch:
     inputs:
       site:
@@ -18,8 +21,11 @@ on:
       essai:
         description: "1 = ne rien publier, afficher seulement"
         default: "0"
+      articles:
+        description: "1 = publier le prochain ARTICLE (rapport du mois) au lieu d'une page du tour"
+        default: "0"
 permissions:
-  contents: read
+  contents: write     # mémoire des articles déjà publiés (donnees/facebook-articles.json)
 concurrency:
   group: facebook
   cancel-in-progress: false
@@ -39,3 +45,14 @@ jobs:
           SITE: ${{ github.event.inputs.site }}
           ESSAI: ${{ github.event.inputs.essai || '0' }}
           CRENEAU: ${{ github.event.inputs.creneau || (github.event.schedule == '40 12 * * *' && '1') || '0' }}
+          ARTICLES: ${{ github.event.inputs.articles || ((github.event.schedule == '10 9 * * *' || github.event.schedule == '10 18 * * *') && '1') || '0' }}
+      - name: Garder la mémoire des articles publiés
+        if: always()
+        run: |
+          git config user.name "robot-facebook"
+          git config user.email "robot-facebook@users.noreply.github.com"
+          git add donnees/facebook-articles.json
+          git diff --cached --quiet && exit 0
+          git commit -qm "Facebook : article publié le $(date +%d/%m/%Y)"
+          for essai in 1 2 3 4; do git pull --rebase -q && git push -q && exit 0; sleep $((essai * 5)); done
+          echo "ÉCHEC : mémoire des articles non enregistrée (risque de republier le même article)"; exit 1
