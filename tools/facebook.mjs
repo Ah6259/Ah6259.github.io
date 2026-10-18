@@ -110,6 +110,9 @@ if (process.env.ARTICLES === "1") {
       writeFileSync(F, JSON.stringify(memoire, null, 0) + "\n"); console.log("déjà publié sur la page : noté dans la mémoire"); process.exit(0);
     }
   } catch (e) { console.log("lecture des dernières publications impossible : contrôle des doublons sauté"); }
+  // 18/10/2026 : Facebook relit la page AVANT la publication (sinon il peut montrer une vieille image d'aperçu gardée en mémoire)
+  try { await fetch("https://graph.facebook.com/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ id: art.url, scrape: "true", access_token: JETON }) }); } catch (e) { console.log("relecture de l'aperçu impossible (on publie quand même)"); }
   const r = await fetch(`https://graph.facebook.com/${ID}/feed`, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ message, link: art.url, access_token: JETON }) });
   const rep = await r.json().catch(() => ({}));

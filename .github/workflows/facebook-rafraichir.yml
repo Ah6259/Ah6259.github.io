@@ -1,0 +1,29 @@
+# Robot « rafraîchir les aperçus Facebook » (18/10/2026) : chaque matin, Facebook relit les pages « rapports du mois » des sites
+# (chiffres et image d'aperçu refaits chaque nuit), pour qu'un partage montre la bonne image. Secret : FB_PAGE_TOKEN.
+name: facebook-rafraichir
+on:
+  schedule:
+    - cron: "40 4 * * *"    # 5h40 à Tunis, après les relevés de la nuit
+  workflow_dispatch:
+    inputs:
+      essai:
+        description: "1 = lister les pages sans rien envoyer"
+        default: "0"
+permissions:
+  contents: read
+concurrency:
+  group: facebook-rafraichir
+  cancel-in-progress: false
+jobs:
+  rafraichir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node tools/facebook-rafraichir.mjs
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          ESSAI: ${{ github.event.inputs.essai || '0' }}
