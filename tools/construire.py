@@ -41,7 +41,7 @@ TEXTES = {
     "autre_nom": {"fr": "Clicvia — services pratiques pour la Tunisie", "ar": "Clicvia — خدمات عملية لتونس", "en": "Clicvia — practical services for Tunisia"},
 }
 NOM_LANGUE = [("fr", "Français", "fr"), ("ar", "العربية", "ar"), ("en", "English", "en")]
-LOCALE = {"fr": "fr_TN", "ar": "ar_TN", "en": "en_US"}
+LOCALE = {"fr": "fr_FR", "ar": "ar_AR", "en": "en_US"}
 
 THEMES = {
     "voiture": {"fr": "Permis et voiture", "ar": "الرخصة والسيارة", "en": "Driving licence and car"},
