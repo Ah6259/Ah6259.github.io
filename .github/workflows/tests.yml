@@ -28,3 +28,5 @@ jobs:
         run: node tools/test_video.mjs
       - name: Test du portail en trois langues (français, arabe, anglais)
         run: node tools/test_portail.mjs
+      - name: Visiteur simule (comme un visiteur sur telephone, avant le vrai visiteur - regle generale du 18/10/2026)
+        run: python tools/visiteur_simule.py

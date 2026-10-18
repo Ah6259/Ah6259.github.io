@@ -35,6 +35,7 @@ export function pagesVideo(root, cfg = JSON.parse(readFileSync(join(root, "tools
     let h = modele
       .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\s*/g, "")
       .replace(/<link rel="canonical"[^>]*>\s*/g, "")
+      .replace(/<link rel="alternate" hreflang[^>]*>\s*/g, "")      // la page vidéo n'est pas une traduction de l'accueil
       .replace(/<meta (property="og:[^"]*"|name="twitter:[^"]*")[^>]*>\s*/g, "")
       .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(titre)} | ${esc(nom)}</title>`)
       .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
@@ -51,7 +52,8 @@ export function pagesVideo(root, cfg = JSON.parse(readFileSync(join(root, "tools
 <section class="video-page" id="video">
   <div class="video-tete">${cfg.logo ? `<img src="${r}${cfg.logo}" alt="" width="52" height="52">` : ""}<p class="video-nom"${txt(cfg.nom, D)}</p></div>
   <h1${txt(p.titre, D)}</h1>
-  <video class="video-lecteur" controls playsinline preload="metadata" width="1080" height="1920" poster="${r}assets/video/${p.couverture}" src="${r}assets/video/${p.video}.mp4"${src}></video>
+${p.texte ? `  <p class="video-texte"${txt(p.texte, D)}</p>
+` : ""}  <video class="video-lecteur" controls playsinline preload="metadata" width="1080" height="1920" poster="${r}assets/video/${p.couverture}" src="${r}assets/video/${p.video}.mp4"${src}></video>
   <a class="btn-video-site" href="${r}${p.site}"${txt(p.bouton, D)}</a>
   <button class="btn-video-partager" type="button" data-partager-video${txt(cfg.partager, D)}</button>
 </section>

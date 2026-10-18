@@ -1,0 +1,20 @@
+[
+ {
+  "page": "",
+  "nom": "portail : bouton « Partager » en haut (sans bug, page intacte)",
+  "etapes": [{"sel": "[data-partager-video]", "clic": true}],
+  "apres": 800
+ },
+ {
+  "page": "ar/",
+  "nom": "portail en arabe : bouton « Partager » (sans bug, page intacte)",
+  "etapes": [{"sel": "[data-partager-video]", "clic": true}],
+  "apres": 800
+ },
+ {
+  "page": "video/",
+  "nom": "page vidéo : bouton « Partager la vidéo » (sans bug)",
+  "etapes": [{"sel": "[data-partager-video]", "clic": true}],
+  "apres": 800
+ }
+]
