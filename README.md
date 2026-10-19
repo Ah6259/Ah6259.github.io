@@ -38,3 +38,5 @@ du site sont fabriqués par `python tools/construire.py` à partir de `tools/gab
 script (`SITES`, `THEMES`, `TEXTES`). **Ne plus modifier `index.html` à la main.** Nouveau site : une ligne dans `SITES` (nom et
 description dans les 3 langues, et dans quelles langues le site existe), son icône dans `assets/sites/`, puis construire.
 Tests : `node tools/test_video.mjs` et `node tools/test_portail.mjs`. `assets/langue.js` : anciens liens `/?lang=ar` → `/ar/`.
+
+- **19/10/2026** : `CLAUDE.md` créé (mémoire lue automatiquement par Claude Code) ; visiteur simulé avec le contrôle des espaces (règle commune § 29), 0 anomalie.
