@@ -54,5 +54,5 @@ jobs:
           git add donnees/facebook-articles.json
           git diff --cached --quiet && exit 0
           git commit -qm "Facebook : article publié le $(date +%d/%m/%Y)"
-          for essai in 1 2 3 4; do git pull --rebase -q && git push -q && exit 0; sleep $((essai * 5)); done
+          for essai in 1 2 3 4; do git pull --rebase --autostash -q && git push -q && exit 0; sleep $((essai * 5)); done
           echo "ÉCHEC : mémoire des articles non enregistrée (risque de republier le même article)"; exit 1

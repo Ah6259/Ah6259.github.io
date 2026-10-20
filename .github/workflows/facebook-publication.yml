@@ -37,5 +37,5 @@ jobs:
           git add donnees/facebook-publications.json 2>/dev/null || exit 0
           git diff --cached --quiet && exit 0
           git commit -qm "Facebook : publication du $(date +%d/%m/%Y)"
-          for essai in 1 2 3 4; do git pull --rebase -q && git push -q && exit 0; sleep $((essai * 5)); done
+          for essai in 1 2 3 4; do git pull --rebase --autostash -q && git push -q && exit 0; sleep $((essai * 5)); done
           exit 1
