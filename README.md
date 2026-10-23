@@ -5,7 +5,9 @@
   robots d'IA et aspirateurs interdits, page de relecture du code de la route exclue, sitemaps de tous les sites.
 - Fichier de vérification Google Search Console (propriété « préfixe d'URL » https://ah6259.github.io/ = tous les sites).
 
-Ajouter un nouveau site : une carte dans index.html + une ligne `Sitemap:` dans robots.txt.
+Ajouter un nouveau site : une ligne dans la liste `SITES` de `tools/construire.py` (puis `python tools/construire.py`, jamais
+index.html à la main : voir « Trois langues » plus bas) + une ligne `Sitemap:` dans robots.txt + `SITES`/`TOUR` de `tools/facebook.mjs`
++ la liste `SITES` de `tools/indexnow.mjs`.
 The Message (islam, multilingue ; nom unique dans toutes les langues depuis le 12/10/2026) : carte ajoutée le 11/10/2026 (thème « Religion et patrimoine ») ; depuis le 12/10/2026 son adresse est
 https://message.clicvia.com/ (dépôt sur un autre compte GitHub : lemessagelemessage8-lab) ; icône `assets/sites/le-message.svg`.
 
@@ -28,9 +30,9 @@ https://message.clicvia.com/ (dépôt sur un autre compte GitHub : lemessageleme
 - **Visibilité Google (12/10/2026, règle commune § 8)** : liens vers nos autres sites en `https://<site>.clicvia.com/` (jamais `ah6259.github.io`), lien « Tous nos services » → https://clicvia.com/ dans le pied de page, `robots.txt` avec ligne Sitemap, `sitemap.xml` daté, JSON-LD sur l'accueil, clé IndexNow `377f054ba9c5ed40d6796adc8d87d1e8.txt` à la racine (ne pas supprimer : robot `indexnow` du portail). Contrôle : `node "outils visibilite/controle.mjs"` (dépôt projets-ahmed). Sitemap envoyé dans Search Console par Ahmed le 12/10/2026.
 - **Robot `indexnow`** (`tools/indexnow.mjs`, chaque jour 14h37) : prévient Bing / Yandex des pages nouvelles de tous les sites ; nouveau site = l'ajouter à sa liste `SITES`.
 
-- **Robot `facebook`** (`tools/facebook.mjs`, chaque jour 18h05) : une publication par jour sur la page Facebook Clicvia, un site à tour de rôle (Concours — seulement ceux encore ouverts —, Code de la route, Prix des Eaux, Documents) ; titre et description lus sur la page, message FR + AR, lien. Secrets du dépôt : `FB_PAGE_ID`, `FB_PAGE_TOKEN` (sans eux : essai, rien n'est publié). Essai : `ESSAI=1 node tools/facebook.mjs`. Nouveau site : l'ajouter à `SITES` et `TOUR`.
+- **Robot `facebook`** (`.github/workflows/facebook.yml`, `tools/facebook.mjs`) : DEUX publications par jour sur la page Facebook Clicvia depuis le 13/10/2026 (6h10 et 13h40 à Tunis), deux sites différents à tour de rôle parmi 10 (liste `TOUR` sur 7 jours : Concours — seulement ceux encore ouverts —, Immobilier 4 fois par semaine, Code de la route, Appels d'offres, Documents, Prix des Eaux, Ma voiture, Outils, Mosquées, Points d'eau) ; depuis le 18/10/2026, deux passages ARTICLES de plus (10h10 et 19h10 : un « rapport du mois » d'un site, Conférences comprises) ; titre et description lus sur la page, message FR + AR, lien. Autres robots : `facebook-rafraichir` (5h40, Facebook relit les pages « rapports du mois ») et `facebook-publication` (publication préparée image + texte, lancée à la main). Secrets du dépôt : `FB_PAGE_ID`, `FB_PAGE_TOKEN` (sans eux : essai, rien n'est publié). Essai : `ESSAI=1 node tools/facebook.mjs`. Nouveau site : l'ajouter à `SITES` et `TOUR` de `tools/facebook.mjs`.
 
-- **Page Facebook Clicvia (12/10/2026)** : https://www.facebook.com/1327283777142447 — le robot `facebook` du dépôt du portail (`Ah6259.github.io`, `tools/facebook.mjs`, chaque jour 18h05) publie tout seul une page de ce site à son tour (titre, description et image `og:image` lus sur la page : les garder soignés). Ahmed ne publie rien à la main. Détail et dépannage : `nouveau site - procedure.md` § 4 étape 6 (dépôt projets-ahmed).
+- **Page Facebook Clicvia (12/10/2026)** : https://www.facebook.com/1327283777142447 — le robot `facebook` du dépôt du portail (`Ah6259.github.io`, `tools/facebook.mjs`, deux fois par jour : 6h10 et 13h40, plus les articles à 10h10 et 19h10) publie tout seul une page d'un site à son tour (titre, description et image `og:image` lus sur la page : les garder soignés). Ahmed ne publie rien à la main. Détail et dépannage : `nouveau site - procedure.md` § 4 étape 6 (dépôt projets-ahmed).
 
 ## Trois langues (13/10/2026, demande d'Ahmed)
 Le portail existe en français (`/`), en arabe (`/ar/`) et en anglais (`/en/`), une adresse par langue. Les trois pages et le plan
