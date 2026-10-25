@@ -30,5 +30,35 @@ check("The Message : pas de version arabe (lien simple sur la page arabe), angla
 const plan = lire("sitemap.xml");
 check("plan du site : les 3 adresses de langue et la page vidéo", Object.keys(PAGES).every(l => plan.includes(`<loc>${adresse(l)}</loc>`)) && plan.includes(`<loc>${BASE}video/</loc>`));
 check("fabrication : index.html est bien celui de tools/construire.py (gabarit + listes)", existsSync(join(root, "tools/gabarit.html")) && existsSync(join(root, "tools/construire.py")));
+// 25/10/2026 (RÈGLE d'Ahmed, règle commune § 44 : « la page Comment fonctionne le site doit être mise à jour chaque fois qu'on modifie
+// le site ») : chaque fonction visible du portail (repère dans les pages ou le code) doit être expliquée dans a-propos/ (et ar/, en/) ;
+// nouvelle fonction = une ligne ici + son explication dans A_PROPOS de tools/construire.py. Liste lue en entier, une ligne par fonction.
+{ const ap = { fr: "a-propos/index.html", ar: "ar/a-propos/index.html", en: "en/a-propos/index.html" };
+  const txt = f => existsSync(join(root, f)) ? lire(f).replace(/&#x27;/g, "'").replace(/\u00a0/g, " ") : "";
+  const acc = lire(PAGES.fr), js = lire("assets/portail.js"), cons = lire("tools/construire.py");
+  const FONCTIONS = [
+    ["cartes des sites, rangées par thème", /<a class="site"/.test(acc) && /class="theme"/.test(acc), { fr: /Touchez une carte/, ar: /بطاقات المواقع/, en: /Website cards/ }],
+    ["trois langues (une adresse par langue)", /class="langues"/.test(acc) && existsSync(join(root, PAGES.ar)) && existsSync(join(root, PAGES.en)), { fr: /Trois langues/, ar: /ثلاث لغات/, en: /Three languages/ }],
+    ["étiquette de langue des cartes (page anglaise)", /class="langues-site"/.test(lire(PAGES.en)), { fr: /dans quelles langues/, ar: /لغات الموقع/, en: /which languages/ }],
+    ["bouton « Partager »", /data-partager-video/.test(acc) && /partagerLien/.test(js), { fr: /bouton « Partager »/, ar: /زر «شارك»/, en: /“Share” button/ }],
+    ["vidéo de présentation", existsSync(join(root, "video/index.html")) && /lien-video/.test(js), { fr: /vidéo de présentation/, ar: /الفيديو التقديمي/, en: /presentation video/ }],
+    ["page Facebook Clicvia (publications automatiques)", /facebook\.com\/1327283777142447/.test(acc) && existsSync(join(root, "tools/facebook.mjs")), { fr: /Facebook[\s\S]*publiées automatiquement/, ar: /فيسبوك[\s\S]*آليًا/, en: /Facebook[\s\S]*posted there automatically/ }],
+    ["données ouvertes (donnees.json)", existsSync(join(root, "donnees.json")), { fr: /donnees\.json/, ar: /donnees\.json/, en: /donnees\.json/ }],
+    ["statistiques anonymes sans cookies", /goatcounter/.test(acc), { fr: /anonymes, sans cookies/, ar: /مجهولة الهوية/, en: /anonymous, with no cookies/ }],
+    ["moteurs de recherche prévenus (IndexNow)", existsSync(join(root, "tools/indexnow.mjs")), { fr: /moteurs de recherche sont prévenus/, ar: /محركات البحث/, en: /search engines are notified/ }],
+    ["gratuit / partie payante (Pass) des sites", true, { fr: /gratuit[\s\S]*« Pass »/, ar: /Pass/, en: /free[\s\S]*“Pass”/ }],
+    ["sites indépendants, non officiels", /indépendants, non officiels/.test(acc), { fr: /indépendants et non officiels/, ar: /مستقلة وغير رسمية/, en: /independent and unofficial/ }],
+    ["fabrication automatique (construire.py)", /def page_a_propos/.test(cons), { fr: /fabriqués automatiquement/, ar: /تُصنع آليًا/, en: /built automatically/ }]];
+  const manque = [];
+  for (const [nom, sur, re] of FONCTIONS) for (const l of Object.keys(ap)) if (sur && !re[l].test(txt(ap[l]))) manque.push(`${nom} (${l})`);
+  check(`page « Comment fonctionne le site ? » à jour : chaque fonction du portail y est expliquée, en 3 langues (${FONCTIONS.length} fonctions)` + (manque.length ? " — manque : " + manque.join(", ") : ""),
+    manque.length === 0);
+  const titres = { fr: "<h1>Comment fonctionne le site\u00a0?</h1>", ar: "<h1>كيف يعمل الموقع؟</h1>", en: "<h1>How does the site work?</h1>" };
+  check("page « Comment fonctionne le site ? » : titre dans chaque langue, lien dans le pied de page de l'accueil (3 langues), de la page vidéo et dans le plan du site",
+    Object.keys(ap).every(l => existsSync(join(root, ap[l])) && lire(ap[l]).includes(titres[l]) && lire(ap[l]).includes('class="pied-liens"'))
+    && lire(PAGES.fr).includes('<a href="/a-propos/">') && lire(PAGES.ar).includes('<a href="/ar/a-propos/">') && lire(PAGES.en).includes('<a href="/en/a-propos/">')
+    && lire("video/index.html").includes('<a href="/a-propos/">')
+    && Object.keys(ap).every(l => lire("sitemap.xml").includes(`<loc>${BASE}${l === "fr" ? "" : l + "/"}a-propos/</loc>`))
+    && Object.values(ap).every(f => !/ on[a-z]+=|<script>(?!\s*$)/.test(lire(f)))); }
 console.log(pb ? `\n${pb} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(pb ? 1 : 0);
