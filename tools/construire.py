@@ -41,6 +41,8 @@ TEXTES = {
     "a_propos": {"fr": "Comment fonctionne le site ?", "ar": "كيف يعمل الموقع؟", "en": "How does the site work?"},
     # 28/10/2026 (Ahmed) : petit lien discret vers son tableau de bord privé (protégé par un code, non suivi par Google)
     "prive": {"fr": "Espace privé", "ar": "فضاء خاص", "en": "Private area"},
+    # 28/10/2026 (Ahmed) : lien vers les statistiques de visite (GoatCounter ; connexion obligatoire, rien de visible sans compte)
+    "stats": {"fr": "Statistiques", "ar": "الإحصائيات", "en": "Statistics"},
     "tous": {"fr": "Tous nos services", "ar": "كل خدماتنا", "en": "All our services"},
     "liste": {"fr": "Services Clicvia", "ar": "خدمات Clicvia", "en": "Clicvia services"},
     "autre_nom": {"fr": "Clicvia — services pratiques pour la Tunisie", "ar": "Clicvia — خدمات عملية لتونس", "en": "Clicvia — practical services for Tunisia"},
@@ -195,7 +197,7 @@ def pied(l):
     """Pied de page commun : Facebook, lien « Comment fonctionne le site ? » (règle commune § 44), mentions."""
     T = lambda k: TEXTES[k][l]
     return f'''<footer><p class="suivre"><a href="https://www.facebook.com/1327283777142447" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.3H7.7V13h2.7v8h3.1z"/></svg> {E(T("facebook"))}</a></p>
-<p class="pied-liens"><a href="{chemin_a_propos(l)}">{E(T("a_propos"))}</a> · <a href="{"/" if l == "fr" else "/" + l + "/"}">{E(T("tous"))}</a> · <a class="prive" href="/tableau-bord/" rel="nofollow">{E(T("prive"))}</a></p>
+<p class="pied-liens"><a href="{chemin_a_propos(l)}">{E(T("a_propos"))}</a> · <a href="{"/" if l == "fr" else "/" + l + "/"}">{E(T("tous"))}</a> · <a class="prive" href="/tableau-bord/" rel="nofollow">{E(T("prive"))}</a> · <a class="stats" href="https://prix-eaux-tunisie.goatcounter.com/" rel="nofollow noopener" target="_blank">{E(T("stats"))}</a></p>
 {E(T("pied"))}</footer>
 </body>
 </html>

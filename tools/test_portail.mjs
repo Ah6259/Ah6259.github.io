@@ -63,5 +63,8 @@ check("fabrication : index.html est bien celui de tools/construire.py (gabarit +
 // 28/10/2026 (Ahmed) : petit lien discret « Espace privé » vers le tableau de bord, en bas des 3 accueils, non suivi par Google
 check("pied de page : lien discret « Espace privé » vers /tableau-bord/ (rel=nofollow) sur les 3 accueils",
   ["index.html", "ar/index.html", "en/index.html"].every(f => /<a class="prive" href="\/tableau-bord\/" rel="nofollow">/.test(lire(f))));
+// 28/10/2026 (Ahmed) : lien « Statistiques » vers GoatCounter (tableau protégé par connexion), en bas des 3 accueils
+check("pied de page : lien « Statistiques » vers GoatCounter (rel=nofollow) sur les 3 accueils",
+  ["index.html", "ar/index.html", "en/index.html"].every(f => /<a class="stats" href="https:\/\/prix-eaux-tunisie\.goatcounter\.com\/" rel="nofollow noopener"/.test(lire(f))));
 console.log(pb ? `\n${pb} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(pb ? 1 : 0);
