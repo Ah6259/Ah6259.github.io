@@ -28,6 +28,8 @@ import urllib.parse
 ICI = os.path.dirname(os.path.abspath(__file__))
 RACINE = os.path.dirname(ICI)
 MAX_PAGES = int(os.environ.get("MAX_PAGES", "40"))
+# Pages d'un AUTRE dépôt servies sous le même domaine (clicvia.com/tableau-bord/) : absentes ici, pas des liens morts (28/10/2026)
+AUTRES_DEPOTS = ("/tableau-bord/",)
 IGNORE = re.compile(r"^(https?:|mailto:|tel:|data:|javascript:|#|//|whatsapp:|sms:)", re.I)
 
 
@@ -83,6 +85,8 @@ def liens_morts(pages):
             if not u or IGNORE.match(u) or "{" in u:
                 continue
             u = urllib.parse.unquote(u.split("#")[0].split("?")[0])
+            if u.startswith(AUTRES_DEPOTS):
+                continue
             if not u:
                 continue
             cible = os.path.normpath(os.path.join(RACINE, u.lstrip("/")) if u.startswith("/") else os.path.join(RACINE, os.path.dirname(p), u))
