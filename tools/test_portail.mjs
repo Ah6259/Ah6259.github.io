@@ -60,5 +60,8 @@ check("fabrication : index.html est bien celui de tools/construire.py (gabarit +
     && lire("video/index.html").includes('<a href="/a-propos/">')
     && Object.keys(ap).every(l => lire("sitemap.xml").includes(`<loc>${BASE}${l === "fr" ? "" : l + "/"}a-propos/</loc>`))
     && Object.values(ap).every(f => !/ on[a-z]+=|<script>(?!\s*$)/.test(lire(f)))); }
+// 28/10/2026 (Ahmed) : petit lien discret « Espace privé » vers le tableau de bord, en bas des 3 accueils, non suivi par Google
+check("pied de page : lien discret « Espace privé » vers /tableau-bord/ (rel=nofollow) sur les 3 accueils",
+  ["index.html", "ar/index.html", "en/index.html"].every(f => /<a class="prive" href="\/tableau-bord\/" rel="nofollow">/.test(lire(f))));
 console.log(pb ? `\n${pb} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(pb ? 1 : 0);
