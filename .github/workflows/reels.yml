@@ -3,12 +3,12 @@
 # Publie sur le compte Instagram professionnel relié à la page Facebook Clicvia. Secrets : FB_PAGE_ID, FB_PAGE_TOKEN (le même que le
 # robot facebook, avec en plus les autorisations instagram_basic et instagram_content_publish), IG_USER_ID facultatif.
 # Chaque passage garde la vidéo 7 jours dans « Artifacts » (en bas de la page du passage), même en essai.
-# Horaires COUPÉS tant qu'Ahmed n'a pas relié Instagram (GERER SANS CLAUDE/portail) : à rétablir ensuite (enlever les # ci-dessous).
+# Compte Instagram immobilier.clicvia relié à la page Clicvia le 28/10/2026 ; 1re vidéo publiée le 28/10 (Sousse) ; horaires en marche.
 name: reels
 on:
-  # schedule:
-  #   - cron: "20 7 * * *"    # 8h20 à Tunis
-  #   - cron: "20 17 * * *"   # 18h20 à Tunis
+  schedule:
+    - cron: "20 7 * * *"    # 8h20 à Tunis
+    - cron: "20 17 * * *"   # 18h20 à Tunis
   workflow_dispatch:
     inputs:
       gouv:
