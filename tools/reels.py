@@ -1,0 +1,363 @@
+# -*- coding: utf-8 -*-
+"""Robot « Reels Instagram » de l'Immobilier (demande d'Ahmed du 28/10/2026).
+
+DEUX courtes vidéos verticales par jour (1080 x 1920, ~17 s), une par GOUVERNORAT, à tour de rôle : chacun des 24 revient tous
+les 12 jours. Chaque vidéo a ses propres couleurs, sa mise en page, ses polices, ses transitions et sa phrase d'accroche
+(Ahmed : « nouvelle couleur, nouveau design et nouveau message attirant à chaque fois ») : tout est choisi d'après le numéro du
+créneau, avec des listes de longueurs différentes, donc deux vidéos qui se suivent ne se ressemblent jamais.
+
+Chiffres LUS sur le site publié (immobilier.clicvia.com/donnees/...), jamais inventés : nombre d'annonces du gouvernorat, nouvelles
+du jour, prix médian du m² des appartements à vendre, loyer médian d'un S+2, et deux annonces que notre IA juge « peut-être une
+bonne affaire » (x % sous les biens semblables). Aucune photo d'annonce (elles appartiennent aux annonceurs), aucun nom de site
+source, aucun numéro de téléphone, aucune image générée ni voix ; musique Bach (Musopen, CC0 : tools/reels/musique-licence-CC0.json).
+
+Images dessinées par Chrome sans écran (français + arabe bien formés), vidéo montée par ffmpeg, publiée sur le compte Instagram
+relié à la page Facebook Clicvia (API Instagram, envoi « resumable » : aucun fichier à héberger).
+
+Secrets du dépôt : FB_PAGE_ID + FB_PAGE_TOKEN (les mêmes que le robot facebook ; le jeton doit avoir en plus les autorisations
+instagram_basic et instagram_content_publish). Facultatif : IG_USER_ID (sinon lu sur la page Facebook).
+Sans secrets ou avec ESSAI=1 : la vidéo est fabriquée (reels-sortie/) mais rien n'est publié.
+
+  python tools/reels.py                              créneau du moment (CRENEAU=0 matin, 1 soir)
+  ESSAI=1 GOUV=sousse python tools/reels.py          essai sur un gouvernorat, sans publier
+  ESSAI=1 N=37 python tools/reels.py                 essai du créneau n° 37 (pour voir un autre design)
+Variables : FFMPEG (chemin de ffmpeg), NAVIGATEUR (chemin de Chrome), JOUR=AAAA-MM-JJ.
+"""
+import datetime as dt, html, json, os, pathlib, re, shutil, statistics, subprocess, sys, time, urllib.parse, urllib.request
+
+ICI = pathlib.Path(__file__).resolve().parent
+SORTIE = ICI.parent / "reels-sortie"
+SITE = "https://immobilier.clicvia.com"
+GRAPH = "https://graph.facebook.com/v21.0"
+UA = {"User-Agent": "ClicviaRobot/1.0 (+https://clicvia.com/)"}
+W, H, FPS, FONDU = 1080, 1920, 30, 0.5
+
+# grands et petits gouvernorats mélangés : les deux vidéos d'un même jour parlent de régions différentes
+ORDRE = ["tunis", "sousse", "ariana", "sfax", "nabeul", "monastir", "ben-arous", "bizerte", "mahdia", "manouba", "medenine", "kairouan",
+         "gabes", "zaghouan", "beja", "gafsa", "jendouba", "le-kef", "siliana", "kasserine", "sidi-bouzid", "tozeur", "kebili", "tataouine"]
+DEPART = dt.date(2026, 10, 29)
+
+# couleurs : fond 1, fond 2, accent, texte, fond des cartes (11 palettes : 24 % 11 = 2, un gouvernorat change de couleurs à chaque tour)
+PALETTES = [
+    ("#0b3d2e", "#14684d", "#f2c14e", "#ffffff", "rgba(255,255,255,.10)"),   # vert sapin et or
+    ("#102a5c", "#1f4fa3", "#ff8a5b", "#ffffff", "rgba(255,255,255,.10)"),   # bleu nuit et corail
+    ("#fdf3e7", "#f7dcc0", "#c2410c", "#2b1a0e", "rgba(43,26,14,.07)"),      # sable et terre cuite
+    ("#3b0d3f", "#7b1e6b", "#ffd166", "#ffffff", "rgba(255,255,255,.10)"),   # prune et jaune
+    ("#eef6f8", "#cfe8ee", "#0e7490", "#0f2a33", "rgba(15,42,51,.07)"),      # ciel clair et bleu canard
+    ("#1c1c1c", "#383838", "#e63946", "#ffffff", "rgba(255,255,255,.08)"),   # anthracite et rouge
+    ("#f4f1ea", "#e6dfcf", "#1d4ed8", "#1b1b1b", "rgba(0,0,0,.06)"),         # papier et bleu roi
+    ("#06404f", "#0b7285", "#a3e635", "#ffffff", "rgba(255,255,255,.10)"),   # pétrole et citron vert
+    ("#5c1a1a", "#9b2c2c", "#fde68a", "#ffffff", "rgba(255,255,255,.10)"),   # bordeaux et crème
+    ("#fff7ed", "#ffe4c7", "#047857", "#1f2937", "rgba(31,41,55,.06)"),      # pêche et émeraude
+    ("#13111c", "#2e2a4a", "#38bdf8", "#ffffff", "rgba(255,255,255,.09)"),   # nuit et cyan
+]
+# polices (latin, arabe) : 5 paires
+POLICES = [("Poppins", "Cairo"), ("Montserrat", "Tajawal"), ("DM Serif Display", "Amiri"), ("Archivo Black", "Changa"), ("Space Grotesk", "Almarai")]
+MISES_EN_PAGE = ["degrade", "bandeau", "cadre", "diagonale", "cercle", "colonne", "grille"]          # 7 mises en page
+TRANSITIONS = ["fade", "slideleft", "slideup", "circleopen", "wipeleft", "smoothup", "radial", "dissolve", "slideright"]
+# accroches (17 : 24 % 17 = 7, un gouvernorat a une nouvelle phrase à chaque tour). {g} = nom du gouvernorat
+ACCROCHES = [
+    ("Vous cherchez à {g} ?", "تبحث عن سكن في {g}؟"),
+    ("{g} : les prix d'aujourd'hui", "{g}: أسعار اليوم"),
+    ("Acheter à {g}, c'est combien ?", "الشراء في {g}، بكم؟"),
+    ("Louer à {g} sans se tromper", "اكتري في {g} بلا غلطة"),
+    ("Ce que coûte vraiment {g}", "كم تكلف {g} حقًّا"),
+    ("Nouveau à {g} aujourd'hui", "جديد اليوم في {g}"),
+    ("{g} : bonnes affaires repérées", "{g}: صفقات جيدة رصدناها"),
+    ("Avant d'acheter à {g}, regardez ça", "قبل ما تشري في {g}، شوف هذا"),
+    ("{g} en chiffres", "{g} بالأرقام"),
+    ("Le vrai prix du m² à {g}", "السعر الحقيقي للمتر في {g}"),
+    ("Toutes les annonces de {g}, gratuites", "كل إعلانات {g}، مجانًا"),
+    ("Payer le juste prix à {g}", "ادفع السعر الصحيح في {g}"),
+    ("{g} : où en est le marché ?", "{g}: وين وصل السوق؟"),
+    ("Un logement à {g} ? Commencez ici", "سكن في {g}؟ ابدأ من هنا"),
+    ("Notre IA a regardé {g} pour vous", "ذكاؤنا الاصطناعي درس {g} من أجلك"),
+    ("{g} : cher ou pas cher ?", "{g}: غالي ولا رخيص؟"),
+    ("Investir à {g} ?", "تستثمر في {g}؟"),
+]
+FINS = [("Toutes les annonces, gratuites", "كل الإعلانات مجانًا"), ("Comparez avant de signer", "قارن قبل ما تمضي"),
+        ("Alertes gratuites chaque jour", "تنبيهات مجانية كل يوم"), ("L'avis de l'IA sur chaque bien", "رأي الذكاء الاصطناعي في كل عقار"),
+        ("Le juste prix, quartier par quartier", "السعر الصحيح، حي بحي")]
+
+
+def lire(url):
+    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
+        return r.read().decode("utf-8")
+
+
+def objet_js(texte):
+    return json.loads(texte[texte.index("{"):texte.rindex("}") + 1])
+
+
+def milliers(n):
+    return f"{int(round(n)):,}".replace(",", "\u202f")
+
+
+def creneau():
+    if os.environ.get("N"):
+        return int(os.environ["N"])
+    jour = dt.date.fromisoformat(os.environ["JOUR"]) if os.environ.get("JOUR") else dt.datetime.now(dt.timezone.utc).date()
+    return max(0, (jour - DEPART).days) * 2 + (1 if os.environ.get("CRENEAU") == "1" else 0)
+
+
+# ---------------------------------------------------------------- chiffres lus sur le site
+def chiffres(g, lieux):
+    d = objet_js(lire(f"{SITE}/donnees/annonces/{g}.js"))
+    A, maj = d.get("a") or [], d.get("maj") or ""
+    nom_lieu = lambda a: (lieux["l"].get(f"{g}/{a.get('l')}") or lieux["g"][g])
+    m2 = [a["p"] / a["s"] for a in A if a.get("t") == "v" and a.get("y") == "appartement" and a.get("p") and (a.get("s") or 0) >= 30
+          and 300 <= a["p"] / a["s"] <= 15000]
+    s2 = [a["p"] for a in A if a.get("t") == "l" and a.get("y") == "appartement" and a.get("c") == 2 and a.get("p") and 200 <= a["p"] <= 10000]
+    recent = (dt.date.fromisoformat(maj) - dt.timedelta(days=10)).isoformat() if maj else ""
+    # « peut-être une bonne affaire » d'après l'avis de l'IA (ix = [sorte, écart %]) ; écarts trop grands = sans doute une erreur d'annonce
+    bonnes = [a for a in A if (a.get("ix") or [""])[0] == "b" and a.get("y") in ("appartement", "maison") and a.get("p") and 10 <= a["ix"][1] <= 30 and (a.get("d") or "") >= recent]
+    # d'abord les biens décrits (surface connue), appartements et maisons avant les terrains, puis les plus récents
+    bonnes.sort(key=lambda a: (a.get("s") is None, a.get("y") not in ("appartement", "maison"), a.get("d") or ""), reverse=False)
+    bonnes.sort(key=lambda a: a.get("d") or "", reverse=True)
+    bonnes.sort(key=lambda a: (a.get("s") is None, a.get("y") not in ("appartement", "maison")))
+    choix, vus = [], set()
+    for a in bonnes:                     # deux biens différents (vente et location si possible, lieux différents)
+        cle = (a.get("t"), a.get("l"))
+        if cle in vus:
+            continue
+        vus.add(cle); choix.append(a)
+        if len(choix) == 2:
+            break
+    return {"total": len(A), "nouvelles": sum(1 for a in A if a.get("d") == maj), "maj": maj,
+            "m2": statistics.median(m2) if len(m2) >= 5 else None, "n_m2": len(m2),
+            "s2": statistics.median(s2) if len(s2) >= 5 else None, "n_s2": len(s2),
+            "annonces": [dict(a, lieu=nom_lieu(a)) for a in choix]}
+
+
+# ---------------------------------------------------------------- images (HTML -> Chrome)
+def css(pal, police, mise):
+    f1, f2, acc, txt, carte = pal
+    lat, ar = police
+    fonds = {
+        "degrade": f"linear-gradient(160deg,{f1},{f2})",
+        "bandeau": f"linear-gradient(180deg,{f2} 0 26%,{f1} 26% 100%)",
+        "cadre": f"{f1}",
+        "diagonale": f"linear-gradient(120deg,{f1} 0 58%,{f2} 58% 100%)",
+        "cercle": f"radial-gradient(circle at 80% 12%,{f2} 0 22%,transparent 22.2%),radial-gradient(circle at 10% 95%,{f2} 0 18%,transparent 18.2%),{f1}",
+        "colonne": f"linear-gradient(90deg,{acc} 0 2.4%,{f1} 2.4% 100%)",
+        "grille": f"repeating-linear-gradient(0deg,transparent 0 119px,{carte} 119px 120px),repeating-linear-gradient(90deg,transparent 0 119px,{carte} 119px 120px),linear-gradient(180deg,{f1},{f2})",
+    }
+    cadre = f"outline:6px solid {acc};outline-offset:-46px;" if mise == "cadre" else ""
+    aligne = "left" if mise in ("colonne", "diagonale") else "center"
+    return f"""@import url('https://fonts.googleapis.com/css2?family={lat.replace(' ', '+')}:wght@400;700;900&family={ar.replace(' ', '+')}:wght@400;700&display=block');
+*{{margin:0;padding:0;box-sizing:border-box}}
+html,body{{width:{W}px;height:{H}px;overflow:hidden}}
+body{{background:{fonds[mise]};color:{txt};font-family:'{lat}',sans-serif;{cadre}display:flex;flex-direction:column;justify-content:center;
+  padding:230px 90px 330px;text-align:{aligne};gap:44px}}
+.ar{{font-family:'{ar}',sans-serif;direction:rtl}}
+.petit{{font-size:40px;opacity:.82;letter-spacing:.04em;text-transform:uppercase;font-weight:700}}
+.gros{{font-size:118px;line-height:1.02;font-weight:900}}
+.moyen{{font-size:66px;line-height:1.12;font-weight:700}}
+.ar.moyen,.ar.gros{{line-height:1.45}}
+.acc{{color:{acc}}}
+.chiffre{{font-size:190px;font-weight:900;color:{acc};line-height:1}}
+.carte{{background:{carte};border-radius:36px;padding:52px 56px;display:flex;flex-direction:column;gap:22px;
+  border-{'left' if aligne == 'left' else 'top'}:12px solid {acc}}}
+.ligne{{display:flex;justify-content:{'flex-start' if aligne == 'left' else 'center'};gap:28px;flex-wrap:wrap;font-size:46px;font-weight:700}}
+.pastille{{display:inline-block;background:{acc};color:{f1};border-radius:999px;padding:14px 38px;font-size:44px;font-weight:900}}
+.marque{{position:absolute;top:84px;left:0;right:0;text-align:center;font-size:38px;font-weight:700;opacity:.85}}
+.note{{font-size:34px;opacity:.75}}"""
+
+
+def page(corps, style):
+    return f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>{style}</style></head><body>{corps}' \
+           f'<div class="marque">immobilier.clicvia.com</div></body></html>'
+
+
+def scenes(g, lieux, c, n):
+    nfr, nar = lieux["g"][g]
+    acc_fr, acc_ar = ACCROCHES[n % len(ACCROCHES)]
+    fin_fr, fin_ar = FINS[n % len(FINS)]
+    jour = dt.date.fromisoformat(c["maj"]).strftime("%d/%m/%Y") if c["maj"] else ""
+    E = html.escape
+    S = [(3.0, f'<div class="petit">{E(jour)}</div><div class="gros">{E(acc_fr.format(g=nfr))}</div>'
+               f'<div class="ar moyen acc">{E(acc_ar.format(g=nar))}</div>'),
+         (3.0, f'<div class="petit">{E(nfr)} · {E(nar)}</div><div class="chiffre">{milliers(c["total"])}</div>'
+               f'<div class="moyen">annonces à vendre et à louer</div><div class="ar moyen">إعلان بيع وكراء</div>'
+               + (f'<div class="pastille">+{milliers(c["nouvelles"])} aujourd\'hui · اليوم</div>' if c["nouvelles"] else ""))]
+    prix = []
+    if c["m2"]:
+        prix.append(f'<div class="carte"><div class="petit">Appartement à vendre · شقة للبيع</div><div class="chiffre" style="font-size:150px">'
+                    f'{milliers(c["m2"])} DT</div><div class="moyen">le m² (prix médian) · <span class="ar">للمتر المربع</span></div></div>')
+    if c["s2"]:
+        prix.append(f'<div class="carte"><div class="petit">Location S+2 · كراء S+2</div><div class="chiffre" style="font-size:150px">'
+                    f'{milliers(c["s2"])} DT</div><div class="moyen">par mois (loyer médian) · <span class="ar">في الشهر</span></div></div>')
+    if prix:
+        S.append((3.2, "".join(prix) + f'<div class="note">D\'après {milliers(c["n_m2"] + c["n_s2"])} annonces du site · حسب إعلانات الموقع</div>'))
+    for a in c["annonces"]:
+        typ = lieux["t"].get(a.get("y"), [a.get("y", ""), ""])
+        piece = f'S+{a["c"]}' if a.get("c") and a.get("y") == "appartement" else (f'{a["c"]} chambres' if a.get("c") else "")
+        info = " · ".join(x for x in (piece, f'{milliers(a["s"])} m²' if a.get("s") else "") if x)
+        vl = ("À vendre", "للبيع") if a.get("t") == "v" else ("À louer", "للكراء")
+        prix_txt = f'{milliers(a["p"])} DT' + (" / mois" if a.get("t") == "l" else "")
+        S.append((3.2, f'<div class="petit">Repéré par notre IA · رصده ذكاؤنا الاصطناعي</div>'
+                       f'<div class="carte"><div class="moyen">{E(typ[0])} {E(vl[0].lower())} · <span class="ar">{E(typ[1])} {E(vl[1])}</span></div>'
+                       f'<div class="moyen acc">{E(a["lieu"][0])}{" · <span class=ar>" + E(a["lieu"][1]) + "</span>" if a["lieu"][1] else ""}</div>'
+                       f'<div class="ligne"><span>{E(info)}</span></div><div class="chiffre" style="font-size:132px">{E(prix_txt)}</div>'
+                       f'<div class="pastille">≈ {a["ix"][1]} % sous les biens semblables</div></div>'
+                       f'<div class="note">Peut-être une bonne affaire : vérifiez l\'état du bien · ربما صفقة جيدة، تثبّت من حالة العقار</div>'))
+    S.append((3.6, f'<div class="gros">{E(fin_fr)}</div><div class="ar moyen acc">{E(fin_ar)}</div>'
+                   f'<div class="pastille" style="font-size:40px;padding:16px 30px">immobilier.clicvia.com/{E(g)}</div>'
+                   f'<div class="moyen">Lien dans la bio · <span class="ar">الرابط في البروفايل</span></div>'))
+    return S
+
+
+def navigateur():
+    for c in (os.environ.get("NAVIGATEUR"), shutil.which("google-chrome"), shutil.which("chromium"), shutil.which("chrome"),
+              r"C:\Program Files\Google\Chrome\Application\chrome.exe", r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"):
+        if c and os.path.exists(c):
+            return c
+    sys.exit("ÉCHEC : Chrome introuvable (variable NAVIGATEUR)")
+
+
+def photographier(fichiers):
+    nav, images = navigateur(), []
+    for f in fichiers:
+        png = f.with_suffix(".png")
+        subprocess.run([nav, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-sandbox", "--force-device-scale-factor=1",
+                        f"--window-size={W},{H}", "--virtual-time-budget=8000", f"--screenshot={png}", f.as_uri()],
+                       capture_output=True, timeout=120)
+        if not png.exists() or png.stat().st_size < 10000:
+            sys.exit(f"ÉCHEC : image non fabriquée ({f.name})")
+        images.append(png)
+    return images
+
+
+# ---------------------------------------------------------------- vidéo (ffmpeg)
+def monter(images, durees, n, sortie):
+    ff = os.environ.get("FFMPEG") or shutil.which("ffmpeg") or "ffmpeg"
+    entrees, filtres = [], []
+    zoom_avant = n % 2 == 0
+    for i, (img, d) in enumerate(zip(images, durees)):
+        entrees += ["-loop", "1", "-t", f"{d:.2f}", "-i", str(img)]
+        z = f"(1+0.045*t/{d:.2f})" if zoom_avant else f"(1.045-0.045*t/{d:.2f})"
+        filtres.append(f"[{i}:v]fps={FPS},scale=w='trunc({W}*{z}/2)*2':h=-2:eval=frame,crop={W}:{H},setsar=1,format=yuv420p[v{i}]")
+    t1, t2 = TRANSITIONS[n % len(TRANSITIONS)], TRANSITIONS[(n + 4) % len(TRANSITIONS)]
+    courant, decalage = "v0", 0.0
+    for i in range(1, len(images)):
+        decalage += durees[i - 1] - FONDU
+        sortie_i = f"x{i}"
+        filtres.append(f"[{courant}][v{i}]xfade=transition={t1 if i % 2 else t2}:duration={FONDU}:offset={decalage:.2f}[{sortie_i}]")
+        courant = sortie_i
+    total = sum(durees) - FONDU * (len(images) - 1)
+    musique = ICI / "reels" / "musique.m4a"
+    filtres.append(f"[{len(images)}:a]atrim=0:{total:.2f},afade=t=in:d=1,afade=t=out:st={total - 1.5:.2f}:d=1.5,volume=0.7[a]")
+    cmd = [ff, "-y", "-loglevel", "error", *entrees, "-i", str(musique), "-filter_complex", ";".join(filtres),
+           "-map", f"[{courant}]", "-map", "[a]", "-c:v", "libx264", "-preset", "medium", "-crf", "21", "-pix_fmt", "yuv420p",
+           "-r", str(FPS), "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", "-t", f"{total:.2f}", str(sortie)]
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode or not sortie.exists():
+        sys.exit("ÉCHEC : ffmpeg — " + (r.stderr or "")[-600:])
+    return total
+
+
+def legende(g, lieux, c, n):
+    nfr, nar = lieux["g"][g]
+    acc_fr, acc_ar = ACCROCHES[n % len(ACCROCHES)]
+    l = [f"🏠 {acc_fr.format(g=nfr)}", f"{milliers(c['total'])} annonces de vente et de location à {nfr}, avec l'avis de notre IA sur chaque bien."]
+    if c["m2"]:
+        l.append(f"• Appartement à vendre : ≈ {milliers(c['m2'])} DT le m² (prix médian)")
+    if c["s2"]:
+        l.append(f"• Location S+2 : ≈ {milliers(c['s2'])} DT par mois (loyer médian)")
+    l += ["", f"🏠 {acc_ar.format(g=nar)}", f"{milliers(c['total'])} إعلان بيع وكراء في {nar}، مع رأي الذكاء الاصطناعي في كل عقار.", "",
+          f"👉 immobilier.clicvia.com/{g} (lien dans la bio · الرابط في البروفايل)", "",
+          f"#Immobilier #Tunisie #{re.sub(r'[^A-Za-z]', '', nfr)} #عقارات #عقارات_{nar.replace(' ', '_')} #تونس #appartement #location",
+          f"📍 {g} {c['maj']}"]          # repère : jamais deux fois la même vidéo le même jour
+    return "\n".join(l)
+
+
+# ---------------------------------------------------------------- publication (API Instagram)
+def api(methode, chemin, jeton, donnees=None, url=None):
+    u = url or f"{GRAPH}/{chemin}"
+    if methode == "GET":
+        u += ("&" if "?" in u else "?") + "access_token=" + urllib.parse.quote(jeton)
+        req = urllib.request.Request(u)
+    else:
+        req = urllib.request.Request(u, data=urllib.parse.urlencode(dict(donnees or {}, access_token=jeton)).encode(), method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=120) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:          # le jeton n'est jamais affiché, seulement le message d'Instagram / Facebook
+        try:
+            err = json.loads(e.read()).get("error", {})
+        except Exception:
+            err = {}
+        sys.exit(f"ÉCHEC : refus de l'API ({chemin.split('?')[0].split('/')[-1] or 'envoi'}) — {err.get('message', e.code)} (code {err.get('code', e.code)})")
+
+
+def publier(video, texte, repere):
+    page, jeton = os.environ.get("FB_PAGE_ID"), os.environ.get("FB_PAGE_TOKEN")
+    if not page or not jeton:
+        sys.exit("ÉCHEC : secrets FB_PAGE_ID / FB_PAGE_TOKEN absents du dépôt : rien n'est publié.")
+    ig = os.environ.get("IG_USER_ID") or (api("GET", f"{page}?fields=instagram_business_account", jeton).get("instagram_business_account") or {}).get("id")
+    if not ig:
+        sys.exit("ÉCHEC : aucun compte Instagram professionnel relié à la page Facebook Clicvia (voir GERER SANS CLAUDE).")
+    recents = api("GET", f"{ig}/media?fields=caption&limit=12", jeton).get("data") or []
+    if any(repere in (m.get("caption") or "") for m in recents):
+        print("déjà publiée sur Instagram (relance tardive de GitHub) : rien à faire"); return
+    cont = api("POST", f"{ig}/media", jeton, {"media_type": "REELS", "upload_type": "resumable", "caption": texte, "share_to_feed": "true"})
+    taille = video.stat().st_size
+    req = urllib.request.Request(cont["uri"], data=video.read_bytes(), method="POST",
+                                 headers={"Authorization": "OAuth " + jeton, "offset": "0", "file_size": str(taille)})
+    try:
+        urllib.request.urlopen(req, timeout=300).read()
+    except urllib.error.HTTPError as e:
+        sys.exit(f"ÉCHEC : envoi de la vidéo refusé ({e.code})")
+    for _ in range(40):                          # Instagram prépare la vidéo (souvent 30 s à 2 min)
+        etat = api("GET", f"{cont['id']}?fields=status_code,status", jeton)
+        if etat.get("status_code") == "FINISHED":
+            break
+        if etat.get("status_code") in ("ERROR", "EXPIRED"):
+            sys.exit("ÉCHEC : Instagram a refusé la vidéo — " + str(etat.get("status")))
+        time.sleep(10)
+    else:
+        sys.exit("ÉCHEC : vidéo toujours en préparation chez Instagram après 7 minutes")
+    pub = api("POST", f"{ig}/media_publish", jeton, {"creation_id": cont["id"]})
+    lien = api("GET", f"{pub['id']}?fields=permalink", jeton).get("permalink", pub["id"])
+    print("Publié : " + lien)
+
+
+def main():
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+    n = creneau()
+    g = os.environ.get("GOUV") or ORDRE[n % len(ORDRE)]
+    lieux = objet_js(lire(f"{SITE}/donnees/lieux.js"))
+    if g not in lieux["g"]:
+        sys.exit("gouvernorat inconnu : " + g)
+    c = chiffres(g, lieux)
+    if c["total"] < 5:
+        print(f"{g} : seulement {c['total']} annonces, pas de vidéo aujourd'hui"); return
+    pal, pol, mise = PALETTES[n % len(PALETTES)], POLICES[n % len(POLICES)], MISES_EN_PAGE[n % len(MISES_EN_PAGE)]
+    print(f"créneau {n} — {g} — {c['total']} annonces (+{c['nouvelles']}), m² {c['m2']}, S+2 {c['s2']}, {len(c['annonces'])} bonne(s) affaire(s)"
+          f" — couleurs {n % len(PALETTES)}, police {pol[0]}/{pol[1]}, mise en page {mise}")
+    dossier = SORTIE / f"{c['maj']}-{g}"
+    if dossier.exists():
+        shutil.rmtree(dossier)
+    dossier.mkdir(parents=True)
+    style, S = css(pal, pol, mise), scenes(g, lieux, c, n)
+    fichiers = []
+    for i, (_, corps) in enumerate(S):
+        f = dossier / f"scene{i}.html"
+        f.write_text(page(corps, style), encoding="utf-8", newline="\n")
+        fichiers.append(f)
+    images = photographier(fichiers)
+    video = dossier / f"reel-{g}.mp4"
+    duree = monter(images, [d for d, _ in S], n, video)
+    texte = legende(g, lieux, c, n)
+    (dossier / "legende.txt").write_text(texte, encoding="utf-8", newline="\n")
+    print(f"vidéo : {video} ({duree:.1f} s, {video.stat().st_size // 1024} Ko)\n---\n{texte}\n---")
+    if os.environ.get("ESSAI") == "1":
+        print("ESSAI : rien n'est publié."); return
+    publier(video, texte, f"📍 {g} {c['maj']}")
+
+
+if __name__ == "__main__":
+    main()

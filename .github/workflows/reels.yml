@@ -1,0 +1,55 @@
+# Robot « Reels Instagram » de l'Immobilier (demande d'Ahmed du 28/10/2026) : DEUX courtes vidéos par jour, un gouvernorat chacune,
+# à tour de rôle (les 24 en 12 jours), couleurs / mise en page / accroche différentes à chaque fois. Code : tools/reels.py.
+# Publie sur le compte Instagram professionnel relié à la page Facebook Clicvia. Secrets : FB_PAGE_ID, FB_PAGE_TOKEN (le même que le
+# robot facebook, avec en plus les autorisations instagram_basic et instagram_content_publish), IG_USER_ID facultatif.
+# Chaque passage garde la vidéo 7 jours dans « Artifacts » (en bas de la page du passage), même en essai.
+# Horaires COUPÉS tant qu'Ahmed n'a pas relié Instagram (GERER SANS CLAUDE/portail) : à rétablir ensuite (enlever les # ci-dessous).
+name: reels
+on:
+  # schedule:
+  #   - cron: "20 7 * * *"    # 8h20 à Tunis
+  #   - cron: "20 17 * * *"   # 18h20 à Tunis
+  workflow_dispatch:
+    inputs:
+      gouv:
+        description: "Gouvernorat (vide = celui du créneau) : tunis, sousse, sfax, nabeul…"
+        default: ""
+      creneau:
+        description: "0 = vidéo du matin, 1 = vidéo du soir"
+        default: "0"
+      essai:
+        description: "1 = fabriquer la vidéo sans la publier (elle est dans Artifacts)"
+        default: "1"
+permissions:
+  contents: read
+concurrency:
+  group: reels
+  cancel-in-progress: false
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Outils (ffmpeg, polices arabes de secours)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-core > /dev/null
+      - name: Fabriquer (et publier) la vidéo
+        run: python tools/reels.py
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          GOUV: ${{ github.event.inputs.gouv }}
+          ESSAI: ${{ github.event.inputs.essai || '0' }}
+          CRENEAU: ${{ github.event.inputs.creneau || (github.event.schedule == '20 17 * * *' && '1') || '0' }}
+      - name: Garder la vidéo 7 jours (Artifacts)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reel
+          path: reels-sortie/**/reel-*.mp4
+          retention-days: 7
+          if-no-files-found: ignore
