@@ -39,7 +39,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Outils (ffmpeg, polices arabes de secours)
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-core > /dev/null
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-core > /dev/null && pip install -q pillow
       - name: Fabriquer (et publier) la vidéo
         run: python tools/reels.py
         env:
