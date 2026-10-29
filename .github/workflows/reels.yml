@@ -1,6 +1,7 @@
 # Robot « Reels Instagram » de l'Immobilier (demande d'Ahmed du 28/10/2026) : DEUX courtes vidéos par jour, un gouvernorat chacune,
 # à tour de rôle (les 24 en 12 jours), couleurs / mise en page / accroche différentes à chaque fois. Code : tools/reels.py.
-# Publie sur le compte Instagram professionnel relié à la page Facebook Clicvia. Secrets : FB_PAGE_ID, FB_PAGE_TOKEN (le même que le
+# Publie sur le compte Instagram professionnel relié à la page Facebook Clicvia ET en Reel sur la page Facebook (lien cliquable),
+# puis refait la page des liens de la bio https://clicvia.com/instagram/ (règle commune § 48 : un Reel Instagram n'a aucun lien cliquable). Secrets : FB_PAGE_ID, FB_PAGE_TOKEN (le même que le
 # robot facebook, avec en plus les autorisations instagram_basic et instagram_content_publish), IG_USER_ID facultatif.
 # Chaque passage garde la vidéo 7 jours dans « Artifacts » (en bas de la page du passage), même en essai.
 # Compte Instagram immobilier.clicvia relié à la page Clicvia le 28/10/2026 ; 1re vidéo publiée le 28/10 (Sousse) ; horaires en marche.
@@ -21,7 +22,7 @@ on:
         description: "1 = fabriquer la vidéo sans la publier (elle est dans Artifacts)"
         default: "1"
 permissions:
-  contents: read
+  contents: write     # page des liens de la bio (instagram/index.html) + donnees/reels.json, règle commune § 48
 concurrency:
   group: reels
   cancel-in-progress: false
@@ -45,6 +46,16 @@ jobs:
           GOUV: ${{ github.event.inputs.gouv }}
           ESSAI: ${{ github.event.inputs.essai || '0' }}
           CRENEAU: ${{ github.event.inputs.creneau || (github.event.schedule == '20 17 * * *' && '1') || '0' }}
+      - name: Enregistrer la page des liens de la bio (clicvia.com/instagram/)
+        if: always() && github.event.inputs.essai != '1'
+        run: |
+          git config user.name "robot-reels"
+          git config user.email "robot-reels@users.noreply.github.com"
+          git add instagram/index.html donnees/reels.json 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git commit -qm "Reels : vidéo du $(date +%d/%m/%Y), page des liens de la bio"
+          for essai in 1 2 3 4; do git pull --rebase --autostash -q && git push -q && exit 0; sleep $((essai * 5)); done
+          echo "ÉCHEC : page des liens non enregistrée (le lien de la bio ne montre pas la dernière vidéo)"; exit 1
       - name: Garder la vidéo 7 jours (Artifacts)
         if: always()
         uses: actions/upload-artifact@v4

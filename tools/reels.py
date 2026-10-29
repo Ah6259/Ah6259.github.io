@@ -14,6 +14,12 @@ source, aucun numéro de téléphone, aucune image générée ni voix ; musique 
 Images dessinées par Chrome sans écran (français + arabe bien formés), vidéo montée par ffmpeg, publiée sur le compte Instagram
 relié à la page Facebook Clicvia (API Instagram, envoi « resumable » : aucun fichier à héberger).
 
+RÈGLE GÉNÉRALE du lien (Ahmed, 29/10/2026 : « celui qui regarde la vidéo doit pouvoir cliquer », règle commune § 48) : Instagram ne
+rend AUCUN lien cliquable dans un Reel (ni vidéo, ni légende, ni commentaire). Donc chaque vidéo : (1) renvoie au « lien dans la bio »,
+qui est https://clicvia.com/instagram/ : page de liens cliquables refaite à CHAQUE vidéo (gros bouton du gouvernorat de la vidéo en haut,
+puis les autres), fichiers instagram/index.html + donnees/reels.json du portail ; (2) est publiée AUSSI en Reel sur la page Facebook
+Clicvia, avec le lien du gouvernorat dans le texte (cliquable sur Facebook).
+
 Secrets du dépôt : FB_PAGE_ID + FB_PAGE_TOKEN (les mêmes que le robot facebook ; le jeton doit avoir en plus les autorisations
 instagram_basic et instagram_content_publish). Facultatif : IG_USER_ID (sinon lu sur la page Facebook).
 Sans secrets ou avec ESSAI=1 : la vidéo est fabriquée (reels-sortie/) mais rien n'est publié.
@@ -265,10 +271,66 @@ def legende(g, lieux, c, n):
     if c["s2"]:
         l.append(f"• Location S+2 : ≈ {milliers(c['s2'])} DT par mois (loyer médian)")
     l += ["", f"🏠 {acc_ar.format(g=nar)}", f"{milliers(c['total'])} إعلان بيع وكراء في {nar}، مع رأي الذكاء الاصطناعي في كل عقار.", "",
-          f"👉 immobilier.clicvia.com/{g} (lien dans la bio · الرابط في البروفايل)", "",
+          f"👉 Lien cliquable dans la bio : bouton « {nfr} » · الرابط في البروفايل", "",
           f"#Immobilier #Tunisie #{re.sub(r'[^A-Za-z]', '', nfr)} #عقارات #عقارات_{nar.replace(' ', '_')} #تونس #appartement #location",
           f"📍 {g} {c['maj']}"]          # repère : jamais deux fois la même vidéo le même jour
     return "\n".join(l)
+
+
+# ---------------------------------------------------------------- page de liens de la bio (règle § 48)
+RACINE = ICI.parent
+HISTO = RACINE / "donnees" / "reels.json"
+
+
+def lire_histo():
+    try:
+        return json.loads(HISTO.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+
+
+def ecrire_histo(h):
+    HISTO.parent.mkdir(exist_ok=True)
+    HISTO.write_text(json.dumps(h[:60], ensure_ascii=False, indent=0) + "\n", encoding="utf-8", newline="\n")
+
+
+def page_liens(lieux):
+    """clicvia.com/instagram/ : le lien de la bio. Vidéos récentes en haut (gros boutons), puis les 24 gouvernorats."""
+    E = html.escape
+    rec, vus = [], set()
+    for x in lire_histo():
+        if x["g"] not in vus:
+            vus.add(x["g"]); rec.append(x)
+        if len(rec) == 4:
+            break
+
+    def bouton(g, gros):
+        return (f'<a class="{"gros" if gros else "g"}" href="{SITE}/{g}/"><span>{E(lieux["g"][g][0])}</span>'
+                f'<span class="ar">{E(lieux["g"][g][1])}</span></a>')
+    haut = "".join(f'<div class="video"><p class="date">Vidéo du {dt.date.fromisoformat(x["date"]).strftime("%d/%m")} · فيديو</p>'
+                   f'{bouton(x["g"], True)}</div>' for x in rec)
+    tous = "".join(bouton(g, False) for g in sorted(lieux["g"], key=lambda g: lieux["g"][g][0]))
+    corps = f"""<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clicvia Immobilier — liens des vidéos</title><meta name="robots" content="noindex,follow">
+<meta name="description" content="Les annonces immobilières de chaque gouvernorat de Tunisie, gratuites : liens des vidéos Instagram de Clicvia Immobilier.">
+<link rel="icon" href="/favicon.ico">
+<style>*{{box-sizing:border-box;margin:0}}body{{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:#f4f6fb;color:#16213a;
+padding:22px 16px 40px;max-width:560px;margin:0 auto}}h1{{font-size:24px;text-align:center}}.sous{{text-align:center;color:#55607a;margin:6px 0 20px}}
+.ar{{direction:rtl;font-family:Tahoma,"Segoe UI",sans-serif}}a{{text-decoration:none}}.video{{margin-bottom:14px}}
+.date{{font-size:13px;color:#55607a;margin:0 0 6px 4px}}
+.gros{{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#1d3a6e;color:#fff;border-radius:16px;padding:20px 22px;
+font-size:22px;font-weight:700}}h2{{font-size:17px;margin:26px 0 10px}}.grille{{display:grid;grid-template-columns:1fr 1fr;gap:8px}}
+.g{{display:flex;flex-direction:column;background:#fff;border:1px solid #d9dfeb;border-radius:12px;padding:12px;color:#16213a;font-weight:600}}
+.g .ar{{font-weight:400;color:#55607a}}.pied{{text-align:center;margin-top:26px;font-size:14px}}.pied a{{color:#1d3a6e}}</style>
+<script data-goatcounter="https://prix-eaux-tunisie.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script></head><body>
+<h1>Clicvia Immobilier</h1><p class="sous">Touchez le gouvernorat de la vidéo · <span class="ar">اختر ولاية الفيديو</span></p>
+{haut or bouton("tunis", True)}
+<h2>Tous les gouvernorats · <span class="ar">كل الولايات</span></h2><div class="grille">{tous}</div>
+<p class="pied"><a href="{SITE}/alertes/">Alertes gratuites · تنبيهات مجانية</a> · <a href="https://clicvia.com/">clicvia.com</a></p>
+</body></html>
+"""
+    (RACINE / "instagram").mkdir(exist_ok=True)
+    (RACINE / "instagram" / "index.html").write_text(corps, encoding="utf-8", newline="\n")
 
 
 # ---------------------------------------------------------------- publication (API Instagram)
@@ -299,7 +361,7 @@ def publier(video, texte, repere):
         sys.exit("ÉCHEC : aucun compte Instagram professionnel relié à la page Facebook Clicvia (voir GERER SANS CLAUDE).")
     recents = api("GET", f"{ig}/media?fields=caption&limit=12", jeton).get("data") or []
     if any(repere in (m.get("caption") or "") for m in recents):
-        print("déjà publiée sur Instagram (relance tardive de GitHub) : rien à faire"); return
+        print("déjà publiée sur Instagram (relance tardive de GitHub) : rien à faire"); return None
     cont = api("POST", f"{ig}/media", jeton, {"media_type": "REELS", "upload_type": "resumable", "caption": texte, "share_to_feed": "true"})
     taille = video.stat().st_size
     req = urllib.request.Request(cont["uri"], data=video.read_bytes(), method="POST",
@@ -320,6 +382,26 @@ def publier(video, texte, repere):
     pub = api("POST", f"{ig}/media_publish", jeton, {"creation_id": cont["id"]})
     lien = api("GET", f"{pub['id']}?fields=permalink", jeton).get("permalink", pub["id"])
     print("Publié : " + lien)
+    return lien
+
+
+def publier_facebook(video, texte):
+    """Même vidéo en Reel sur la page Facebook Clicvia : là, le lien du texte est cliquable (règle § 48)."""
+    page, jeton = os.environ.get("FB_PAGE_ID"), os.environ.get("FB_PAGE_TOKEN")
+    debut = api("POST", f"{page}/video_reels", jeton, {"upload_phase": "start"})
+    req = urllib.request.Request(debut["upload_url"], data=video.read_bytes(), method="POST",
+                                 headers={"Authorization": "OAuth " + jeton, "offset": "0", "file_size": str(video.stat().st_size)})
+    try:
+        urllib.request.urlopen(req, timeout=300).read()
+    except urllib.error.HTTPError as e:
+        sys.exit(f"ÉCHEC : envoi de la vidéo à Facebook refusé ({e.code})")
+    fin = api("POST", f"{page}/video_reels", jeton, {"upload_phase": "finish", "video_id": debut["video_id"],
+                                                    "video_state": "PUBLISHED", "description": texte})
+    if not fin.get("success"):
+        sys.exit("ÉCHEC : Facebook n'a pas publié le Reel — " + json.dumps(fin)[:200])
+    lien = f"https://www.facebook.com/reel/{debut['video_id']}"
+    print("Publié sur Facebook : " + lien)
+    return lien
 
 
 def main():
@@ -354,9 +436,22 @@ def main():
     texte = legende(g, lieux, c, n)
     (dossier / "legende.txt").write_text(texte, encoding="utf-8", newline="\n")
     print(f"vidéo : {video} ({duree:.1f} s, {video.stat().st_size // 1024} Ko)\n---\n{texte}\n---")
+    nfr, nar = lieux["g"][g]
+    texte_fb = texte.replace(f"👉 Lien cliquable dans la bio : bouton « {nfr} » · الرابط في البروفايل",
+                             f"👉 Les annonces de {nfr} · إعلانات {nar} : {SITE}/{g}/")
     if os.environ.get("ESSAI") == "1":
-        print("ESSAI : rien n'est publié."); return
-    publier(video, texte, f"📍 {g} {c['maj']}")
+        page_liens(lieux)
+        print("ESSAI : rien n'est publié (page des liens refaite sur place, non envoyée).\n--- texte Facebook ---\n" + texte_fb)
+        return
+    lien_ig = publier(video, texte, f"📍 {g} {c['maj']}")
+    if lien_ig is None:                          # déjà publiée (relance tardive) : rien d'autre à faire
+        return
+    h = lire_histo()
+    h.insert(0, {"g": g, "date": c["maj"], "ig": lien_ig, "fb": ""})
+    ecrire_histo(h)
+    page_liens(lieux)                            # le lien de la bio montre tout de suite le gouvernorat de cette vidéo
+    h[0]["fb"] = publier_facebook(video, texte_fb)
+    ecrire_histo(h)
 
 
 if __name__ == "__main__":
