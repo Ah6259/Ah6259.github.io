@@ -412,11 +412,32 @@ def publier_facebook(video, texte):
     return lien
 
 
+def verifier_jeton():
+    """29/10/2026 : le jeton collé le 28/10 n'était valable qu'UNE HEURE (étape « Étendre » manquée) : les robots Facebook et
+    Instagram sont tombés en panne le soir même. Ce contrôle (VERIFIER=1, et avant chaque vidéo) lit la durée du jeton sans rien
+    publier : un jeton de page durable n'expire jamais (expires_at = 0) ; sinon le robot s'arrête en rouge avec la date d'expiration."""
+    page, jeton = os.environ.get("FB_PAGE_ID"), os.environ.get("FB_PAGE_TOKEN")
+    if not page or not jeton:
+        sys.exit("ÉCHEC : secrets FB_PAGE_ID / FB_PAGE_TOKEN absents du dépôt.")
+    d = api("GET", "debug_token?input_token=" + urllib.parse.quote(jeton), jeton).get("data") or {}
+    fin, valide, droits = d.get("expires_at"), d.get("is_valid"), d.get("scopes") or []
+    ig = (api("GET", f"{page}?fields=name,instagram_business_account{{username}}", jeton) if valide else {})
+    print(f"jeton : {'valide' if valide else 'NON VALIDE'} ; type {d.get('type')} ; "
+          f"expiration : {'jamais' if fin == 0 else dt.datetime.fromtimestamp(fin, dt.timezone.utc).strftime('%d/%m/%Y %H:%M UTC') if fin else '?'} ; "
+          f"page : {ig.get('name', '?')} ; Instagram : @{(ig.get('instagram_business_account') or {}).get('username', '?')}")
+    manque = [x for x in ("pages_manage_posts", "instagram_basic", "instagram_content_publish") if x not in droits]
+    if not valide or fin not in (0, None) or manque:
+        sys.exit("ÉCHEC : jeton à refaire (GERER SANS CLAUDE/portail et facebook.md : jeton DURABLE, « Étendre le token d'accès »)"
+                 + (f" ; autorisations manquantes : {', '.join(manque)}" if manque else "") + (" ; il EXPIRE" if fin else ""))
+
+
 def main():
     try:
         sys.stdout.reconfigure(encoding="utf-8")
     except Exception:
         pass
+    if os.environ.get("VERIFIER") == "1":
+        verifier_jeton(); return
     n = creneau()
     g = os.environ.get("GOUV") or ORDRE[n % len(ORDRE)]
     lieux = objet_js(lire(f"{SITE}/donnees/lieux.js"))
@@ -451,6 +472,7 @@ def main():
         page_liens(lieux)
         print("ESSAI : rien n'est publié (page des liens refaite sur place, non envoyée).\n--- texte Facebook ---\n" + texte_fb)
         return
+    verifier_jeton()
     lien_ig = publier(video, texte, f"📍 {g} {c['maj']}")
     if lien_ig is None:                          # déjà publiée (relance tardive) : rien d'autre à faire
         return

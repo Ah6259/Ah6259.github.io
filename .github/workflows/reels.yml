@@ -21,6 +21,9 @@ on:
       essai:
         description: "1 = fabriquer la vidéo sans la publier (elle est dans Artifacts)"
         default: "1"
+      verifier:
+        description: "1 = seulement vérifier le jeton (valide, durable, autorisations), sans vidéo"
+        default: "0"
 permissions:
   contents: write     # page des liens de la bio (instagram/index.html) + donnees/reels.json, règle commune § 48
 concurrency:
@@ -44,6 +47,7 @@ jobs:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           GOUV: ${{ github.event.inputs.gouv }}
+          VERIFIER: ${{ github.event.inputs.verifier || '0' }}
           ESSAI: ${{ github.event.inputs.essai || '0' }}
           CRENEAU: ${{ github.event.inputs.creneau || (github.event.schedule == '20 17 * * *' && '1') || '0' }}
       - name: Enregistrer la page des liens de la bio (clicvia.com/instagram/)
