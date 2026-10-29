@@ -179,8 +179,11 @@ body{{background:{fonds[mise]};color:{txt};font-family:'{lat}',sans-serif;{cadre
 .marque{{position:absolute;top:84px;left:0;right:0;text-align:center;font-size:38px;font-weight:700;opacity:.85}}
 .note{{font-size:34px;opacity:.75}}
 .fond{{position:absolute;inset:0;background-size:cover;background-position:center;z-index:-2}}.voile{{position:absolute;inset:0;z-index:-1}}
+.panneau{{background:{f1}f2;color:{txt};border-radius:40px;padding:46px;display:flex;flex-direction:column;gap:26px;
+  box-shadow:0 20px 60px #0009}}.panneau .carte{{background:transparent;padding:0;box-shadow:none}}
 .flou{{position:absolute;inset:0;z-index:-1;backdrop-filter:blur(14px) brightness(.55)}}
-.sur-photo{{color:#fff;text-shadow:0 2px 18px #000a;display:flex;flex-direction:column;gap:44px}}.sur-photo .acc{{color:{acc}}}
+.sur-photo{{color:#fff;text-shadow:0 2px 18px #000c;display:flex;flex-direction:column;gap:44px}}
+.sur-photo .acc,.sur-photo .chiffre{{color:#FFD166}}.sur-photo .pastille{{background:#FFD166;color:#1b1b1b;text-shadow:none}}
 .titre-haut{{position:absolute;top:150px;left:0;right:0;text-align:center;padding:0 60px}}
 .bulle{{position:absolute;transform:translate(-50%,-50%);background:{f1};color:{txt};border:5px solid {acc};border-radius:28px;
   padding:14px 22px;text-align:center;box-shadow:0 10px 30px #0006;white-space:nowrap}}.bulle b{{display:block;font-size:34px}}
@@ -303,7 +306,10 @@ def scenes(g, lieux, c, n, fmt="fiches", dossier=None, pal=None):
     nfr, nar = lieux["g"][g]
     E = html.escape
     acc = ACCROCHES_FORMAT.get(fmt)
-    acc_fr, acc_ar = acc[n % len(acc)] if acc else ACCROCHES[n % len(ACCROCHES)]
+    # l'accroche doit dire ce que montre la vidéo : sans bonne affaire repérée, pas d'accroche « bonnes affaires » ni « notre IA »
+    possibles = ACCROCHES if c["annonces"] else [a for a in ACCROCHES if not re.search(r"affaires|IA ", a[0])]
+    acc_fr, acc_ar = acc[n % len(acc)] if acc else possibles[n % len(possibles)]
+    c["accroche"] = (acc_fr, acc_ar)            # la légende reprend la MÊME accroche que la vidéo
     fin_fr, fin_ar = FINS[n % len(FINS)]
     jour = dt.date.fromisoformat(c["maj"]).strftime("%d/%m/%Y") if c["maj"] else ""
     f1 = (pal or PALETTES[0])[0]
@@ -375,7 +381,7 @@ def scenes(g, lieux, c, n, fmt="fiches", dossier=None, pal=None):
         S = [(3.2, decor + clair + titre + '</div>' + cr),
              (3.2, decor + clair + f'<div class="petit">{E(nfr)} · {E(nar)}</div><div class="chiffre">{milliers(c["total"])}</div>'
                    f'<div class="moyen">annonces à vendre et à louer</div><div class="ar moyen">إعلان بيع وكراء</div></div>' + cr)]
-        S += [(d, decor + '<div class="flou"></div>' + h) for d, h in bonnes] + [(3.6, decor + clair + fin[1] + '</div>' + cr)]
+        S += [(d, decor + '<div class="flou"></div><div class="panneau">' + h + '</div>') for d, h in bonnes] + [(3.6, decor + clair + fin[1] + '</div>' + cr)]
         c["credit_photo"] = credit
     else:                                        # fiches (le format d'origine), ordre des scènes qui tourne
         S = scenes_fiches(g, lieux, c, n)
@@ -399,7 +405,7 @@ def scene_annonce(a, lieux):
 
 def scenes_fiches(g, lieux, c, n):
     nfr, nar = lieux["g"][g]
-    acc_fr, acc_ar = ACCROCHES[n % len(ACCROCHES)]
+    acc_fr, acc_ar = c.get("accroche") or ACCROCHES[n % len(ACCROCHES)]
     fin_fr, fin_ar = FINS[n % len(FINS)]
     jour = dt.date.fromisoformat(c["maj"]).strftime("%d/%m/%Y") if c["maj"] else ""
     E = html.escape
@@ -490,7 +496,7 @@ def monter(images, durees, n, sortie):
 
 def legende(g, lieux, c, n):
     nfr, nar = lieux["g"][g]
-    acc_fr, acc_ar = ACCROCHES[n % len(ACCROCHES)]
+    acc_fr, acc_ar = c.get("accroche") or ACCROCHES[n % len(ACCROCHES)]
     l = [f"🏠 {acc_fr.format(g=nfr)}", f"{milliers(c['total'])} annonces de vente et de location à {nfr}, avec l'avis de notre IA sur chaque bien."]
     if c["m2"]:
         l.append(f"• Appartement à vendre : ≈ {milliers(c['m2'])} DT le m² (prix médian)")
