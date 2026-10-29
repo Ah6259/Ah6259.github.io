@@ -130,7 +130,16 @@ def chiffres(g, lieux):
         vus.add(cle); choix.append(a)
         if len(choix) == 2:
             break
-    return {"total": len(A), "nouvelles": sum(1 for a in A if a.get("d") == maj), "maj": maj,
+    par_q = {}
+    for a in A:
+        if a.get("t") == "v" and a.get("y") == "appartement" and a.get("p") and (a.get("s") or 0) >= 30 and 300 <= a["p"] / a["s"] <= 15000 \
+                and a.get("l") and f"{g}/{a['l']}" in lieux.get("pq", {}):
+            par_q.setdefault(a["l"], []).append(a["p"] / a["s"])
+    quartiers = sorted(({"l": l, "nom": lieux["l"].get(f"{g}/{l}") or [l, ""], "pos": lieux["pq"][f"{g}/{l}"],
+                         "m2": statistics.median(v), "n": len(v)} for l, v in par_q.items() if len(v) >= 4), key=lambda q: -q["m2"])
+    nv = sum(1 for a in A if a.get("t") == "v")
+    return {"total": len(A), "nouvelles": sum(1 for a in A if a.get("d") == maj), "maj": maj, "quartiers": quartiers,
+            "vente": nv, "location": len(A) - nv,
             "m2": statistics.median(m2) if len(m2) >= 5 else None, "n_m2": len(m2),
             "s2": statistics.median(s2) if len(s2) >= 5 else None, "n_s2": len(s2),
             "annonces": [dict(a, lieu=nom_lieu(a)) for a in choix]}
@@ -168,7 +177,31 @@ body{{background:{fonds[mise]};color:{txt};font-family:'{lat}',sans-serif;{cadre
 .ligne{{display:flex;justify-content:{'flex-start' if aligne == 'left' else 'center'};gap:28px;flex-wrap:wrap;font-size:46px;font-weight:700}}
 .pastille{{display:inline-block;background:{acc};color:{f1};border-radius:999px;padding:14px 38px;font-size:44px;font-weight:900}}
 .marque{{position:absolute;top:84px;left:0;right:0;text-align:center;font-size:38px;font-weight:700;opacity:.85}}
-.note{{font-size:34px;opacity:.75}}"""
+.note{{font-size:34px;opacity:.75}}
+.fond{{position:absolute;inset:0;background-size:cover;background-position:center;z-index:-2}}.voile{{position:absolute;inset:0;z-index:-1}}
+.flou{{position:absolute;inset:0;z-index:-1;backdrop-filter:blur(14px) brightness(.55)}}
+.sur-photo{{color:#fff;text-shadow:0 2px 18px #000a;display:flex;flex-direction:column;gap:44px}}.sur-photo .acc{{color:{acc}}}
+.titre-haut{{position:absolute;top:150px;left:0;right:0;text-align:center;padding:0 60px}}
+.bulle{{position:absolute;transform:translate(-50%,-50%);background:{f1};color:{txt};border:5px solid {acc};border-radius:28px;
+  padding:14px 22px;text-align:center;box-shadow:0 10px 30px #0006;white-space:nowrap}}.bulle b{{display:block;font-size:34px}}
+.bulle span{{font-size:40px;font-weight:900;color:{acc}}}
+.filigrane{{position:absolute;z-index:-1;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);font-size:300px;
+  font-weight:900;color:{acc};opacity:.10;white-space:nowrap;line-height:1}}
+.epingle{{position:absolute;width:64px;height:64px;transform:translate(-50%,-100%) rotate(-45deg);background:{acc};
+  border:6px solid {txt};border-radius:50% 50% 50% 0;box-shadow:0 8px 24px #0008}}
+.bas-carte{{position:absolute;left:60px;right:60px;bottom:280px;display:flex;flex-direction:column;gap:22px;background:{f1}f2;
+  border-radius:36px;padding:40px;box-shadow:0 18px 50px #0007}}.bas-carte .carte{{background:transparent;padding:0;box-shadow:none;border:0}}
+.bas-carte .chiffre{{font-size:96px!important}}.bas-carte .note{{display:none}}.bas-carte .moyen{{font-size:50px}}
+.bas-carte .petit{{font-size:30px}}.haut-carte{{bottom:auto;top:150px}}.fin-carte{{bottom:auto;top:620px;text-align:center;align-items:center}}
+.osm{{position:absolute;bottom:250px;left:0;right:0;text-align:center;font-size:24px;opacity:.85;text-shadow:0 1px 6px #000}}
+.barre{{text-align:left;margin:6px 0}}.barre-nom{{font-size:38px;font-weight:700;margin-bottom:8px}}
+.barre-piste{{background:{carte};border-radius:18px;height:78px}}
+.barre-plein{{height:78px;border-radius:18px;background:{acc};color:{f1};font-size:38px;font-weight:900;display:flex;align-items:center;
+  justify-content:flex-end;padding:0 22px;white-space:nowrap}}
+.duel{{display:flex;flex-direction:column;gap:0;margin:0 -90px}}.duel-moitie{{padding:70px 90px;display:flex;flex-direction:column;gap:18px}}
+.duel-b{{background:{acc};color:{f1}}}.duel-b .chiffre{{color:{f1}}}
+.duel-vs{{align-self:center;margin:-62px 0;z-index:2;background:{txt};color:{f1};font-size:56px;font-weight:900;border-radius:50%;
+  width:124px;height:124px;display:flex;align-items:center;justify-content:center}}"""
 
 
 def page(corps, style):
@@ -176,7 +209,195 @@ def page(corps, style):
            f'<div class="marque">immobilier.clicvia.com</div></body></html>'
 
 
-def scenes(g, lieux, c, n):
+# ---------------------------------------------------------------- formats (règle § 49, Ahmed 29/10/2026 : « le fond est le même, tu ne
+# fais que changer de couleur ; les visiteurs sont intelligents ; nouveau fond et nouveau design pour donner envie ; je veux de la créativité »)
+# Chaque format a SON fond et SA composition : vraie carte OpenStreetMap avec les prix des quartiers, classement en barres, duel
+# acheter/louer, vraie photo de la ville (Wikimedia Commons, licence libre, crédit dans la légende), fiches d'annonces.
+FORMATS = ["carte", "classement", "photo", "duel", "fiches"]
+ACCROCHES_FORMAT = {
+    "carte": [("{g} : le prix du m², quartier par quartier", "{g}: سعر المتر، حي بحي"), ("Où acheter à {g} ? La carte des prix", "وين تشري في {g}؟ خريطة الأسعار")],
+    "classement": [("Les quartiers les plus chers de {g}", "أغلى أحياء {g}"), ("{g} : du plus cher au plus abordable", "{g}: من الأغلى إلى الأرخص")],
+    "duel": [("{g} : acheter ou louer ?", "{g}: تشري ولا تكري؟"), ("Achat contre location à {g}", "الشراء أو الكراء في {g}")],
+}
+PHOTOS = ICI / "reels" / "photos.json"
+
+
+def photos_de(g):
+    try:
+        return json.loads(PHOTOS.read_text(encoding="utf-8")).get(g) or []
+    except (OSError, ValueError):
+        return []
+
+
+def formats_possibles(g, c):
+    f = ["duel", "fiches"]
+    if len(c["quartiers"]) >= 5:
+        f += ["carte", "classement"]
+    if photos_de(g):
+        f.append("photo")
+    return [x for x in FORMATS if x in f]
+
+
+def choisir_format(n, g, c, histo):
+    ok, recents = formats_possibles(g, c), [x.get("format") for x in histo[:2]]
+    for k in range(len(FORMATS)):
+        f = FORMATS[(n + k) % len(FORMATS)]
+        if f in ok and f not in recents:
+            return f
+    return next(f for f in ok)
+
+
+def tuile(z, x, y, cache):
+    f = cache / f"{z}-{x}-{y}.png"
+    if not f.exists():
+        req = urllib.request.Request(f"https://tile.openstreetmap.org/{z}/{x}/{y}.png", headers=UA)
+        with urllib.request.urlopen(req, timeout=60) as r:
+            f.write_bytes(r.read())
+        time.sleep(0.3)                          # politesse envers les serveurs d'OpenStreetMap (peu de tuiles, 2 vidéos par jour)
+    return f
+
+
+def fond_carte(points, dossier):
+    """Vraie carte OpenStreetMap (© contributeurs OpenStreetMap, citée dans la vidéo et la légende) centrée sur les quartiers ;
+    renvoie le fichier et la position (x, y) de chaque point sur l'image 1080 x 1920."""
+    import math
+    from PIL import Image
+    px = lambda lat, lon, z: ((lon + 180) / 360 * 256 * 2 ** z,
+                              (1 - math.log(math.tan(math.radians(lat)) + 1 / math.cos(math.radians(lat))) / math.pi) / 2 * 256 * 2 ** z)
+    lats, lons = [p[0] for p in points], [p[1] for p in points]
+    z = 15
+    while z > 8:
+        (x1, y1), (x2, y2) = px(max(lats), min(lons), z), px(min(lats), max(lons), z)
+        if x2 - x1 <= 820 and y2 - y1 <= 1050:
+            break
+        z -= 1
+    (x1, y1), (x2, y2) = px(max(lats), min(lons), z), px(min(lats), max(lons), z)
+    cx, cy = (x1 + x2) / 2, (y1 + y2) / 2 + 60
+    gx, gy = cx - W / 2, cy - H / 2
+    cache = SORTIE / "tuiles"; cache.mkdir(parents=True, exist_ok=True)
+    img = Image.new("RGB", (W, H), "#dddddd")
+    for tx in range(int(gx // 256), int((gx + W) // 256) + 1):
+        for ty in range(int(gy // 256), int((gy + H) // 256) + 1):
+            img.paste(Image.open(tuile(z, tx, ty, cache)).convert("RGB"), (int(tx * 256 - gx), int(ty * 256 - gy)))
+    f = dossier / "fond-carte.png"; img.save(f)
+    return f, [(px(a, b, z)[0] - gx, px(a, b, z)[1] - gy) for a, b in points]
+
+
+def fond_photo(g, n, dossier):
+    from PIL import Image, ImageOps
+    ph = photos_de(g)
+    if not ph:
+        return None, None
+    choix = ph[n % len(ph)]
+    brut = dossier / "photo-brute.jpg"
+    req = urllib.request.Request(choix["url"], headers=UA)
+    with urllib.request.urlopen(req, timeout=120) as r:
+        brut.write_bytes(r.read())
+    f = dossier / "fond-photo.jpg"
+    ImageOps.fit(Image.open(brut).convert("RGB"), (W, H), centering=(0.5, 0.45)).save(f, quality=90)
+    return f, choix
+
+
+def scenes(g, lieux, c, n, fmt="fiches", dossier=None, pal=None):
+    """Scènes du format choisi. Les fonds (carte, photo) sont des fichiers posés dans le dossier de la vidéo."""
+    nfr, nar = lieux["g"][g]
+    E = html.escape
+    acc = ACCROCHES_FORMAT.get(fmt)
+    acc_fr, acc_ar = acc[n % len(acc)] if acc else ACCROCHES[n % len(ACCROCHES)]
+    fin_fr, fin_ar = FINS[n % len(FINS)]
+    jour = dt.date.fromisoformat(c["maj"]).strftime("%d/%m/%Y") if c["maj"] else ""
+    f1 = (pal or PALETTES[0])[0]
+    fin = (3.6, f'<div class="gros">{E(fin_fr)}</div><div class="ar moyen acc">{E(fin_ar)}</div>'
+                f'<div class="pastille" style="font-size:40px;padding:16px 30px">immobilier.clicvia.com/{E(g)}</div>'
+                f'<div class="moyen">Lien dans la bio · <span class="ar">الرابط في البروفايل</span></div>')
+    titre = (f'<div class="petit">{E(jour)}</div><div class="gros">{E(acc_fr.format(g=nfr))}</div>'
+             f'<div class="ar moyen acc">{E(acc_ar.format(g=nar))}</div>')
+    bonnes = [scene_annonce(a, lieux) for a in c["annonces"]]
+    if fmt == "carte":
+        Q = c["quartiers"]
+        ann_pos = [lieux["pq"].get(f"{g}/{a.get('l')}") for a in c["annonces"]]
+        fond, pos = fond_carte([q["pos"] for q in Q] + [p for p in ann_pos if p], dossier)
+        pos_ann, k = [], len(Q)
+        for p_ in ann_pos:
+            pos_ann.append(pos[k] if p_ else None); k += 1 if p_ else 0
+        pos = pos[:len(Q)]
+        bulles, pris = [], []
+        for q, (x, y) in sorted(zip(Q, pos), key=lambda t: -t[0]["n"]):
+            if not (60 < x < W - 60 and 360 < y < H - 300) or any(abs(x - a) < 300 and abs(y - b) < 120 for a, b in pris):
+                continue
+            pris.append((x, y))
+            bulles.append(f'<div class="bulle" style="left:{x:.0f}px;top:{y:.0f}px"><b>{E(q["nom"][0])}</b>'
+                          f'<span>{milliers(q["m2"])} DT/m²</span></div>')
+            if len(bulles) == 7:
+                break
+        decor = (f'<div class="fond" style="background-image:url(\'{fond.name}\')"></div>'
+                 f'<div class="voile" style="background:linear-gradient(180deg,{f1}ee 0%,{f1}55 22%,{f1}22 50%,{f1}88 85%,{f1}ee 100%)"></div>')
+        S = [(3.0, decor + titre),
+             (4.2, decor + f'<div class="titre-haut"><div class="moyen">Prix du m² · سعر المتر</div><div class="petit">Appartements à vendre, prix médian'
+                           f' · شقق للبيع</div></div>' + "".join(bulles) + '<div class="osm">© contributeurs OpenStreetMap</div>')]
+        # annonces et fin restent SUR la carte (épingle sur le quartier de l'annonce) : toute la vidéo garde son identité
+        for (d, h), pa in zip(bonnes, pos_ann):
+            epingle = (f'<div class="epingle" style="left:{pa[0]:.0f}px;top:{pa[1]:.0f}px"></div>'
+                       if pa and 60 < pa[0] < W - 60 and 200 < pa[1] < H - 200 else "")
+            place = "bas-carte haut-carte" if pa and pa[1] > H * 0.52 else "bas-carte"   # la fiche ne cache jamais l'épingle
+            S.append((d, decor + epingle + f'<div class="{place}">{h}</div>'))
+        S.append((fin[0], decor + f'<div class="bas-carte fin-carte">{fin[1]}</div>'))
+    elif fmt == "classement":
+        Q = c["quartiers"]
+        haut = max(q["m2"] for q in Q)
+
+        def barres(lst):
+            return "".join(f'<div class="barre"><div class="barre-nom">{E(q["nom"][0])} <span class="ar">{E(q["nom"][1])}</span></div>'
+                           f'<div class="barre-piste"><div class="barre-plein" style="width:{max(18, q["m2"] / haut * 100):.0f}%">'
+                           f'{milliers(q["m2"])} DT</div></div></div>' for q in lst)
+        fil = f'<div class="filigrane ar">{E(nar)}</div>'          # grand nom arabe en fond : identité propre du classement
+        S = [(3.0, fil + titre),
+             (4.0, fil + f'<div class="moyen">Les plus chers · <span class="ar">الأغلى</span></div><div class="petit">Prix du m², appartements à vendre</div>'
+                   + barres(Q[:5])),
+             (4.0, fil + f'<div class="moyen">Les plus abordables · <span class="ar">الأرخص</span></div><div class="petit">Prix du m², appartements à vendre</div>'
+                   + barres(Q[-5:][::-1]) + f'<div class="note">D\'après {milliers(sum(q["n"] for q in Q))} annonces · حسب إعلانات الموقع</div>'),
+             fin]
+    elif fmt == "duel":
+        S = [(3.0, titre),
+             (4.2, f'<div class="duel"><div class="duel-moitie"><div class="petit">Acheter · الشراء</div><div class="chiffre">'
+                   f'{milliers(c["m2"]) + " DT" if c["m2"] else milliers(c["vente"])}</div><div class="moyen">'
+                   f'{"le m² (médian)" if c["m2"] else "annonces à vendre"}</div><div class="note">{milliers(c["vente"])} annonces · إعلان</div></div>'
+                   f'<div class="duel-vs">VS</div><div class="duel-moitie duel-b"><div class="petit">Louer · الكراء</div><div class="chiffre">'
+                   f'{milliers(c["s2"]) + " DT" if c["s2"] else milliers(c["location"])}</div><div class="moyen">'
+                   f'{"S+2 par mois (médian)" if c["s2"] else "annonces à louer"}</div><div class="note">{milliers(c["location"])} annonces · إعلان</div></div></div>')]
+        S += bonnes + [fin]
+    elif fmt == "photo":
+        fond, credit = fond_photo(g, n, dossier)
+        decor = (f'<div class="fond" style="background-image:url(\'{fond.name}\')"></div>'
+                 f'<div class="voile" style="background:linear-gradient(180deg,#000a 0%,#0004 35%,#0006 65%,#000c 100%)"></div>')
+        clair = '<div class="sur-photo">'
+        cr = f'<div class="osm">Photo : {E(credit["auteur"])}, {E(credit["licence"])}, Wikimedia Commons</div>'
+        S = [(3.2, decor + clair + titre + '</div>' + cr),
+             (3.2, decor + clair + f'<div class="petit">{E(nfr)} · {E(nar)}</div><div class="chiffre">{milliers(c["total"])}</div>'
+                   f'<div class="moyen">annonces à vendre et à louer</div><div class="ar moyen">إعلان بيع وكراء</div></div>' + cr)]
+        S += [(d, decor + '<div class="flou"></div>' + h) for d, h in bonnes] + [(3.6, decor + clair + fin[1] + '</div>' + cr)]
+        c["credit_photo"] = credit
+    else:                                        # fiches (le format d'origine), ordre des scènes qui tourne
+        S = scenes_fiches(g, lieux, c, n)
+    return S
+
+
+def scene_annonce(a, lieux):
+    E = html.escape
+    typ = lieux["t"].get(a.get("y"), [a.get("y", ""), ""])
+    piece = f'S+{a["c"]}' if a.get("c") and a.get("y") == "appartement" else (f'{a["c"]} chambres' if a.get("c") else "")
+    info = " · ".join(x for x in (piece, f'{milliers(a["s"])} m²' if a.get("s") else "") if x)
+    vl = ("À vendre", "للبيع") if a.get("t") == "v" else ("À louer", "للكراء")
+    prix_txt = f'{milliers(a["p"])} DT' + (" / mois" if a.get("t") == "l" else "")
+    return (3.2, f'<div class="petit">Repéré par notre IA · رصده ذكاؤنا الاصطناعي</div>'
+                 f'<div class="carte"><div class="moyen">{E(typ[0])} {E(vl[0].lower())} · <span class="ar">{E(typ[1])} {E(vl[1])}</span></div>'
+                 f'<div class="moyen acc">{E(a["lieu"][0])}{" · <span class=ar>" + E(a["lieu"][1]) + "</span>" if a["lieu"][1] else ""}</div>'
+                 f'<div class="ligne"><span>{E(info)}</span></div><div class="chiffre" style="font-size:132px">{E(prix_txt)}</div>'
+                 f'<div class="pastille">≈ {a["ix"][1]} % sous les biens semblables</div></div>'
+                 f'<div class="note">Peut-être une bonne affaire : vérifiez l\'état du bien · ربما صفقة جيدة، تثبّت من حالة العقار</div>')
+
+
+def scenes_fiches(g, lieux, c, n):
     nfr, nar = lieux["g"][g]
     acc_fr, acc_ar = ACCROCHES[n % len(ACCROCHES)]
     fin_fr, fin_ar = FINS[n % len(FINS)]
@@ -479,7 +700,9 @@ def main():
     if dossier.exists():
         shutil.rmtree(dossier)
     dossier.mkdir(parents=True)
-    style, S = css(pal, pol, mise), scenes(g, lieux, c, n)
+    fmt = os.environ.get("FORMAT") or choisir_format(n, g, c, histo)
+    print(f"format : {fmt}")
+    style, S = css(pal, pol, mise), scenes(g, lieux, c, n, fmt, dossier, pal)
     fichiers = []
     for i, (_, corps) in enumerate(S):
         f = dossier / f"scene{i}.html"
@@ -489,6 +712,11 @@ def main():
     video = dossier / f"reel-{g}.mp4"
     duree = monter(images, [d for d, _ in S], n, video)
     texte = legende(g, lieux, c, n)
+    if c.get("credit_photo"):                    # licence libre : crédit obligatoire
+        cp = c["credit_photo"]
+        texte = texte.replace("\n#Immobilier", f"\n📷 Photo : {cp['auteur']}, {cp['licence']}, Wikimedia Commons ({cp['page']})\n\n#Immobilier", 1)
+    if fmt == "carte":
+        texte = texte.replace("\n#Immobilier", "\n🗺️ Carte : © contributeurs OpenStreetMap\n\n#Immobilier", 1)
     (dossier / "legende.txt").write_text(texte, encoding="utf-8", newline="\n")
     print(f"vidéo : {video} ({duree:.1f} s, {video.stat().st_size // 1024} Ko)\n---\n{texte}\n---")
     nfr, nar = lieux["g"][g]
@@ -503,7 +731,7 @@ def main():
     if lien_ig is None:                          # déjà publiée (relance tardive) : rien d'autre à faire
         return
     h = lire_histo()
-    h.insert(0, {"g": g, "date": c["maj"], "ig": lien_ig, "fb": "", "style": n})
+    h.insert(0, {"g": g, "date": c["maj"], "ig": lien_ig, "fb": "", "style": n, "format": fmt})
     ecrire_histo(h)
     page_liens(lieux)                            # le lien de la bio montre tout de suite le gouvernorat de cette vidéo
     h[0]["fb"] = publier_facebook(video, texte_fb)
