@@ -311,19 +311,27 @@ def page_liens(lieux):
                    f'{bouton(x["g"], True)}</div>' for x in rec)
     tous = "".join(bouton(g, False) for g in sorted(lieux["g"], key=lambda g: lieux["g"][g][0]))
     corps = f"""<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Clicvia Immobilier — liens des vidéos</title><meta name="robots" content="noindex,follow">
+<title>immobilier.clicvia.com — liens des vidéos</title><meta name="robots" content="noindex,follow">
 <meta name="description" content="Les annonces immobilières de chaque gouvernorat de Tunisie, gratuites : liens des vidéos Instagram de Clicvia Immobilier.">
 <link rel="icon" href="/favicon.ico">
-<style>*{{box-sizing:border-box;margin:0}}body{{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:#f4f6fb;color:#16213a;
-padding:22px 16px 40px;max-width:560px;margin:0 auto}}h1{{font-size:24px;text-align:center}}.sous{{text-align:center;color:#55607a;margin:6px 0 20px}}
-.ar{{direction:rtl;font-family:Tahoma,"Segoe UI",sans-serif}}a{{text-decoration:none}}.video{{margin-bottom:14px}}
-.date{{font-size:13px;color:#55607a;margin:0 0 6px 4px}}
-.gros{{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#1d3a6e;color:#fff;border-radius:16px;padding:20px 22px;
-font-size:22px;font-weight:700}}h2{{font-size:17px;margin:26px 0 10px}}.grille{{display:grid;grid-template-columns:1fr 1fr;gap:8px}}
-.g{{display:flex;flex-direction:column;background:#fff;border:1px solid #d9dfeb;border-radius:12px;padding:12px;color:#16213a;font-weight:600}}
-.g .ar{{font-weight:400;color:#55607a}}.pied{{text-align:center;margin-top:26px;font-size:14px}}.pied a{{color:#1d3a6e}}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Instrument+Sans:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>/* mêmes couleurs et polices que immobilier.clicvia.com (assets/style.css du site, 29/10/2026, demande d'Ahmed) */
+:root{{--terre:#B4532F;--terre-f:#8E3B1F;--sable:#F7F2EA;--carte:#FFFFFF;--encre:#1E2A30;--doux:#5F6B70;--ligne:#E5DACB;--or:#F2B33D;
+--ombre:0 1px 2px rgba(30,42,48,.05),0 6px 18px -10px rgba(30,42,48,.18)}}
+*{{box-sizing:border-box;margin:0}}body{{font-family:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sable);
+color:var(--encre);padding:22px 16px 40px;max-width:560px;margin:0 auto}}
+h1{{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:26px;text-align:center;letter-spacing:-.01em}}h1 a{{color:var(--terre)}}
+.sous{{text-align:center;color:var(--doux);margin:6px 0 20px}}.ar{{direction:rtl;font-family:"IBM Plex Sans Arabic","Noto Sans Arabic",Tahoma,sans-serif}}
+a{{text-decoration:none}}.video{{margin-bottom:14px}}.date{{font-size:13px;color:var(--doux);margin:0 0 6px 4px}}
+.gros{{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--terre);color:#fff;border-radius:18px;padding:20px 22px;
+font-size:22px;font-weight:700;box-shadow:var(--ombre)}}.gros:active{{background:var(--terre-f)}}
+h2{{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:18px;margin:26px 0 10px}}.grille{{display:grid;grid-template-columns:1fr 1fr;gap:8px}}
+.g{{display:flex;flex-direction:column;background:var(--carte);border:1px solid var(--ligne);border-radius:12px;padding:12px;color:var(--encre);
+font-weight:600;box-shadow:var(--ombre)}}.g .ar{{font-weight:400;color:var(--doux)}}.pied{{text-align:center;margin-top:26px;font-size:14px}}
+.pied a{{color:var(--terre)}}</style>
 <script data-goatcounter="https://prix-eaux-tunisie.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script></head><body>
-<h1>Clicvia Immobilier</h1><p class="sous">Touchez le gouvernorat de la vidéo · <span class="ar">اختر ولاية الفيديو</span></p>
+<h1><a href="{SITE}/">immobilier.clicvia.com</a></h1><p class="sous">Touchez le gouvernorat de la vidéo · <span class="ar">اختر ولاية الفيديو</span></p>
 {haut or bouton("tunis", True)}
 <h2>Tous les gouvernorats · <span class="ar">كل الولايات</span></h2><div class="grille">{tous}</div>
 <p class="pied"><a href="{SITE}/alertes/">Alertes gratuites · تنبيهات مجانية</a> · <a href="https://clicvia.com/">clicvia.com</a></p>
