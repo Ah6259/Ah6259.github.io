@@ -43,6 +43,7 @@ check("fabrication : index.html est bien celui de tools/construire.py (gabarit +
     ["bouton « Partager »", /data-partager-video/.test(acc) && /partagerLien/.test(js), { fr: /bouton « Partager »/, ar: /زر «شارك»/, en: /“Share” button/ }],
     ["vidéo de présentation", existsSync(join(root, "video/index.html")) && /lien-video/.test(js), { fr: /vidéo de présentation/, ar: /الفيديو التقديمي/, en: /presentation video/ }],
     ["page Facebook Clicvia (publications automatiques)", /facebook\.com\/1327283777142447/.test(acc) && existsSync(join(root, "tools/facebook.mjs")), { fr: /Facebook[\s\S]*publiées automatiquement/, ar: /فيسبوك[\s\S]*آليًا/, en: /Facebook[\s\S]*posted there automatically/ }],
+    ["compte Instagram de l'Immobilier (vidéos automatiques)", /instagram\.com\/immobilier\.clicvia/.test(acc) && existsSync(join(root, "tools/reels.py")), { fr: /Instagram[\s\S]*vidéos/, ar: /إنستغرام/, en: /Instagram[\s\S]*videos/ }],
     ["données ouvertes (donnees.json)", existsSync(join(root, "donnees.json")), { fr: /donnees\.json/, ar: /donnees\.json/, en: /donnees\.json/ }],
     ["statistiques anonymes sans cookies", /goatcounter/.test(acc), { fr: /anonymes, sans cookies/, ar: /مجهولة الهوية/, en: /anonymous, with no cookies/ }],
     ["moteurs de recherche prévenus (IndexNow)", existsSync(join(root, "tools/indexnow.mjs")), { fr: /moteurs de recherche sont prévenus/, ar: /محركات البحث/, en: /search engines are notified/ }],
@@ -66,5 +67,8 @@ check("pied de page : lien discret « Espace privé » vers /tableau-bord/ (rel=
 // 28/10/2026 (Ahmed) : lien « Statistiques » vers GoatCounter (tableau protégé par connexion), en bas des 3 accueils
 check("pied de page : lien « Statistiques » vers GoatCounter (rel=nofollow) sur les 3 accueils",
   ["index.html", "ar/index.html", "en/index.html"].every(f => /<a class="stats" href="https:\/\/prix-eaux-tunisie\.goatcounter\.com\/" rel="nofollow noopener"/.test(lire(f))));
+// 29/10/2026 (Ahmed) : lien vers le compte Instagram @immobilier.clicvia à côté de Facebook, sur les 3 accueils
+check("pied de page : lien « Instagram » vers @immobilier.clicvia à côté de Facebook, sur les 3 accueils",
+  ["index.html", "ar/index.html", "en/index.html"].every(f => /<a class="ig" href="https:\/\/www\.instagram\.com\/immobilier\.clicvia\/" target="_blank" rel="noopener">/.test(lire(f))));
 console.log(pb ? `\n${pb} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(pb ? 1 : 0);

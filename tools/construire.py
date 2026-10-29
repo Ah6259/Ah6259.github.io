@@ -34,6 +34,8 @@ TEXTES = {
     "partager": {"fr": "Partager", "ar": "شارك", "en": "Share"},
     "partager_aria": {"fr": "Partager ces sites", "ar": "شارك هذه المواقع", "en": "Share these websites"},
     "facebook": {"fr": "Suivez Clicvia sur Facebook", "ar": "تابعوا Clicvia على فيسبوك", "en": "Follow Clicvia on Facebook"},
+    # 29/10/2026 (Ahmed) : lien vers le compte Instagram de l'Immobilier (vidéos des gouvernorats, robot reels), à côté de Facebook
+    "instagram": {"fr": "Clicvia Immobilier sur Instagram", "ar": "Clicvia للعقارات على إنستغرام", "en": "Clicvia Real Estate on Instagram"},
     "pied": {"fr": "Sites indépendants, non officiels. Statistiques de visite anonymes, sans cookies. © 2026 — tous droits réservés.",
              "ar": "مواقع مستقلة، غير رسمية. إحصائيات زيارة مجهولة الهوية، دون ملفات تعريف الارتباط. © 2026 — جميع الحقوق محفوظة.",
              "en": "Independent, unofficial websites. Anonymous visit statistics, no cookies. © 2026 — all rights reserved."},
@@ -196,7 +198,7 @@ def tete_page(l, gabarit, titre, description, og_titre, og_description, url_de, 
 def pied(l):
     """Pied de page commun : Facebook, lien « Comment fonctionne le site ? » (règle commune § 44), mentions."""
     T = lambda k: TEXTES[k][l]
-    return f'''<footer><p class="suivre"><a href="https://www.facebook.com/1327283777142447" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.3H7.7V13h2.7v8h3.1z"/></svg> {E(T("facebook"))}</a></p>
+    return f'''<footer><p class="suivre"><a href="https://www.facebook.com/1327283777142447" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.3H7.7V13h2.7v8h3.1z"/></svg> {E(T("facebook"))}</a> <a class="ig" href="https://www.instagram.com/immobilier.clicvia/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM12 2.2c-2.7 0-3 0-4.1.1-1 .1-1.8.2-2.4.5-.7.3-1.2.6-1.8 1.2S2.8 5.2 2.6 5.9c-.3.6-.4 1.4-.5 2.4C2 9.4 2 9.7 2 12.4s0 3 .1 4.1c.1 1 .2 1.8.5 2.4.3.7.6 1.2 1.2 1.8s1.1.9 1.8 1.2c.6.3 1.4.4 2.4.5 1.1.1 1.4.1 4.1.1s3 0 4.1-.1c1-.1 1.8-.2 2.4-.5.7-.3 1.2-.6 1.8-1.2s.9-1.1 1.2-1.8c.3-.6.4-1.4.5-2.4.1-1.1.1-1.4.1-4.1s0-3-.1-4.1c-.1-1-.2-1.8-.5-2.4-.3-.7-.6-1.2-1.2-1.8s-1.1-.9-1.8-1.2c-.6-.3-1.4-.4-2.4-.5C15 2.2 14.7 2.2 12 2.2zm0 1.8c2.6 0 2.9 0 4 .1.9 0 1.5.2 1.8.3.5.2.8.4 1.1.7.3.3.6.7.7 1.1.1.3.3.9.3 1.8.1 1 .1 1.4.1 4s0 2.9-.1 4c0 .9-.2 1.5-.3 1.8-.2.5-.4.8-.7 1.1-.3.3-.7.6-1.1.7-.3.1-.9.3-1.8.3-1 .1-1.4.1-4 .1s-2.9 0-4-.1c-.9 0-1.5-.2-1.8-.3-.5-.2-.8-.4-1.1-.7-.3-.3-.6-.7-.7-1.1-.1-.3-.3-.9-.3-1.8-.1-1-.1-1.4-.1-4s0-2.9.1-4c0-.9.2-1.5.3-1.8.2-.5.4-.8.7-1.1.3-.3.7-.6 1.1-.7.3-.1.9-.3 1.8-.3 1-.1 1.4-.1 4-.1z"/></svg> {E(T("instagram"))}</a></p>
 <p class="pied-liens"><a href="{chemin_a_propos(l)}">{E(T("a_propos"))}</a> · <a href="{"/" if l == "fr" else "/" + l + "/"}">{E(T("tous"))}</a> · <a class="prive" href="/tableau-bord/" rel="nofollow">{E(T("prive"))}</a> · <a class="stats" href="https://prix-eaux-tunisie.goatcounter.com/" rel="nofollow noopener" target="_blank">{E(T("stats"))}</a></p>
 {E(T("pied"))}</footer>
 </body>
@@ -215,7 +217,7 @@ def page(l, gabarit, jour):
              for i, (_, sous, _, regle, nom, desc) in enumerate(SITES)]
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "Organization", "@id": BASE + "#organisation", "name": "Clicvia", "url": BASE, "logo": BASE + "og-image-v2.jpg",
-         "sameAs": ["https://www.facebook.com/1327283777142447"], "areaServed": "TN"},
+         "sameAs": ["https://www.facebook.com/1327283777142447", "https://www.instagram.com/immobilier.clicvia/"], "areaServed": "TN"},
         {"@type": "WebSite", "@id": BASE + "#site", "name": "Clicvia", "alternateName": T("autre_nom"), "url": BASE, "inLanguage": LANGUES,
          "publisher": {"@id": BASE + "#organisation"}},
         {"@type": "ItemList", "name": T("liste"), "numberOfItems": len(SITES), "itemListElement": liste}]}
@@ -260,7 +262,8 @@ A_PROPOS = {
                 "- Sur la page en anglais, une petite étiquette sur chaque carte dit dans quelles langues est le site.",
                 "- Le bouton « Partager » envoie à vos proches le lien de notre vidéo de présentation et l'adresse du portail (menu de partage du téléphone, sinon WhatsApp).",
                 "- La vidéo de présentation : un lien en bas de la page ouvre une courte vidéo qui montre nos services.",
-                "- La page Facebook Clicvia : le bouton « Suivez Clicvia sur Facebook » en bas de page. Nos pages y sont publiées automatiquement chaque jour."]),
+                "- La page Facebook Clicvia : le bouton « Suivez Clicvia sur Facebook » en bas de page. Nos pages y sont publiées automatiquement chaque jour.",
+                "- Le compte Instagram de Clicvia Immobilier : le bouton « Clicvia Immobilier sur Instagram » à côté. Chaque jour, deux courtes vidéos y présentent automatiquement les annonces d'un gouvernorat ; le lien du profil mène aux annonces du gouvernorat de la vidéo."]),
             ("D'où viennent les informations ?", [
                 "Chaque site relève lui-même ses informations (sources officielles, sites des magasins, données libres) et écrit sa source et sa date sur ses pages.",
                 "Le portail ne fait que présenter les sites. Les assistants et les programmeurs trouvent la liste de nos données ouvertes dans le fichier donnees.json."]),
@@ -290,7 +293,8 @@ A_PROPOS = {
                 "- في الصفحة الإنجليزية، تُبيّن علامة صغيرة على كل بطاقة لغات الموقع.",
                 "- زر «شارك» يرسل إلى أقاربك رابط الفيديو التقديمي وعنوان البوابة (قائمة المشاركة في الهاتف، وإلا واتساب).",
                 "- الفيديو التقديمي: رابط أسفل الصفحة يفتح فيديو قصيرًا يعرض خدماتنا.",
-                "- صفحة Clicvia على فيسبوك: زر «تابعوا Clicvia على فيسبوك» أسفل الصفحة. تُنشر فيها صفحاتنا آليًا كل يوم."]),
+                "- صفحة Clicvia على فيسبوك: زر «تابعوا Clicvia على فيسبوك» أسفل الصفحة. تُنشر فيها صفحاتنا آليًا كل يوم.",
+                "- حساب Clicvia للعقارات على إنستغرام: الزر بجانبه. كل يوم، فيديوهان قصيران يقدّمان آليًا إعلانات ولاية؛ ورابط الحساب يوصل إلى إعلانات ولاية الفيديو."]),
             ("من أين تأتي المعلومات؟", [
                 "كل موقع يجمع معلوماته بنفسه (مصادر رسمية، مواقع المغازات، معطيات حرّة) ويكتب مصدرها وتاريخها في صفحاته.",
                 "البوابة تعرض المواقع فقط. يجد المساعدون والمبرمجون قائمة معطياتنا المفتوحة في الملف donnees.json."]),
@@ -320,7 +324,8 @@ A_PROPOS = {
                 "- On the English page, a small label on each card says which languages the website is in.",
                 "- The “Share” button sends your friends the link to our presentation video and the portal's address (your phone's share menu, otherwise WhatsApp).",
                 "- The presentation video: a link at the bottom of the page opens a short video showing our services.",
-                "- The Clicvia Facebook page: the “Follow Clicvia on Facebook” button at the bottom. Our pages are posted there automatically every day."]),
+                "- The Clicvia Facebook page: the “Follow Clicvia on Facebook” button at the bottom. Our pages are posted there automatically every day.",
+                "- The Clicvia Real Estate Instagram account: the button next to it. Every day, two short videos automatically present the listings of one governorate; the profile link leads to the listings of the video's governorate."]),
             ("Where does the information come from?", [
                 "Each website collects its own information (official sources, shop websites, open data) and writes its source and date on its pages.",
                 "The portal only presents the websites. Assistants and programmers will find the list of our open data in the donnees.json file."]),
