@@ -16,8 +16,9 @@ relié à la page Facebook Clicvia (API Instagram, envoi « resumable » : aucun
 
 RÈGLE GÉNÉRALE du lien (Ahmed, 29/10/2026 : « celui qui regarde la vidéo doit pouvoir cliquer », règle commune § 48) : Instagram ne
 rend AUCUN lien cliquable dans un Reel (ni vidéo, ni légende, ni commentaire). Donc chaque vidéo : (1) renvoie au « lien dans la bio »,
-qui est https://clicvia.com/instagram/ : page de liens cliquables refaite à CHAQUE vidéo (gros bouton du gouvernorat de la vidéo en haut,
-puis les autres), fichiers instagram/index.html + donnees/reels.json du portail ; (2) est publiée AUSSI en Reel sur la page Facebook
+qui est https://immobilier.clicvia.com (choix d'Ahmed du 29/10/2026 ; le texte dit de toucher le gouvernorat de la vidéo) ;
+la page https://clicvia.com/instagram/ reste refaite à CHAQUE vidéo (lien de secours, page de liens cliquables (gros bouton du gouvernorat de la vidéo en haut,
+puis les autres), fichiers instagram/index.html + donnees/reels.json du portail) ; (2) est publiée AUSSI en Reel sur la page Facebook
 Clicvia, avec le lien du gouvernorat dans le texte (cliquable sur Facebook).
 
 Secrets du dépôt : FB_PAGE_ID + FB_PAGE_TOKEN (les mêmes que le robot facebook ; le jeton doit avoir en plus les autorisations
@@ -275,7 +276,7 @@ def legende(g, lieux, c, n):
     if c["s2"]:
         l.append(f"• Location S+2 : ≈ {milliers(c['s2'])} DT par mois (loyer médian)")
     l += ["", f"🏠 {acc_ar.format(g=nar)}", f"{milliers(c['total'])} إعلان بيع وكراء في {nar}، مع رأي الذكاء الاصطناعي في كل عقار.", "",
-          f"👉 Lien cliquable dans la bio : bouton « {nfr} » · الرابط في البروفايل", "",
+          f"👉 Lien dans la bio : immobilier.clicvia.com → touchez « {nfr} » · الرابط في البروفايل ← اختر {nar}", "",
           f"#Immobilier #Tunisie #{re.sub(r'[^A-Za-z]', '', nfr)} #عقارات #عقارات_{nar.replace(' ', '_')} #تونس #appartement #location",
           f"📍 {g} {c['maj']}"]          # repère : jamais deux fois la même vidéo le même jour
     return "\n".join(l)
@@ -491,7 +492,7 @@ def main():
     (dossier / "legende.txt").write_text(texte, encoding="utf-8", newline="\n")
     print(f"vidéo : {video} ({duree:.1f} s, {video.stat().st_size // 1024} Ko)\n---\n{texte}\n---")
     nfr, nar = lieux["g"][g]
-    texte_fb = texte.replace(f"👉 Lien cliquable dans la bio : bouton « {nfr} » · الرابط في البروفايل",
+    texte_fb = texte.replace(f"👉 Lien dans la bio : immobilier.clicvia.com → touchez « {nfr} » · الرابط في البروفايل ← اختر {nar}",
                              f"👉 Les annonces de {nfr} · إعلانات {nar} : {SITE}/{g}/")
     if os.environ.get("ESSAI") == "1":
         page_liens(lieux)
