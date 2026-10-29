@@ -207,6 +207,10 @@ def scenes(g, lieux, c, n):
                        f'<div class="ligne"><span>{E(info)}</span></div><div class="chiffre" style="font-size:132px">{E(prix_txt)}</div>'
                        f'<div class="pastille">≈ {a["ix"][1]} % sous les biens semblables</div></div>'
                        f'<div class="note">Peut-être une bonne affaire : vérifiez l\'état du bien · ربما صفقة جيدة، تثبّت من حالة العقار</div>'))
+    # ordre des scènes du milieu (chiffres, prix, bonnes affaires) différent d'une vidéo à l'autre (règle § 49)
+    milieu = S[1:]
+    r = n % max(1, len(milieu))
+    S = S[:1] + milieu[r:] + milieu[:r]
     S.append((3.6, f'<div class="gros">{E(fin_fr)}</div><div class="ar moyen acc">{E(fin_ar)}</div>'
                    f'<div class="pastille" style="font-size:40px;padding:16px 30px">immobilier.clicvia.com/{E(g)}</div>'
                    f'<div class="moyen">Lien dans la bio · <span class="ar">الرابط في البروفايل</span></div>'))
@@ -431,6 +435,19 @@ def verifier_jeton():
                  + (f" ; autorisations manquantes : {', '.join(manque)}" if manque else "") + (" ; il EXPIRE" if fin else ""))
 
 
+def style_libre(n, histo):
+    """RÈGLE GÉNÉRALE § 49 (Ahmed, 29/10/2026 : « la vidéo doit changer de couleur et de design, sinon le visiteur dira : c'est la
+    même que l'autre ») : le numéro de style n donne couleurs, mise en page, polices, accroche, transitions et ORDRE des scènes ; il est
+    gardé dans donnees/reels.json et décalé tant que les couleurs ou la mise en page ressemblent à l'une des 4 dernières vidéos, ou que
+    l'accroche a servi dans les 10 dernières. (Le 28/10, une vidéo lancée hors horaire aurait fait reprendre le soir le design de la veille.)"""
+    recents = [x["style"] for x in histo if "style" in x]
+    for k in range(200):
+        m = n + k
+        if all(m % len(PALETTES) != r % len(PALETTES) and m % len(MISES_EN_PAGE) != r % len(MISES_EN_PAGE) for r in recents[:4])                 and all(m % len(ACCROCHES) != r % len(ACCROCHES) for r in recents[:10]):
+            return m
+    return n
+
+
 def main():
     try:
         sys.stdout.reconfigure(encoding="utf-8")
@@ -439,7 +456,15 @@ def main():
     if os.environ.get("VERIFIER") == "1":
         verifier_jeton(); return
     n = creneau()
+    histo = lire_histo()
     g = os.environ.get("GOUV") or ORDRE[n % len(ORDRE)]
+    if not os.environ.get("GOUV"):                 # jamais un gouvernorat vu dans les 11 dernières vidéos (tour de 12 jours)
+        vus = [x["g"] for x in histo[:11]]
+        k = 0
+        while ORDRE[(n + k) % len(ORDRE)] in vus and k < len(ORDRE):
+            k += 1
+        g = ORDRE[(n + k) % len(ORDRE)]
+    n = style_libre(n, histo)
     lieux = objet_js(lire(f"{SITE}/donnees/lieux.js"))
     if g not in lieux["g"]:
         sys.exit("gouvernorat inconnu : " + g)
@@ -477,7 +502,7 @@ def main():
     if lien_ig is None:                          # déjà publiée (relance tardive) : rien d'autre à faire
         return
     h = lire_histo()
-    h.insert(0, {"g": g, "date": c["maj"], "ig": lien_ig, "fb": ""})
+    h.insert(0, {"g": g, "date": c["maj"], "ig": lien_ig, "fb": "", "style": n})
     ecrire_histo(h)
     page_liens(lieux)                            # le lien de la bio montre tout de suite le gouvernorat de cette vidéo
     h[0]["fb"] = publier_facebook(video, texte_fb)
