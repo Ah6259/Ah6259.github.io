@@ -70,5 +70,11 @@ check("pied de page : lien « Statistiques » vers GoatCounter (rel=nofollow) su
 // 29/10/2026 (Ahmed) : lien vers le compte Instagram @immobilier.clicvia à côté de Facebook, sur les 3 accueils
 check("pied de page : lien « Instagram » vers @immobilier.clicvia à côté de Facebook, sur les 3 accueils",
   ["index.html", "ar/index.html", "en/index.html"].every(f => /<a class="ig" href="https:\/\/www\.instagram\.com\/immobilier\.clicvia\/" target="_blank" rel="noopener">/.test(lire(f))));
+// 29/10/2026 (Ahmed) : sous la vidéo du portail, les vidéos de CHAQUE site (VIDEOS de tools/construire.py), une seule fois
+{ const pv = lire("video/index.html"), cons = lire("tools/construire.py");
+  const attendues = [...cons.matchAll(/"([a-z-]+)": \[("[^\]]+")\]/g)].filter(m => /video\/|instagram/.test(m[2]))
+    .flatMap(m => [...m[2].matchAll(/"([^"]+)"/g)].map(v => v[1] === "instagram" ? "https://www.instagram.com/immobilier.clicvia/" : `https://${m[1]}.clicvia.com/${v[1]}`));
+  check(`page vidéo : les ${attendues.length} vidéos des sites listées sous la vidéo du portail, une seule liste`,
+    attendues.length >= 20 && attendues.every(u => pv.includes(`href="${u}"`)) && pv.split("<!-- liste des vidéos des sites").length === 2); }
 console.log(pb ? `\n${pb} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(pb ? 1 : 0);

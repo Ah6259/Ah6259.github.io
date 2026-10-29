@@ -261,7 +261,7 @@ A_PROPOS = {
                 "- Trois langues : les boutons Français, العربية et English en haut de la page. Chaque langue a sa propre adresse (clicvia.com/ar/ et clicvia.com/en/).",
                 "- Sur la page en anglais, une petite étiquette sur chaque carte dit dans quelles langues est le site.",
                 "- Le bouton « Partager » envoie à vos proches le lien de notre vidéo de présentation et l'adresse du portail (menu de partage du téléphone, sinon WhatsApp).",
-                "- La vidéo de présentation : un lien en bas de la page ouvre une courte vidéo qui montre nos services.",
+                "- La vidéo de présentation : un lien en bas de la page ouvre une courte vidéo qui montre nos services ; en dessous, les vidéos de chaque site (présentation, vidéo pour les professionnels, vidéos Instagram de l'Immobilier).",
                 "- La page Facebook Clicvia : le bouton « Suivez Clicvia sur Facebook » en bas de page. Nos pages y sont publiées automatiquement chaque jour.",
                 "- Le compte Instagram de Clicvia Immobilier : le bouton « Clicvia Immobilier sur Instagram » à côté. Chaque jour, deux courtes vidéos y présentent automatiquement les annonces d'un gouvernorat ; le lien du profil mène aux annonces du gouvernorat de la vidéo."]),
             ("D'où viennent les informations ?", [
@@ -292,7 +292,7 @@ A_PROPOS = {
                 "- ثلاث لغات: أزرار Français و العربية و English في أعلى الصفحة. لكل لغة عنوانها (clicvia.com/ar/ و clicvia.com/en/).",
                 "- في الصفحة الإنجليزية، تُبيّن علامة صغيرة على كل بطاقة لغات الموقع.",
                 "- زر «شارك» يرسل إلى أقاربك رابط الفيديو التقديمي وعنوان البوابة (قائمة المشاركة في الهاتف، وإلا واتساب).",
-                "- الفيديو التقديمي: رابط أسفل الصفحة يفتح فيديو قصيرًا يعرض خدماتنا.",
+                "- الفيديو التقديمي: رابط أسفل الصفحة يفتح فيديو قصيرًا يعرض خدماتنا؛ وتحته فيديوهات كل موقع.",
                 "- صفحة Clicvia على فيسبوك: زر «تابعوا Clicvia على فيسبوك» أسفل الصفحة. تُنشر فيها صفحاتنا آليًا كل يوم.",
                 "- حساب Clicvia للعقارات على إنستغرام: الزر بجانبه. كل يوم، فيديوهان قصيران يقدّمان آليًا إعلانات ولاية؛ ورابط الحساب يوصل إلى إعلانات ولاية الفيديو."]),
             ("من أين تأتي المعلومات؟", [
@@ -323,7 +323,7 @@ A_PROPOS = {
                 "- Three languages: the Français, العربية and English buttons at the top of the page. Each language has its own address (clicvia.com/ar/ and clicvia.com/en/).",
                 "- On the English page, a small label on each card says which languages the website is in.",
                 "- The “Share” button sends your friends the link to our presentation video and the portal's address (your phone's share menu, otherwise WhatsApp).",
-                "- The presentation video: a link at the bottom of the page opens a short video showing our services.",
+                "- The presentation video: a link at the bottom of the page opens a short video showing our services; below it, the videos of each site.",
                 "- The Clicvia Facebook page: the “Follow Clicvia on Facebook” button at the bottom. Our pages are posted there automatically every day.",
                 "- The Clicvia Real Estate Instagram account: the button next to it. Every day, two short videos automatically present the listings of one governorate; the profile link leads to the listings of the video's governorate."]),
             ("Where does the information come from?", [
@@ -384,6 +384,55 @@ def page_a_propos(l, gabarit):
     return tete + "<body>\n" + "\n".join(corps)
 
 
+# 29/10/2026 (Ahmed : « Vidéo de présentation doit donner une page avec les liens des présentations de chaque site, ainsi que les
+# autres vidéos de chaque site ») : sous la vidéo du portail, la liste des vidéos de CHAQUE site (page video/ de chaque site, et
+# video-pro/ des annuaires pour les professionnels) + les vidéos Instagram de l'Immobilier. Nouveau site avec une vidéo : l'ajouter ici.
+# La page video/index.html est fabriquée par l'outil vidéo ; ce bloc y est (re)mis à chaque construction, entre deux repères.
+VIDEOS = {
+    "code": ["video/"], "auto-ecoles": ["video/", "video-pro/"], "voiture": ["video/"], "documents": ["video/"],
+    "avocats": ["video/", "video-pro/"], "outils": ["video/"], "comptables": ["video/", "video-pro/"], "appels-offres": ["video/"],
+    "pros": ["video/", "video-pro/"], "immobilier": ["video/", "instagram"], "mariage": ["video/", "video-pro/"],
+    "prix-eau": ["video/"], "eau": ["video/"], "mosquees": ["video/"], "conferences": ["video/"],
+}
+VIDEO_LIBELLES = {
+    "video/": "Présentation · فيديو تقديمي",
+    "video-pro/": "Pour les professionnels · للمهنيين",
+    "instagram": "Vidéos des gouvernorats (Instagram) · فيديوهات الولايات",
+}
+DEBUT_VIDEOS, FIN_VIDEOS = "<!-- liste des vidéos des sites (construire.py) -->", "<!-- fin de la liste des vidéos des sites -->"
+
+
+def videos_des_sites():
+    f = "video/index.html"
+    if not os.path.exists(f):
+        return 0
+    h = lire(f)
+    if DEBUT_VIDEOS in h:
+        h = h[:h.index(DEBUT_VIDEOS)] + h[h.index(FIN_VIDEOS) + len(FIN_VIDEOS):]
+    cartes, n = [], 0
+    for th, sous, icone, regle, nom, desc in SITES:
+        if sous not in VIDEOS:
+            continue
+        liens = []
+        for v in VIDEOS[sous]:
+            url = "https://www.instagram.com/immobilier.clicvia/" if v == "instagram" else f"https://{sous}.clicvia.com/{v}"
+            liens.append(f'<a href="{url}"' + (' target="_blank" rel="noopener"' if v == "instagram" else "") + f'>▶ {E(VIDEO_LIBELLES[v])}</a>')
+            n += 1
+        cartes.append(f'<div class="vs-carte"><img src="/assets/sites/{icone}.svg" alt="" width="40" height="40" loading="lazy">'
+                      f'<div><p class="vs-nom">{E(nom["fr"])} · <span lang="ar" dir="rtl">{E(nom["ar"])}</span></p>{"".join(liens)}</div></div>')
+    bloc = (DEBUT_VIDEOS + '\n<section class="videos-sites" id="videos-sites"><style>'
+            '.videos-sites{max-width:640px;margin:34px auto 0;padding:0 16px}.videos-sites h2{font-size:21px;margin:0 0 4px}'
+            '.vs-sous{color:var(--doux,#5b6475);margin:0 0 14px}.vs-carte{display:flex;gap:14px;align-items:flex-start;background:#fff;'
+            'border:1px solid #e3e7ef;border-radius:16px;padding:14px;margin:0 0 10px}.vs-carte img{flex:none;border-radius:10px}'
+            '.vs-nom{font-weight:700;margin:0 0 6px}.vs-carte a{display:inline-block;margin:0 10px 6px 0;padding:7px 12px;border-radius:999px;'
+            'background:#eef2f9;color:#1d3a6e;font-weight:600;font-size:14.5px;text-decoration:none}.vs-carte a:hover{background:#dfe7f5}</style>'
+            '<h2>Les vidéos de chaque site · فيديوهات كل موقع</h2>'
+            '<p class="vs-sous">Touchez une vidéo pour la regarder · المس فيديو لمشاهدته</p>' + "".join(cartes) + '</section>\n' + FIN_VIDEOS)
+    i = h.index("</main>")
+    ecrire(f, h[:i] + bloc + "\n" + h[i:])
+    return n
+
+
 def main():
     jour = datetime.date.today().isoformat()
     gabarit = lire("tools/gabarit.html")
@@ -413,6 +462,8 @@ def main():
            "- Pour citer : le nom du site et le lien de la page utilisée.",
            "- Les assistants IA qui répondent à une question en citant leur source sont les bienvenus ; l'aspiration du contenu pour entraîner un modèle n'est pas autorisée (voir robots.txt).", ""]
     ecrire("llms.txt", chr(10).join(ia))
+    nv = videos_des_sites()
+    print(f"page vidéo : {nv} vidéos des sites listées sous la vidéo du portail")
     print(f"portail : {len(LANGUES)} accueils + {len(LANGUES)} pages « Comment fonctionne le site ? » ({', '.join(LANGUES)}), {len(SITES)} sites, plan du site à jour")
 
 
