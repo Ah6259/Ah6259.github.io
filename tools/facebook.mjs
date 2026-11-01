@@ -39,6 +39,9 @@ const SITES = {
     fr: "Une mosquée de Tunisie — son histoire, ses photos, la carte :", ar: "مسجد من مساجد تونس — تاريخه، صوره والخريطة:", mots: "#Mosquée #Tunisie #مساجد #تونس" },
   eau: { hote: "eau.clicvia.com", garder: /^\/(coran-et-eau\/|majels-et-puits\/)?$/,
     fr: "Où trouver de l'eau en Tunisie — sources, fontaines et majels sur une carte :", ar: "أين تجد الماء في تونس — عيون وسبّالات ومواجل على خريطة:", mots: "#Eau #Tunisie #ماء #تونس" },
+  // 01/11/2026 : Tendances de recherche (pages de catégorie, de mot, opportunités, mots tapés)
+  tendances: { hote: "tendances.clicvia.com", garder: /^\/(categorie\/[a-z]+|mot\/[^/]+|opportunites|mots-tapes|semaine)\/$/,
+    fr: "Ce que les Tunisiens cherchent sur Google, aujourd'hui (Google Trends) :", ar: "ماذا يبحث التونسيون على غوغل اليوم (Google Trends):", mots: "#Tunisie #GoogleTrends #Tendances #تونس #ترندات" },
   // seulement ses ARTICLES (rapports du mois), pas dans le tour normal (18/10/2026)
   conferences: { hote: "conferences.clicvia.com", garder: /^$/, articles: true,
     fr: "Conférences scientifiques dans le monde :", ar: "مؤتمرات علمية في العالم:", mots: "#Conférences #Recherche #مؤتمرات",
@@ -48,7 +51,7 @@ const SITES = {
 // 15/10/2026 (Ahmed : « fais les deux ») : l'immobilier passe de 2 à 4 publications par semaine (une place de Documents et une de
 // Mosquées lui sont données)
 const TOUR = ["concours", "immobilier", "code", "appels-offres", "immobilier", "documents", "prix-eau", "voiture",
-  "concours", "outils", "immobilier", "mosquees", "eau", "immobilier"];
+  "concours", "outils", "immobilier", "mosquees", "eau", "immobilier", "tendances", "documents"];   // 01/11/2026 : + tendances (16 créneaux = 8 jours)
 const DEPART = Date.UTC(2026, 9, 12);
 
 const jour = process.env.JOUR ? new Date(process.env.JOUR + "T00:00:00Z") : new Date();

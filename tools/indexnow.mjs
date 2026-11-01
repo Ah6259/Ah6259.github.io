@@ -4,7 +4,7 @@
 // Chaque jour : les adresses dont <lastmod> date de moins de 2 jours. Le lundi (ou TOUT=1) : toutes les adresses.
 // Usage : node tools/indexnow.mjs          (ESSAI=1 : n'envoie rien, affiche seulement)
 const CLE = "377f054ba9c5ed40d6796adc8d87d1e8";
-const SITES = ["clicvia.com", "prix-eau", "eau", "mosquees", "concours", "documents", "code", "voiture", "outils", "appels-offres",
+const SITES = ["clicvia.com", "prix-eau", "eau", "mosquees", "concours", "tendances", "documents", "code", "voiture", "outils", "appels-offres",
   "pros", "auto-ecoles", "avocats", "comptables", "mariage", "comptes", "conferences", "immobilier"].map(s => s.includes(".") ? s : s + ".clicvia.com");
 const TOUT = process.env.TOUT === "1" || new Date().getUTCDay() === 1, ESSAI = process.env.ESSAI === "1";
 const limite = new Date(Date.now() - 2 * 864e5).toISOString().slice(0, 10);
