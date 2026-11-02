@@ -2,7 +2,7 @@
 
 > Clicvia : des services gratuits pour la Tunisie, en français et en arabe : annonces immobilières dans les 24 gouvernorats, prix de l'eau minérale comparés chaque jour, calculateurs (salaire, impôt, crédit), appels d'offres et concours publics, code de la route, documents prêts à remplir, annuaires de professionnels.
 
-Portail de 19 sites gratuits et indépendants (non officiels), en français et en arabe pour la plupart ; adresse : https://clicvia.com/ (aussi https://clicvia.com/ar/ et https://clicvia.com/en/).
+Portail de 20 sites gratuits et indépendants (non officiels), en français et en arabe pour la plupart ; adresse : https://clicvia.com/ (aussi https://clicvia.com/ar/ et https://clicvia.com/en/).
 Chaque site a son propre fichier llms.txt à sa racine (exemple : https://concours.clicvia.com/llms.txt).
 Données fraîches au format JSON (concours ouverts, appels d'offres, prix de l'eau, conférences, mosquées, points d'eau) : index dans https://clicvia.com/donnees.json
 
@@ -28,6 +28,7 @@ Données fraîches au format JSON (concours ouverts, appels d'offres, prix de l'
 ## Maison, famille et artisans
 
 - [Immobilier Tunisie](https://immobilier.clicvia.com/) : Logements, bureaux, commerces, usines et terrains à vendre ou à louer dans les 24 gouvernorats ; déposez votre annonce gratuitement.
+- [Mon agent immobilier](https://monagent.clicvia.com/) : Décrivez en une phrase le bien que vous cherchez, en français, en arabe ou en tunisien : toutes les annonces de Tunisie qui correspondent.
 - [Prix des Eaux de Tunisie](https://prix-eau.clicvia.com/) : Les prix de l'eau minérale dans les magasins, comparés chaque jour.
 - [Mes comptes](https://comptes.clicvia.com/) : Loyers, salaire, dépenses, impôt et rappels sur votre téléphone. Gratuit 3 mois.
 - [Professionnels Tunisie](https://pros.clicvia.com/) : Annuaire gratuit des artisans et professionnels, gouvernorat par gouvernorat.
