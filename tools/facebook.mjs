@@ -42,6 +42,15 @@ const SITES = {
   // 01/11/2026 : Tendances de recherche (pages de catégorie, de mot, opportunités, mots tapés)
   tendances: { hote: "tendances.clicvia.com", garder: /^\/(categorie\/[a-z]+|mot\/[^/]+|opportunites|mots-tapes|semaine)\/$/,
     fr: "Ce que les Tunisiens cherchent sur Google, aujourd'hui (Google Trends) :", ar: "ماذا يبحث التونسيون على غوغل اليوم (Google Trends):", mots: "#Tunisie #GoogleTrends #Tendances #تونس #ترندات" },
+  // 02/11/2026 (Ahmed : « fais les publications Facebook ») : une seule page -> une RECHERCHE d'exemple à chaque passage (lien qui
+  // ouvre directement ses résultats) ; jamais deux fois la même avant d'avoir fait le tour de la liste
+  monagent: { hote: "monagent.clicvia.com", garder: /^\/$/,
+    exemples: ["S+2 meublé à louer à Ennasr avec parking", "Villa avec piscine à Hammamet", "S+1 à louer à La Marsa moins de 1200 DT",
+      "Terrain de 500 m² à Sousse", "Appartement S+3 à vendre à Sfax", "Local commercial à louer à Tunis", "Duplex vue mer à Bizerte",
+      "Studio meublé à Monastir", "Maison avec jardin à Ariana", "Appartement à la nuit à Djerba", "S+2 neuf avec ascenseur à La Soukra",
+      "Bureau à louer aux Berges du Lac"],
+    fr: "🔎 Cherchez votre bien en Tunisie en une phrase, comme à un agent :", ar: "🔎 ابحث عن عقارك في تونس بجملة واحدة، كما تفعل مع وكيل:",
+    mots: "#Immobilier #Tunisie #Recherche #عقارات #تونس" },
   // seulement ses ARTICLES (rapports du mois), pas dans le tour normal (18/10/2026)
   conferences: { hote: "conferences.clicvia.com", garder: /^$/, articles: true,
     fr: "Conférences scientifiques dans le monde :", ar: "مؤتمرات علمية في العالم:", mots: "#Conférences #Recherche #مؤتمرات",
@@ -51,7 +60,8 @@ const SITES = {
 // 15/10/2026 (Ahmed : « fais les deux ») : l'immobilier passe de 2 à 4 publications par semaine (une place de Documents et une de
 // Mosquées lui sont données)
 const TOUR = ["concours", "immobilier", "code", "appels-offres", "immobilier", "documents", "prix-eau", "voiture",
-  "concours", "outils", "immobilier", "mosquees", "eau", "immobilier", "tendances", "documents"];   // 01/11/2026 : + tendances (16 créneaux = 8 jours)
+  "concours", "outils", "immobilier", "mosquees", "eau", "immobilier", "tendances", "documents",
+  "monagent", "outils", "prix-eau", "monagent"];   // 01/11/2026 : + tendances ; 02/11/2026 : + monagent (20 créneaux = 10 jours)
 const DEPART = Date.UTC(2026, 9, 12);
 
 const jour = process.env.JOUR ? new Date(process.env.JOUR + "T00:00:00Z") : new Date();
@@ -130,6 +140,7 @@ if (process.env.ARTICLES === "1") {
 const plan = await texte(`https://${site.hote}/sitemap.xml`);
 let pages = [...plan.matchAll(/<url>\s*<loc>([^<]+)<\/loc>(?:\s*<lastmod>([^<]+)<\/lastmod>)?/g)].map(m => ({ url: m[1], maj: m[2] || "" }))
   .filter(p => p.url.startsWith(`https://${site.hote}/`) && site.garder.test(new URL(p.url).pathname) && !(site.sauf && site.sauf.test(new URL(p.url).pathname)));
+if (site.exemples) pages = site.exemples.map(e => ({ url: `https://${site.hote}/?q=${encodeURIComponent(e)}`, ex: e }));
 if (!pages.length) { console.log(`rien à publier pour ${nom} (aucune page retenue dans le plan du site)`); process.exit(0); }
 if (site.ouverts) {      // Concours : seulement ceux dont les inscriptions sont encore ouvertes (au moins 2 jours), les plus proches de la fin d'abord
   const limite = new Date(jour.getTime() + 2 * 864e5).toISOString().slice(0, 10);
@@ -161,7 +172,8 @@ const h = await texte(page.url);
 const titre = propre((h.match(/<meta property="og:title" content="([^"]*)"/) || h.match(/<title>([^<]*)<\/title>/) || [])[1]).replace(/\s*[|–—-]\s*[^|–—-]*$/, m => (m.length < 45 ? "" : m));
 const desc = propre((h.match(/<meta name="description" content="([^"]*)"/) || [])[1]);
 if (!titre) { console.log("page sans titre : " + page.url); process.exit(1); }
-const message = [site.fr, "", titre, desc && desc !== titre ? desc.slice(0, 260) : "", "", site.ar, "", "👉 " + page.url, "", site.mots].filter((x, i, a) => !(x === "" && a[i - 1] === "")).join("\n");
+const message = (page.ex ? [site.fr, "", `« ${page.ex} »`, "Écrivez votre recherche comme vous parlez, en français, en arabe ou en tunisien : toutes les annonces de Tunisie qui correspondent.", "", site.ar, "اكتب بحثك كما تتكلم، بالعربية أو الفرنسية أو التونسية.", "", "👉 " + page.url, "", site.mots]
+  : [site.fr, "", titre, desc && desc !== titre ? desc.slice(0, 260) : "", "", site.ar, "", "👉 " + page.url, "", site.mots]).filter((x, i, a) => !(x === "" && a[i - 1] === "")).join("\n");
 
 console.log(`Jour ${jours}, ${creneau ? "après-midi" : "matin"} — site : ${nom} — page ${rang + 1}/${pages.length} : ${page.url}\n---\n${message}\n---`);
 if (process.env.ESSAI === "1") { console.log("ESSAI : rien n'est publié."); process.exit(0); }

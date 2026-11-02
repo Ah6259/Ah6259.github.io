@@ -504,6 +504,8 @@ def legende(g, lieux, c, n):
         l.append(f"• Location S+2 : ≈ {milliers(c['s2'])} DT par mois (loyer médian)")
     l += ["", f"🏠 {acc_ar.format(g=nar)}", f"{milliers(c['total'])} إعلان بيع وكراء في {nar}، مع رأي الذكاء الاصطناعي في كل عقار.", "",
           f"👉 Lien dans la bio : immobilier.clicvia.com → touchez « {nfr} » · الرابط في البروفايل ← اختر {nar}", "",
+          # 02/11/2026 (Ahmed : « fais les publications Instagram ») : chaque vidéo présente aussi la recherche en une phrase
+          "🔎 Cherchez votre bien en une phrase : monagent.clicvia.com · ابحث عن عقارك بجملة واحدة", "",
           f"#Immobilier #Tunisie #{re.sub(r'[^A-Za-z]', '', nfr)} #عقارات #عقارات_{nar.replace(' ', '_')} #تونس #appartement #location",
           f"📍 {g} {c['maj']}"]          # repère : jamais deux fois la même vidéo le même jour
     return "\n".join(l)
@@ -727,7 +729,8 @@ def main():
     print(f"vidéo : {video} ({duree:.1f} s, {video.stat().st_size // 1024} Ko)\n---\n{texte}\n---")
     nfr, nar = lieux["g"][g]
     texte_fb = texte.replace(f"👉 Lien dans la bio : immobilier.clicvia.com → touchez « {nfr} » · الرابط في البروفايل ← اختر {nar}",
-                             f"👉 Les annonces de {nfr} · إعلانات {nar} : {SITE}/{g}/")
+                             f"👉 Les annonces de {nfr} · إعلانات {nar} : {SITE}/{g}/").replace(
+        "🔎 Cherchez votre bien en une phrase : monagent.clicvia.com", "🔎 Cherchez votre bien en une phrase : https://monagent.clicvia.com/")
     if os.environ.get("ESSAI") == "1":
         page_liens(lieux)
         print("ESSAI : rien n'est publié (page des liens refaite sur place, non envoyée).\n--- texte Facebook ---\n" + texte_fb)
