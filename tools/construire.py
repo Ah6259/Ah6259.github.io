@@ -97,7 +97,7 @@ SITES = [
      {"fr": "Appels d'offres Tunisie", "ar": "طلبات العروض تونس", "en": "Public tenders Tunisia"},
      {"fr": "Les appels d'offres publics du jour, par métier et par gouvernorat, et les ventes aux enchères.", "ar": "طلبات العروض العمومية لليوم، حسب المهنة والولاية، والبيوعات بالمزاد.",
       "en": "Today's public tenders, by trade and by governorate, and auction sales."}),
-    ("travail", "tendances", "tendances-tunisie", {"ar": "dossier"},
+    ("travail", "tendances", "tendances-tunisie", {"ar": "dossier", "en": "dossier"},     # anglais depuis le 03/11/2026
      {"fr": "Tendances de recherche en Tunisie", "ar": "اتجاهات البحث في تونس", "en": "Search trends in Tunisia"},
      {"fr": "Ce que les Tunisiens cherchent sur Google chaque jour : recherches en hausse, nouveautés, catégories, opportunités pour les entrepreneurs.",
       "ar": "ماذا يبحث التونسيون على غوغل كل يوم: بحوث صاعدة، جديد، فئات، فرص لأصحاب المشاريع.",
