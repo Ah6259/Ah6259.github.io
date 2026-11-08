@@ -36,3 +36,5 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   `consignes des taches/seo-portail.md` de projets-ahmed) : `titre_seo()` / `desc_seo()` dans `tete_page()` (titre <= 70 caractères, coupé à
   « : » ; description <= 165, coupée en fin de phrase) pour les 3 accueils et les 3 pages « Comment fonctionne le site ? » ; description
   de la page vidéo raccourcie (tools/page_video.json). Avant : titres de 83 à 125 caractères, descriptions de 237 à 327 (Google les coupait).
+- 08/11/2026 : `node tools/page_video.mjs` seul REFAIT video/index.html SANS la liste des 21 vidéos des sites (robot tests rouge à 09:00) : après tout changement de la page vidéo, lancer `python tools/construire.py` (qui replace la liste entre ses repères), puis les deux tests.
+
