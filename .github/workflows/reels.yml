@@ -58,7 +58,7 @@ jobs:
           git add instagram/index.html donnees/reels.json 2>/dev/null || true
           git diff --cached --quiet && exit 0
           git commit -qm "Reels : vidéo du $(date +%d/%m/%Y), page des liens de la bio"
-          for essai in 1 2 3 4; do git pull --rebase --autostash -q && git push -q && exit 0; sleep $((essai * 5)); done
+          for essai in 1 2 3 4; do git pull --rebase -X theirs --autostash -q && git push -q && exit 0; sleep $((essai * 5)); done
           echo "ÉCHEC : page des liens non enregistrée (le lien de la bio ne montre pas la dernière vidéo)"; exit 1
       - name: Garder la vidéo 7 jours (Artifacts)
         if: always()
