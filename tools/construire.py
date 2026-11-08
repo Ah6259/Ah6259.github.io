@@ -175,9 +175,33 @@ def ecrire(p, t):
     io.open(os.path.join(RACINE, p), "w", encoding="utf-8", newline="\n").write(t)
 
 
+def titre_seo(t, maxi=70):
+    """SEO (08/11/2026, plan d'Ahmed pour tous les sites) : Google coupe les titres vers 60-70 caractères : coupe au dernier séparateur
+    (« : », « — », « (») avant la limite, sinon au dernier mot entier avec « … »."""
+    if len(t) <= maxi:
+        return t
+    for sep in (" : ", ": ", " — ", " (", " – ", " | "):
+        i = t.rfind(sep, 0, maxi)
+        if i >= 25:
+            return t[:i].rstrip(" ,;:—-")
+    return t[:maxi - 1].rsplit(" ", 1)[0].rstrip(" ,;:—-(") + "…"
+
+
+def desc_seo(d, maxi=165):
+    """Description <= 165 caractères : fin de la dernière phrase entière si possible, sinon dernier mot entier + « … »."""
+    if len(d) <= maxi:
+        return d
+    coupe = d[:maxi]
+    i = max(coupe.rfind(". "), coupe.rfind("۔ "), coupe.rfind("。"))
+    if i >= 60:
+        return coupe[:i + 1]
+    return coupe[:maxi - 1].rsplit(" ", 1)[0].rstrip(" ,;:—-(،") + "…"
+
+
 def tete_page(l, gabarit, titre, description, og_titre, og_description, url_de, ld):
     """En-tête technique (meta, CSP, GoatCounter, scripts) commun à l'accueil et à « Comment fonctionne le site ? »."""
     url = url_de(l)
+    titre, description = titre_seo(titre), desc_seo(description)
     tete, _, _ = gabarit.partition("<body>")
     hreflang = "".join(f'<link rel="alternate" hreflang="{x}" href="{url_de(x)}">\n' for x in LANGUES) \
         + f'<link rel="alternate" hreflang="x-default" href="{url_de("fr")}">\n'

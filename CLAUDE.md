@@ -32,3 +32,7 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
 ## Historique court
 - 19/10/2026 : CLAUDE.md créé (avant, la mémoire du portail n'était que dans README.md) ; contrôle des espaces installé, 0 anomalie.
 - 25/10/2026 : page « Comment fonctionne le site ? » (3 langues) + test FONCTIONS (règle commune § 44).
+- 08/11/2026 : plan SEO d'Ahmed appliqué au portail (phase 2 ; contrôle commun `outils visibilite/controle_seo.mjs`, plan
+  `consignes des taches/seo-portail.md` de projets-ahmed) : `titre_seo()` / `desc_seo()` dans `tete_page()` (titre <= 70 caractères, coupé à
+  « : » ; description <= 165, coupée en fin de phrase) pour les 3 accueils et les 3 pages « Comment fonctionne le site ? » ; description
+  de la page vidéo raccourcie (tools/page_video.json). Avant : titres de 83 à 125 caractères, descriptions de 237 à 327 (Google les coupait).
