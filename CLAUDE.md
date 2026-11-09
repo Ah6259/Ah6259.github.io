@@ -56,3 +56,8 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   manque, journal « compte propre à créer », pas de rouge (gestes d'Ahmed : `GERER SANS CLAUDE/mon agent immobilier.md`). Test
   `tools/test_monagent_post.mjs` (9, dans tests.yml et dans le robot ; sabotage « IA » dans l'image : attrapé). Leçon : Chrome sans écran ne
   dessine pas les ~85 derniers pixels de la fenêtre → capture plus haute puis recadrage (la ligne du bas était invisible).
+- 09/11/2026 (nuit) : design des publications de Mon agent refait avec l'outil Design de Claude (canevas « Publications Mon agent »,
+  https://claude.ai/artifact/PPCp6kHvkwV6ZwYDyhjN8B : 5 tableaux = les 5 mises en page, mêmes couleurs et textes que le robot ; Ahmed peut y
+  commenter) ; reporté dans tools/monagent_post.mjs : point « en ligne » + avatar « M » devant les bulles de l'agent, curseur de saisie et
+  pastilles « français · عربي · tounsi » sous la barre de recherche (mise en page en colonne : plus de chevauchement quand la question
+  tient sur deux lignes). Un changement de design = le canevas ET le robot, ensemble.

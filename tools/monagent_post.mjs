@@ -245,28 +245,37 @@ b{font-weight:800}
 .a{align-self:flex-end;background:${bulleA};color:${texteA};border-bottom-right-radius:10px}
 [dir=rtl] .a{align-self:flex-start;border-radius:40px;border-bottom-left-radius:10px}
 .a .petit{opacity:.9;margin-top:14px}
-.heure{font-size:26px;opacity:.6;text-align:center}
+.heure{font-size:26px;opacity:.75;text-align:center;display:flex;justify-content:center;align-items:center;gap:14px}
+.point{width:14px;height:14px;border-radius:50%;background:#22C55E;display:inline-block}
+.ag{display:flex;align-items:flex-end;gap:16px;align-self:flex-start;max-width:86%}
+[dir=rtl] .ag{align-self:flex-end}
+.avatar{width:56px;height:56px;border-radius:50%;background:${accent};color:${fond};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;flex:none;font-family:"${pLat}",sans-serif}
+.ag .a{align-self:auto}
 .ctaz{position:absolute;left:64px;right:64px;bottom:150px;text-align:center}
-</style><div class="fil"><div class="heure">${L("aujourd'hui", "اليوم")}</div>
+</style><div class="fil"><div class="heure"><span class="point"></span>${L("Mon agent · en ligne", "وكيلي · متّصل الآن")}</div>
 <div class="b v">${esc(choix.texte)}</div>
-<div class="b a">${trouve}<div class="petit">${esc(prixMin)}${moitie ? " · " + esc(moitie) : ""}</div>${lieux ? `<div class="petit">${esc(lieux)}</div>` : ""}</div>
-<div class="b v">${L("Je peux voir ?", "نجم نشوف؟")}</div>
-<div class="b a">${L("Oui, écrivez-moi la même phrase sur", "إي، اكتبلي نفس الجملة على")} <b>${site}</b></div></div>
+<div class="ag"><div class="avatar">M</div><div class="b a">${trouve}<div class="petit">${esc(prixMin)}${moitie ? " · " + esc(moitie) : ""}</div>${lieux ? `<div class="petit">${esc(lieux)}</div>` : ""}</div></div>
+<div class="b v">${L("Je peux voir les photos ?", "نجم نشوف الصور؟")}</div>
+<div class="ag"><div class="avatar">M</div><div class="b a">${L("Oui, écrivez-moi la même phrase sur", "إي، اكتبلي نفس الجملة على")} <b>${site}</b></div></div></div>
 <div class="ctaz"><span class="cta">${esc(cta)}</span></div>${marque}`;
   else if (mise === "recherche") corps = `<style>
-.titre{position:absolute;top:110px;left:64px;right:64px;font-size:40px;font-weight:700;opacity:.8}
-.barre{position:absolute;top:210px;left:64px;right:64px;background:${fond2};border:4px solid ${accent};border-radius:28px;padding:34px 40px;font-size:42px;line-height:1.3;display:flex;gap:24px;align-items:center}
+.col{position:absolute;top:110px;left:64px;right:64px;display:flex;flex-direction:column;gap:36px}
+.titre{font-size:40px;font-weight:700;opacity:.8}
+.barre{background:${fond2};border:4px solid ${accent};border-radius:28px;padding:34px 40px;font-size:42px;line-height:1.3;display:flex;gap:24px;align-items:center}
 .barre .loupe{width:44px;height:44px;border:6px solid ${accent};border-radius:50%;flex:none;position:relative}
 .barre .loupe:after{content:"";position:absolute;width:6px;height:22px;background:${accent};right:-12px;bottom:-16px;transform:rotate(-45deg)}
-.carte{position:absolute;top:470px;left:64px;right:64px;background:${bulleA};color:${texteA};border-radius:36px;padding:48px 48px}
+.curseur{display:inline-block;width:3px;height:44px;background:${accent};margin:0 6px;vertical-align:middle}
+.langues{display:flex;gap:14px;flex-wrap:wrap}
+.carte{background:${bulleA};color:${texteA};border-radius:36px;padding:48px 48px}
 .carte .n{font-size:110px;font-weight:800;line-height:1;letter-spacing:-.03em}
 .carte .l{font-size:40px;margin-top:8px;font-weight:700}
 .carte .petit{margin-top:26px;font-size:32px;opacity:.92}
 .ctaz{position:absolute;left:64px;right:64px;bottom:150px;text-align:center}
-</style><div class="titre">${L("Tapez votre recherche comme vous la diriez", "اكتب تلقّيك كيما تقولو")}</div>
-<div class="barre"><span class="loupe"></span><span>${esc(choix.texte)}</span></div>
+</style><div class="col"><div class="titre">${L("Tapez votre recherche comme vous la diriez", "اكتب تلقّيك كيما تقولو")}</div>
+<div class="barre"><span class="loupe"></span><span>${esc(choix.texte)}<span class="curseur"></span></span></div>
+<div class="langues"><span class="pastille">français</span><span class="pastille">عربي</span><span class="pastille">tounsi</span></div>
 <div class="carte"><div class="n">${nb(rep.n)}</div><div class="l">${L("annonces trouvées", "إعلان لقيناه")}</div>
-<div class="petit">${esc(prixMin)}</div>${moitie ? `<div class="petit">${esc(moitie)}</div>` : ""}${lieux ? `<div class="petit">${esc(lieux)}</div>` : ""}</div>
+<div class="petit">${esc(prixMin)}</div>${moitie ? `<div class="petit">${esc(moitie)}</div>` : ""}${lieux ? `<div class="petit">${esc(lieux)}</div>` : ""}</div></div>
 <div class="ctaz"><span class="cta">${esc(cta)}</span></div>${marque}`;
   else if (mise === "sms") corps = `<style>
 .tel{position:absolute;top:80px;left:150px;right:150px;bottom:170px;background:${fond2};border:14px solid ${accent};border-radius:70px;padding:60px 40px 40px;overflow:hidden;display:flex;flex-direction:column}
@@ -278,7 +287,8 @@ b{font-weight:800}
 [dir=rtl] .a{border-radius:34px;border-bottom-right-radius:8px}
 .a .petit{opacity:.9;margin-top:10px;font-size:26px}
 .saisie{margin-top:auto;background:${fond};color:${texte};border-radius:999px;padding:20px 32px;font-size:28px;opacity:.9}
-</style><div class="tel"><div class="nom">${L("Mon agent", "وكيلي")} · ${L("en ligne", "متّصل")}</div>
+.point{width:12px;height:12px;border-radius:50%;background:#22C55E;display:inline-block;margin:0 10px}
+</style><div class="tel"><div class="nom"><span class="point"></span>${L("Mon agent · en ligne", "وكيلي · متّصل الآن")}</div>
 <div class="b v">${esc(choix.texte)}</div>
 <div class="b a">${trouve}<div class="petit">${esc(prixMin)}</div>${moitie ? `<div class="petit">${esc(moitie)}</div>` : ""}${lieux ? `<div class="petit">${esc(lieux)}</div>` : ""}</div>
 <div class="b v">${L("Et pour voir les photos ?", "والصور؟")}</div>
