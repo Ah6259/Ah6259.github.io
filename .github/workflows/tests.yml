@@ -28,5 +28,7 @@ jobs:
         run: node tools/test_video.mjs
       - name: Test du portail en trois langues (français, arabe, anglais)
         run: node tools/test_portail.mjs
+      - name: Test du robot « publication du jour de Mon agent » (données du site en ligne, image avec Chrome)
+        run: node tools/test_monagent_post.mjs
       - name: Visiteur simule (comme un visiteur sur telephone, avant le vrai visiteur - regle generale du 18/10/2026)
         run: python tools/visiteur_simule.py

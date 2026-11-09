@@ -41,3 +41,18 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
 - 09/11/2026 : Mon agent immobilier passe de 2 à 4 publications Facebook sur 10 jours (« publication automatique », Ahmed), comme l'Immobilier :
   une place de Concours et une de Prix des Eaux (chacun en garde une) dans `TOUR` de tools/facebook.mjs. Sa 1re publication est sortie le
   09/11 à 14h49 (robot du matin lancé en retard par GitHub). Changer `TOUR` décale le compteur de pages des autres sites (une page peut repasser).
+- **09/11/2026 — robot `monagent-post` (demande d'Ahmed : « une publication Instagram et Facebook entre les deux publications de l'Immobilier,
+  chacune différente, et totalement différente de celles de l'Immobilier : personne ne doit faire le lien entre les deux sites »)** :
+  `tools/monagent_post.mjs`, chaque jour 13h20 (entre les Reels de 8h20 et 18h20). UNE image 1080 × 1350 par jour = une CONVERSATION avec
+  l'agent : la question d'un visiteur (français, arabe ou tunisien en lettres latines, ~1 200 questions possibles) et la réponse chiffrée
+  calculée sur les vraies annonces du site (donnees/index.js + assets/comprendre.js de monagent.clicvia.com, même filtre strict que
+  agent.js) ; 5 mises en page (chat, recherche, sms, fiche, ticket) × 8 palettes (bleus / encre, jamais terre cuite, sable ni or) × 4 polices
+  (Plus Jakarta Sans, Manrope, Sora, Outfit) × 12 accroches, mémoire `donnees/monagent-posts.json` (rien de commun avec les 4 derniers posts,
+  gouvernorat jamais repris sur 6 jours, écriture différente de la veille). Légende : accroche-question, chiffres, lien qui ouvre la réponse
+  (`?q=` + utm_source / utm_medium / utm_campaign : les clics se lisent dans GoatCounter), 10 mots-dièse au plus. INTERDITS (vérifiés avant
+  publication + test) : « Immobilier Tunisie », « Clicvia » (hors l'adresse monagent.clicvia.com), « IA ». Image enregistrée dans `monagent/`
+  et servie par clicvia.com ; Facebook = page Clicvia (secrets FB_*) ou page propre (MONAGENT_FB_PAGE_ID / _TOKEN) ; **Instagram seulement avec
+  un compte PROPRE à Mon agent (secret MONAGENT_IG_USER_ID)** : le compte @immobilier.clicvia ferait le lien entre les deux sites — tant qu'il
+  manque, journal « compte propre à créer », pas de rouge (gestes d'Ahmed : `GERER SANS CLAUDE/mon agent immobilier.md`). Test
+  `tools/test_monagent_post.mjs` (9, dans tests.yml et dans le robot ; sabotage « IA » dans l'image : attrapé). Leçon : Chrome sans écran ne
+  dessine pas les ~85 derniers pixels de la fenêtre → capture plus haute puis recadrage (la ligne du bas était invisible).
