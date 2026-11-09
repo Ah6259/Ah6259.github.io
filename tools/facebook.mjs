@@ -59,7 +59,9 @@ const SITES = {
 // deux sites par jour sur 7 jours : [matin, après-midi] × 7 (jamais le même site deux fois le même jour)
 // 15/10/2026 (Ahmed : « fais les deux ») : l'immobilier passe de 2 à 4 publications par semaine (une place de Documents et une de
 // Mosquées lui sont données)
-const TOUR = ["concours", "immobilier", "code", "appels-offres", "immobilier", "documents", "prix-eau", "voiture",
+// 09/11/2026 (Ahmed : « publication automatique » pour Mon agent) : Mon agent passe de 2 à 4 publications sur 10 jours, comme l'Immobilier
+// (une place de Concours et une de Prix des Eaux lui sont données ; chacun garde une place)
+const TOUR = ["monagent", "immobilier", "code", "appels-offres", "immobilier", "documents", "monagent", "voiture",
   "concours", "outils", "immobilier", "mosquees", "eau", "immobilier", "tendances", "documents",
   "monagent", "outils", "prix-eau", "monagent"];   // 01/11/2026 : + tendances ; 02/11/2026 : + monagent (20 créneaux = 10 jours)
 const DEPART = Date.UTC(2026, 9, 12);

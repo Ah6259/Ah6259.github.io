@@ -38,3 +38,6 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   de la page vidéo raccourcie (tools/page_video.json). Avant : titres de 83 à 125 caractères, descriptions de 237 à 327 (Google les coupait).
 - 08/11/2026 : `node tools/page_video.mjs` seul REFAIT video/index.html SANS la liste des 21 vidéos des sites (robot tests rouge à 09:00) : après tout changement de la page vidéo, lancer `python tools/construire.py` (qui replace la liste entre ses repères), puis les deux tests.
 
+- 09/11/2026 : Mon agent immobilier passe de 2 à 4 publications Facebook sur 10 jours (« publication automatique », Ahmed), comme l'Immobilier :
+  une place de Concours et une de Prix des Eaux (chacun en garde une) dans `TOUR` de tools/facebook.mjs. Sa 1re publication est sortie le
+  09/11 à 14h49 (robot du matin lancé en retard par GitHub). Changer `TOUR` décale le compteur de pages des autres sites (une page peut repasser).
