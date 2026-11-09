@@ -387,8 +387,12 @@ async function attendreEnLigne(url, minutes = 8) {
 async function publierFacebook(imageUrl, texte, repere) {
   const page = process.env.MONAGENT_FB_PAGE_ID || process.env.FB_PAGE_ID, jeton = process.env.MONAGENT_FB_PAGE_TOKEN || process.env.FB_PAGE_TOKEN;
   if (!page || !jeton) throw new Error("secrets FB_PAGE_ID / FB_PAGE_TOKEN absents : rien n'est publié");
-  const recents = (await api("GET", `${page}/feed?fields=message&limit=25`, jeton)).data || [];
-  if (recents.some(x => (x.message || "").includes(repere))) { console.log("Facebook : déjà publiée (relance tardive de GitHub)"); return "déjà publiée"; }
+  // contrôle des doublons (relance tardive de GitHub) : une LECTURE que Facebook peut refuser à une page hors du portfolio de l'application
+  // (#10, 10/11/2026, page Mon agent) ; la mémoire donnees/monagent-posts.json protège déjà des doublons -> jamais bloquant
+  try {
+    const recents = (await api("GET", `${page}/feed?fields=message&limit=25`, jeton)).data || [];
+    if (recents.some(x => (x.message || "").includes(repere))) { console.log("Facebook : déjà publiée (relance tardive de GitHub)"); return "déjà publiée"; }
+  } catch (e) { console.log("Facebook : lecture des dernières publications impossible (" + e.message + ") — contrôle des doublons sauté"); }
   const r = await api("POST", `${page}/photos`, jeton, { url: imageUrl, message: texte });
   const lienFb = `https://www.facebook.com/${r.post_id || r.id}`;
   console.log("Publié sur Facebook : " + lienFb);
@@ -397,8 +401,10 @@ async function publierFacebook(imageUrl, texte, repere) {
 async function publierInstagram(imageUrl, texte, repere) {
   const ig = process.env.MONAGENT_IG_USER_ID, jeton = process.env.MONAGENT_FB_PAGE_TOKEN || process.env.FB_PAGE_TOKEN;
   if (!ig) { console.log("Instagram : pas encore de compte propre à Mon agent (secret MONAGENT_IG_USER_ID) — voir GERER SANS CLAUDE ; Facebook seulement."); return null; }
-  const recents = (await api("GET", `${ig}/media?fields=caption&limit=12`, jeton)).data || [];
-  if (recents.some(x => (x.caption || "").includes(repere))) { console.log("Instagram : déjà publiée"); return "déjà publiée"; }
+  try {
+    const recents = (await api("GET", `${ig}/media?fields=caption&limit=12`, jeton)).data || [];
+    if (recents.some(x => (x.caption || "").includes(repere))) { console.log("Instagram : déjà publiée"); return "déjà publiée"; }
+  } catch (e) { console.log("Instagram : lecture des dernières publications impossible (" + e.message + ") — contrôle des doublons sauté"); }
   const cont = await api("POST", `${ig}/media`, jeton, { image_url: imageUrl, caption: texte });
   for (let i = 0; i < 30; i++) {
     const e = await api("GET", `${cont.id}?fields=status_code,status`, jeton);
