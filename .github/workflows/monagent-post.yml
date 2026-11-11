@@ -6,12 +6,16 @@
 name: monagent-post
 on:
   schedule:
-    - cron: "20 12 * * *"    # 13h20 à Tunis (GitHub lance souvent en retard : jusqu'à quelques heures)
+    - cron: "17 12 * * *"    # 13h17 à Tunis (GitHub a lancé avec 7 h de retard les 10 et 11/11 : minute inhabituelle + 2e chance)
+    - cron: "41 14 * * *"    # 15h41 à Tunis : 2e chance si le passage du midi n'a pas publié (déjà publié = rien à faire)
   workflow_dispatch:
     inputs:
       essai:
         description: "1 = fabriquer l'image et la légende sans publier (dans Artifacts)"
         default: "1"
+      verifier:
+        description: "1 = seulement vérifier le jeton (durable, autorisations, page et Instagram reliés), sans rien publier"
+        default: "0"
       jour:
         description: "Date simulée AAAA-MM-JJ (vide = aujourd'hui)"
         default: ""
@@ -31,9 +35,21 @@ jobs:
           node-version: "22"
       - name: Outils (ffmpeg, polices arabes de secours)
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-core > /dev/null
+      - name: Vérifier le jeton seulement (verifier = 1)
+        if: github.event.inputs.verifier == '1'
+        run: node tools/monagent_post.mjs
+        env:
+          VERIFIER: "1"
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          MONAGENT_FB_PAGE_ID: ${{ secrets.MONAGENT_FB_PAGE_ID }}
+          MONAGENT_FB_PAGE_TOKEN: ${{ secrets.MONAGENT_FB_PAGE_TOKEN }}
+          MONAGENT_IG_USER_ID: ${{ secrets.MONAGENT_IG_USER_ID }}
       - name: Test du robot (données du site en ligne)
+        if: github.event.inputs.verifier != '1'
         run: node tools/test_monagent_post.mjs
       - name: Fabriquer l'image et la légende du jour
+        if: github.event.inputs.verifier != '1'
         run: node tools/monagent_post.mjs
         env:
           PHASE: fabriquer
@@ -50,7 +66,7 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
       - name: Enregistrer l'image dans le dépôt (servie par clicvia.com, lue là par Facebook et Instagram)
-        if: github.event.inputs.essai != '1'
+        if: github.event.inputs.essai != '1' && github.event.inputs.verifier != '1'
         run: |
           git config user.name "robot-monagent"
           git config user.email "robot-monagent@users.noreply.github.com"
@@ -61,7 +77,7 @@ jobs:
           for essai in 1 2 3 4; do git pull --rebase -X theirs --autostash -q && git push -q && exit 0; sleep $((essai * 5)); done
           echo "ÉCHEC : image non enregistrée (rien ne peut être publié)"; exit 1
       - name: Publier (Facebook ; Instagram si Mon agent a son compte)
-        if: github.event.inputs.essai != '1'
+        if: github.event.inputs.essai != '1' && github.event.inputs.verifier != '1'
         run: node tools/monagent_post.mjs
         env:
           PHASE: publier
@@ -72,7 +88,7 @@ jobs:
           MONAGENT_FB_PAGE_TOKEN: ${{ secrets.MONAGENT_FB_PAGE_TOKEN }}
           MONAGENT_IG_USER_ID: ${{ secrets.MONAGENT_IG_USER_ID }}
       - name: Noter les liens de la publication
-        if: always() && github.event.inputs.essai != '1'
+        if: always() && github.event.inputs.essai != '1' && github.event.inputs.verifier != '1'
         run: |
           git add donnees/monagent-posts.json
           git diff --cached --quiet && exit 0

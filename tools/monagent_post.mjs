@@ -384,6 +384,30 @@ async function attendreEnLigne(url, minutes = 8) {
   }
   return false;
 }
+// 11/11/2026 : le jeton collé le 10/11 était un jeton D'UNE HEURE (dernier « Generate Access Token » sans l'étape « Étendre », comme le 28/10
+// pour Clicvia) : deux publications perdues avec une erreur illisible (code 190). Maintenant, AVANT de publier, le jeton est examiné
+// (Facebook /debug_token) : un jeton qui expire = message clair avec la marche à suivre ; VERIFIER=1 = seulement cet examen.
+async function examinerJeton() {
+  const page = process.env.MONAGENT_FB_PAGE_ID || process.env.FB_PAGE_ID, jeton = process.env.MONAGENT_FB_PAGE_TOKEN || process.env.FB_PAGE_TOKEN;
+  if (!page || !jeton) throw new Error("secrets FB_PAGE_ID / FB_PAGE_TOKEN absents : rien n'est publié");
+  let d;
+  try { d = (await api("GET", `debug_token?input_token=${encodeURIComponent(jeton)}`, jeton)).data || {}; }
+  catch (e) {
+    if (/code 190/.test(e.message)) throw new Error("JETON EXPIRÉ ou invalide — refaire le jeton : Explorateur de l'API Graph → Generate Access Token → ⓘ → Ouvrir dans l'outil Token d'accès → « Étendre le token d'accès » (OBLIGATOIRE) → coller le jeton ÉTENDU dans l'Explorateur → <numéro de la page>?fields=access_token → vérifier « Expiration : Jamais » dans le débogueur → secret MONAGENT_FB_PAGE_TOKEN (fiche GERER SANS CLAUDE / mon agent immobilier)");
+    console.log("examen du jeton impossible (" + e.message + ") : on tente la publication"); return;
+  }
+  const expire = d.expires_at ? new Date(d.expires_at * 1000) : null;
+  const manque = ["pages_manage_posts", "pages_read_engagement", "instagram_basic", "instagram_content_publish"].filter(x => (d.scopes || []).length && !(d.scopes || []).includes(x));
+  console.log(`jeton : type ${d.type || "?"}, expiration : ${expire ? expire.toISOString().slice(0, 16).replace("T", " ") + " UTC" : "jamais"}, valide : ${d.is_valid}` + (manque.length ? `, autorisations manquantes : ${manque.join(", ")}` : ""));
+  if (d.is_valid === false) throw new Error("JETON INVALIDE (refusé par Facebook) : refaire le jeton — voir la fiche GERER SANS CLAUDE / mon agent immobilier");
+  if (expire) throw new Error(`JETON D'UNE DURÉE LIMITÉE (expire le ${expire.toISOString().slice(0, 16).replace("T", " ")} UTC) : l'étape « Étendre le token d'accès » a été manquée. Refaire : Generate Access Token → ⓘ → Ouvrir dans l'outil Token d'accès → Étendre → coller le jeton étendu → <numéro de la page>?fields=access_token → débogueur « Expiration : Jamais » → secret MONAGENT_FB_PAGE_TOKEN`);
+  if (manque.length) throw new Error("JETON SANS LES AUTORISATIONS " + manque.join(", ") + " : les cocher dans l'Explorateur avant Generate Access Token");
+  if (process.env.VERIFIER === "1") {
+    const p = await api("GET", `${page}?fields=name,instagram_business_account{username}`, jeton);
+    console.log(`page : ${p.name} ; Instagram relié : @${(p.instagram_business_account || {}).username || "?"} (secret MONAGENT_IG_USER_ID : ${process.env.MONAGENT_IG_USER_ID || "absent"})`);
+  }
+}
+
 async function publierFacebook(imageUrl, texte, repere) {
   const page = process.env.MONAGENT_FB_PAGE_ID || process.env.FB_PAGE_ID, jeton = process.env.MONAGENT_FB_PAGE_TOKEN || process.env.FB_PAGE_TOKEN;
   if (!page || !jeton) throw new Error("secrets FB_PAGE_ID / FB_PAGE_TOKEN absents : rien n'est publié");
@@ -452,6 +476,7 @@ async function publier(date) {
   if (post.fb) { console.log("déjà publiée : " + post.fb); return; }
   const textes = readFileSync(join(DOSSIER, date + ".txt"), "utf8").split("\n\n=== Instagram ===\n");
   const imageUrl = HOTE_IMAGES + post.image, repere = `monagent-${date}`;
+  await examinerJeton();
   if (!(await attendreEnLigne(imageUrl))) throw new Error("image toujours pas en ligne sur clicvia.com après 8 minutes : " + imageUrl);
   post.fb = await publierFacebook(imageUrl, textes[0], repere);
   try { post.ig = await publierInstagram(imageUrl, textes[1], repere); } catch (e) { console.log("ÉCHEC Instagram : " + e.message); post.ig_erreur = e.message; }
@@ -460,7 +485,8 @@ async function publier(date) {
 
 async function main() {
   const date = process.env.JOUR || new Date().toISOString().slice(0, 10);
-  const phase = process.env.PHASE || (process.env.ESSAI === "1" ? "fabriquer" : "fabriquer");
+  const phase = process.env.PHASE || "fabriquer";
+  if (process.env.VERIFIER === "1") { await examinerJeton(); console.log("Vérification terminée : jeton durable, rien n'est publié."); return; }
   if (phase === "fabriquer") { fabriquer(date, chargerDonnees(), chargerComprendre()); if (process.env.ESSAI === "1") console.log("ESSAI : rien n'est publié."); }
   else if (phase === "publier") await publier(date);
   else throw new Error("PHASE inconnue : " + phase);

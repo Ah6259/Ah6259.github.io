@@ -61,3 +61,10 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   commenter) ; reporté dans tools/monagent_post.mjs : point « en ligne » + avatar « M » devant les bulles de l'agent, curseur de saisie et
   pastilles « français · عربي · tounsi » sous la barre de recherche (mise en page en colonne : plus de chevauchement quand la question
   tient sur deux lignes). Un changement de design = le canevas ET le robot, ensemble.
+- **11/11/2026 — publications de Mon agent des 10 et 11/11 PERDUES : jeton d'une heure** (le dernier « Generate Access Token » du 10/11 à
+  00h40 n'était pas étendu ; la page publiée à 00h58 l'a été dans l'heure, puis « Session has expired », code 190 : même panne qu'au 28/10
+  pour Clicvia). Réparé : `examinerJeton()` (Facebook /debug_token) AVANT chaque publication → message clair « JETON D'UNE DURÉE LIMITÉE :
+  refaire l'étape Étendre » au lieu d'une erreur illisible ; entrée `verifier = 1` du robot (jeton durable, autorisations, page et Instagram
+  reliés, sans rien publier), comme reels.yml. Horaires : GitHub a lancé le passage de 13h20 avec 7 h de retard deux jours de suite
+  (19h42 UTC) → cron 12:17 UTC (minute inhabituelle) + 2e chance 14:41 UTC (déjà publié = rien à faire ; échec du midi = nouvel essai).
+  Le jeton est à REFAIRE par Ahmed (étape « Étendre » puis débogueur « Expiration : Jamais » avant de coller le secret).
