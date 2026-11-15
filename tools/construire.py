@@ -43,6 +43,10 @@ TEXTES = {
     "a_propos": {"fr": "Comment fonctionne le site ?", "ar": "كيف يعمل الموقع؟", "en": "How does the site work?"},
     # 28/10/2026 (Ahmed) : petit lien discret vers son tableau de bord privé (protégé par un code, non suivi par Google)
     "prive": {"fr": "Espace privé", "ar": "فضاء خاص", "en": "Private area"},
+    # 15/11/2026 (Ahmed : « ajoute un lien pour mon frère avec le site Prix des Eaux ») : lien discret sous la carte Prix des Eaux vers la page
+    # PRIVÉE (code) de suivi des prix des gaufrettes, biscuits et chips ; non suivi par Google (rel=nofollow, page noindex)
+    "prive_snacks": {"fr": "🔒 Espace privé : prix des gaufrettes, biscuits et chips", "ar": "🔒 فضاء خاص: أسعار الوافل والبسكويت والشيبس",
+                     "en": "🔒 Private area: wafer, biscuit and crisps prices"},
     # 28/10/2026 (Ahmed) : lien vers les statistiques de visite (GoatCounter ; connexion obligatoire, rien de visible sans compte)
     "stats": {"fr": "Statistiques", "ar": "الإحصائيات", "en": "Statistics"},
     "tous": {"fr": "Tous nos services", "ar": "كل خدماتنا", "en": "All our services"},
@@ -274,6 +278,8 @@ def page(l, gabarit, jour):
         etiquette = f' <small class="langues-site">{E(langues_du_site(regle))}</small>' if l == "en" else ""
         corps.append(f'  <a class="site" href="{adresse(sous, regle, l)}"><img class="ic" src="/assets/sites/{icone}.svg" alt="" width="52" height="52" loading="lazy">\n'
                      f'    <span><h2>{E(nom[l])}{etiquette}</h2><p>{E(desc[l])}</p></span><span class="fl">{"←" if l == "ar" else "→"}</span></a>')
+        if sous == "prix-eau":
+            corps.append(f'  <a class="lien-prive" href="/tableau-bord/prix-snacks/" rel="nofollow">{E(T("prive_snacks"))}</a>')
     corps.append("</main>\n\n" + pied(l))
     return tete + "<body>\n" + "\n".join(corps)
 
@@ -306,7 +312,8 @@ A_PROPOS = {
                 "La plupart de nos services sont gratuits. Certains sites proposent en plus une partie payante (un « Pass »). Elle est toujours indiquée clairement sur le site concerné."]),
             ("Vos données", [
                 "Le portail ne vous demande rien : ni nom, ni téléphone, ni e-mail.",
-                "Les statistiques de visite sont anonymes, sans cookies (GoatCounter). Elles comptent seulement les pages vues et les clics sur les boutons."]),
+                "Les statistiques de visite sont anonymes, sans cookies (GoatCounter). Elles comptent seulement les pages vues et les clics sur les boutons.",
+                "Sous la carte Prix des Eaux, le lien « Espace privé : prix des gaufrettes, biscuits et chips » ouvre une page privée de suivi des prix, protégée par un code."]),
             ("Mises à jour automatiques", [
                 "La liste des sites, les trois langues, le plan du site et cette page sont fabriqués automatiquement.",
                 "Quand une page change, les moteurs de recherche sont prévenus automatiquement. Chaque site met à jour ses propres données tout seul."]),
@@ -337,7 +344,8 @@ A_PROPOS = {
                 "أغلب خدماتنا مجانية. بعض المواقع تقترح جزءًا بمقابل (Pass)، ويكون مذكورًا بوضوح في الموقع المعني."]),
             ("معطياتك", [
                 "البوابة لا تطلب منك شيئًا: لا اسم ولا هاتف ولا بريد إلكتروني.",
-                "إحصائيات الزيارة مجهولة الهوية ودون ملفات تعريف الارتباط (GoatCounter). تحسب فقط الصفحات المزارة والنقرات على الأزرار."]),
+                "إحصائيات الزيارة مجهولة الهوية ودون ملفات تعريف الارتباط (GoatCounter). تحسب فقط الصفحات المزارة والنقرات على الأزرار.",
+                "تحت بطاقة أسعار المياه، يفتح رابط «فضاء خاص: أسعار الوافل والبسكويت والشيبس» صفحة خاصة لمتابعة الأسعار، محمية برمز."]),
             ("تحيين آلي", [
                 "قائمة المواقع واللغات الثلاث وخريطة الموقع وهذه الصفحة تُصنع آليًا.",
                 "عندما تتغيّر صفحة، تُعلَم محركات البحث آليًا. وكل موقع يحيّن معطياته بنفسه."]),
@@ -368,7 +376,8 @@ A_PROPOS = {
                 "Most of our services are free. Some websites also offer a paid part (a “Pass”), always clearly shown on the website concerned."]),
             ("Your data", [
                 "The portal asks you for nothing: no name, no phone number, no e-mail.",
-                "Visit statistics are anonymous, with no cookies (GoatCounter). They only count pages viewed and button clicks."]),
+                "Visit statistics are anonymous, with no cookies (GoatCounter). They only count pages viewed and button clicks.",
+                "Under the Water prices card, the “Private area: wafer, biscuit and crisps prices” link opens a private price-tracking page, protected by a code."]),
             ("Automatic updates", [
                 "The list of websites, the three languages, the sitemap and this page are built automatically.",
                 "When a page changes, search engines are notified automatically. Each website updates its own data by itself."]),
