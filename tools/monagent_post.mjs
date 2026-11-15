@@ -402,6 +402,14 @@ async function examinerJeton() {
   if (d.is_valid === false) throw new Error("JETON INVALIDE (refusé par Facebook) : refaire le jeton — voir la fiche GERER SANS CLAUDE / mon agent immobilier");
   if (expire) throw new Error(`JETON D'UNE DURÉE LIMITÉE (expire le ${expire.toISOString().slice(0, 16).replace("T", " ")} UTC) : l'étape « Étendre le token d'accès » a été manquée. Refaire : Generate Access Token → ⓘ → Ouvrir dans l'outil Token d'accès → Étendre → coller le jeton étendu → <numéro de la page>?fields=access_token → débogueur « Expiration : Jamais » → secret MONAGENT_FB_PAGE_TOKEN`);
   if (manque.length) throw new Error("JETON SANS LES AUTORISATIONS " + manque.join(", ") + " : les cocher dans l'Explorateur avant Generate Access Token");
+  // 15/11/2026 : un jeton « Expiration : Jamais » garde quand même un ACCÈS AUX DONNÉES de 90 jours (data_access_expires_at, renouvelé
+  // quand Ahmed réutilise l'application). Prévenir 15 jours avant, dans le journal ET en avertissement GitHub, pour refaire le jeton à temps.
+  const acces = d.data_access_expires_at ? new Date(d.data_access_expires_at * 1000) : null;
+  if (acces) {
+    const jours = Math.round((acces - Date.now()) / 864e5);
+    console.log(`accès aux données jusqu'au ${acces.toISOString().slice(0, 10)} (dans ${jours} jours)`);
+    if (jours <= 15) console.log(`::warning::Mon agent : l'accès aux données du jeton Facebook finit le ${acces.toISOString().slice(0, 10)} : refaire le jeton avant (fiche GERER SANS CLAUDE / mon agent immobilier)`);
+  }
   if (process.env.VERIFIER === "1") {
     const p = await api("GET", `${page}?fields=name,instagram_business_account{username}`, jeton);
     console.log(`page : ${p.name} ; Instagram relié : @${(p.instagram_business_account || {}).username || "?"} (secret MONAGENT_IG_USER_ID : ${process.env.MONAGENT_IG_USER_ID || "absent"})`);
