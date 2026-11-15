@@ -61,6 +61,8 @@ THEMES = {
     "papiers": {"fr": "Papiers, démarches et justice", "ar": "الوثائق والإجراءات والعدالة", "en": "Paperwork, procedures and law"},
     "travail": {"fr": "Travail, argent et entreprises", "ar": "الشغل والمال والمؤسسات", "en": "Work, money and business"},
     "maison": {"fr": "Maison, famille et artisans", "ar": "المنزل والعائلة والحرفيون", "en": "Home, family and tradespeople"},
+    # 15/11/2026 (Ahmed : « on aura une section pour les sites des prix ») : Prix des Eaux + espace privé des prix des snacks + futurs sites de prix
+    "prix": {"fr": "Prix et achats", "ar": "الأسعار والمشتريات", "en": "Prices and shopping"},
     "religion": {"fr": "Religion et patrimoine", "ar": "الدين والتراث", "en": "Religion and heritage"},
     "recherche": {"fr": "Enseignants et chercheurs", "ar": "الأساتذة والباحثون", "en": "Teachers and researchers"},
 }
@@ -120,10 +122,6 @@ SITES = [
      {"fr": "Décrivez en une phrase le bien que vous cherchez, en français, en arabe ou en tunisien : toutes les annonces de Tunisie qui correspondent.",
       "ar": "صف في جملة واحدة العقار الذي تبحث عنه، بالعربية أو الفرنسية أو التونسية: كل إعلانات تونس المطابقة.",
       "en": "Describe the property you want in one sentence, in French, Arabic or Tunisian: every matching listing in Tunisia."}),
-    ("maison", "prix-eau", "prix-eaux-tunisie", FR_AR,
-     {"fr": "Prix des Eaux de Tunisie", "ar": "أسعار المياه في تونس", "en": "Water prices in Tunisia"},
-     {"fr": "Les prix de l'eau minérale dans les magasins, comparés chaque jour.", "ar": "أسعار المياه المعدنية في المغازات، مقارنة كل يوم.",
-      "en": "Mineral water prices in the shops, compared every day."}),
     ("maison", "comptes", "mes-comptes-tunisie", FR_AR,
      {"fr": "Mes comptes", "ar": "حساباتي", "en": "My accounts"},
      {"fr": "Loyers, salaire, dépenses, impôt et rappels sur votre téléphone. Gratuit 3 mois.", "ar": "الكراءات، الأجر، المصاريف، الضريبة وتذكيرات على هاتفك. مجانًا لمدة 3 أشهر.",
@@ -136,6 +134,10 @@ SITES = [
      {"fr": "Mariage Tunisie", "ar": "الزواج تونس", "en": "Wedding Tunisia"},
      {"fr": "Salles des fêtes, photographes, traiteurs, pâtisseries, coiffure et beauté.", "ar": "قاعات أفراح، مصورون، ممونون، حلويات، حلاقة وتجميل.",
       "en": "Wedding halls, photographers, caterers, pastry shops, hair and beauty."}),
+    ("prix", "prix-eau", "prix-eaux-tunisie", FR_AR,
+     {"fr": "Prix des Eaux de Tunisie", "ar": "أسعار المياه في تونس", "en": "Water prices in Tunisia"},
+     {"fr": "Les prix de l'eau minérale dans les magasins, comparés chaque jour.", "ar": "أسعار المياه المعدنية في المغازات، مقارنة كل يوم.",
+      "en": "Mineral water prices in the shops, compared every day."}),
     ("religion", "mosquees", "mosquees-tunisie", {"ar": "dossier", "en": "dossier", "plus": 21},
      {"fr": "Mosquées en Tunisie", "ar": "مساجد تونس", "en": "Mosques in Tunisia"},
      {"fr": "Toutes les mosquées et salles de prière sur une carte, la plus proche de vous, et l'histoire des grandes mosquées (21 langues).",
@@ -294,7 +296,7 @@ A_PROPOS = {
         "intro": "Clicvia est un portail : une seule page qui rassemble {n} sites gratuits pour la Tunisie. Voici comment il marche.",
         "sections": [
             ("À quoi sert Clicvia ?", [
-                "Il vous montre tous nos services en un coup d'œil, rangés par thème : permis et voiture, papiers, travail, maison, religion, enseignants et chercheurs.",
+                "Il vous montre tous nos services en un coup d'œil, rangés par thème : permis et voiture, papiers, travail, maison, prix et achats, religion, enseignants et chercheurs.",
                 "Touchez une carte pour ouvrir le site. Chaque carte donne le nom du site et ce qu'il fait."]),
             ("Comment s'en servir", [
                 "- Les cartes des sites : une carte par site, rangées par thème. Elle ouvre le site dans votre langue quand il l'a.",
@@ -313,7 +315,7 @@ A_PROPOS = {
             ("Vos données", [
                 "Le portail ne vous demande rien : ni nom, ni téléphone, ni e-mail.",
                 "Les statistiques de visite sont anonymes, sans cookies (GoatCounter). Elles comptent seulement les pages vues et les clics sur les boutons.",
-                "Sous la carte Prix des Eaux, le lien « Espace privé : prix des gaufrettes, biscuits et chips » ouvre une page privée de suivi des prix, protégée par un code."]),
+                "Dans la section « Prix et achats », sous la carte Prix des Eaux, le lien « Espace privé : prix des gaufrettes, biscuits et chips » ouvre une page privée de suivi des prix, protégée par un code."]),
             ("Mises à jour automatiques", [
                 "La liste des sites, les trois langues, le plan du site et cette page sont fabriqués automatiquement.",
                 "Quand une page change, les moteurs de recherche sont prévenus automatiquement. Chaque site met à jour ses propres données tout seul."]),
@@ -326,7 +328,7 @@ A_PROPOS = {
         "intro": "Clicvia بوابة: صفحة واحدة تجمع {n} موقعًا مجانيًا لتونس. إليك كيف تعمل.",
         "sections": [
             ("ما فائدة Clicvia؟", [
-                "تعرض لك كل خدماتنا بنظرة واحدة، مرتّبة حسب الموضوع: الرخصة والسيارة، الوثائق، الشغل، المنزل، الدين، الأساتذة والباحثون.",
+                "تعرض لك كل خدماتنا بنظرة واحدة، مرتّبة حسب الموضوع: الرخصة والسيارة، الوثائق، الشغل، المنزل، الأسعار والمشتريات، الدين، الأساتذة والباحثون.",
                 "اضغط على بطاقة لفتح الموقع. كل بطاقة تذكر اسم الموقع وما يقدّمه."]),
             ("كيف تستعملها", [
                 "- بطاقات المواقع: بطاقة لكل موقع، مرتّبة حسب الموضوع. تفتح الموقع بلغتك إن وُجدت.",
@@ -345,7 +347,7 @@ A_PROPOS = {
             ("معطياتك", [
                 "البوابة لا تطلب منك شيئًا: لا اسم ولا هاتف ولا بريد إلكتروني.",
                 "إحصائيات الزيارة مجهولة الهوية ودون ملفات تعريف الارتباط (GoatCounter). تحسب فقط الصفحات المزارة والنقرات على الأزرار.",
-                "تحت بطاقة أسعار المياه، يفتح رابط «فضاء خاص: أسعار الوافل والبسكويت والشيبس» صفحة خاصة لمتابعة الأسعار، محمية برمز."]),
+                "في قسم «الأسعار والمشتريات»، تحت بطاقة أسعار المياه، يفتح رابط «فضاء خاص: أسعار الوافل والبسكويت والشيبس» صفحة خاصة لمتابعة الأسعار، محمية برمز."]),
             ("تحيين آلي", [
                 "قائمة المواقع واللغات الثلاث وخريطة الموقع وهذه الصفحة تُصنع آليًا.",
                 "عندما تتغيّر صفحة، تُعلَم محركات البحث آليًا. وكل موقع يحيّن معطياته بنفسه."]),
@@ -358,7 +360,7 @@ A_PROPOS = {
         "intro": "Clicvia is a portal: one page that brings together {n} free websites for Tunisia. Here is how it works.",
         "sections": [
             ("What is Clicvia for?", [
-                "It shows all our services at a glance, sorted by theme: driving and car, paperwork, work, home, religion, teachers and researchers.",
+                "It shows all our services at a glance, sorted by theme: driving and car, paperwork, work, home, prices and shopping, religion, teachers and researchers.",
                 "Tap a card to open the website. Each card gives the website's name and what it does."]),
             ("How to use it", [
                 "- Website cards: one card per website, sorted by theme. It opens the website in your language when it has it.",
@@ -377,7 +379,7 @@ A_PROPOS = {
             ("Your data", [
                 "The portal asks you for nothing: no name, no phone number, no e-mail.",
                 "Visit statistics are anonymous, with no cookies (GoatCounter). They only count pages viewed and button clicks.",
-                "Under the Water prices card, the “Private area: wafer, biscuit and crisps prices” link opens a private price-tracking page, protected by a code."]),
+                "In the “Prices and shopping” section, under the Water prices card, the “Private area: wafer, biscuit and crisps prices” link opens a private price-tracking page, protected by a code."]),
             ("Automatic updates", [
                 "The list of websites, the three languages, the sitemap and this page are built automatically.",
                 "When a page changes, search engines are notified automatically. Each website updates its own data by itself."]),
