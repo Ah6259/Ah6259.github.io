@@ -50,7 +50,7 @@ check("fabrication : index.html est bien celui de tools/construire.py (gabarit +
     ["gratuit / partie payante (Pass) des sites", true, { fr: /gratuit[\s\S]*« Pass »/, ar: /Pass/, en: /free[\s\S]*“Pass”/ }],
     ["sites indépendants, non officiels", /indépendants, non officiels/.test(acc), { fr: /indépendants et non officiels/, ar: /مستقلة وغير رسمية/, en: /independent and unofficial/ }],
     ["section « Prix et achats » (sites de prix)", /<h2 class="theme">Prix et achats<\/h2>\s*<a class="site" href="https:\/\/prix-eau\.clicvia\.com\/"/.test(acc), { fr: /prix et achats/, ar: /الأسعار والمشتريات/, en: /prices and shopping/ }],
-    ["lien privé des prix des gaufrettes, biscuits et chips (sous Prix des Eaux)", /class="lien-prive" href="\/tableau-bord\/prix-snacks\/" rel="nofollow"/.test(acc), { fr: /Espace privé : prix des gaufrettes/, ar: /أسعار الوافل/, en: /wafer, biscuit and crisps/ }],
+    ["lien privé des prix des gaufrettes, biscuits et chips (sous Prix des Eaux)", /class="lien-prive" href="\/tableau-bord\/prix-snacks\/" rel="nofollow"/.test(acc), { fr: /Espace privé des prix/, ar: /الفضاء الخاص بالأسعار/, en: /Private price area/ }],
     ["fabrication automatique (construire.py)", /def page_a_propos/.test(cons), { fr: /fabriqués automatiquement/, ar: /تُصنع آليًا/, en: /built automatically/ }]];
   const manque = [];
   for (const [nom, sur, re] of FONCTIONS) for (const l of Object.keys(ap)) if (sur && !re[l].test(txt(ap[l]))) manque.push(`${nom} (${l})`);
