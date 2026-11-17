@@ -68,3 +68,8 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   reliés, sans rien publier), comme reels.yml. Horaires : GitHub a lancé le passage de 13h20 avec 7 h de retard deux jours de suite
   (19h42 UTC) → cron 12:17 UTC (minute inhabituelle) + 2e chance 14:41 UTC (déjà publié = rien à faire ; échec du midi = nouvel essai).
   Le jeton est à REFAIRE par Ahmed (étape « Étendre » puis débogueur « Expiration : Jamais » avant de coller le secret).
+- **17/11/2026 — page 404 qui CHERCHE (Ahmed : « Page introuvable » fait partir le visiteur)** : `assets/404.js` affiche « Recherche de la
+  page… », lit la liste des sites sur l'accueil (un nouveau site est trouvé seul), demande l'adresse à chaque sous-domaine (HEAD ; GitHub
+  Pages répond `Access-Control-Allow-Origin: *`) et y renvoie dès qu'un site l'a ; « Page introuvable » seulement si aucun ne l'a (8 s au plus).
+  CSP de 404.html : `connect-src 'self' https://*.clicvia.com`. Cas d'origine : `clicvia.com/fiche/…` = statistique GoatCounter d'un annuaire
+  comptée SANS son préfixe (compteur lancé avant page.js, réparé dans le moteur des annuaires). Test dans `tools/test_portail.mjs`.

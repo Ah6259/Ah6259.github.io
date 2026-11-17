@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'; connect-src 'self' https://*.clicvia.com">
 <title>Page introuvable — Clicvia</title>
 
 <style>
@@ -17,9 +17,9 @@ a.btn{display:inline-block;background:#2B3990;color:#fff;font-weight:700;text-de
 </head>
 <body>
 <main>
-  <h1>Page introuvable</h1>
+  <h1 id="titre">Page introuvable</h1>
   <p id="texte">Cette adresse n'existe pas (ou plus).</p>
-  <p dir="rtl" lang="ar">هذه الصفحة غير موجودة.</p>
+  <p id="texte-ar" dir="rtl" lang="ar">هذه الصفحة غير موجودة.</p>
   <a class="btn" href="https://clicvia.com/">Tous nos services · كل خدماتنا</a>
 </main>
 <script src="/assets/404.js"></script>

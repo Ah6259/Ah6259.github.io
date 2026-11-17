@@ -78,5 +78,10 @@ check("pied de page : lien « Instagram » vers @immobilier.clicvia à côté de
     .flatMap(m => [...m[2].matchAll(/"([^"]+)"/g)].map(v => v[1] === "instagram" ? "https://www.instagram.com/immobilier.clicvia/" : `https://${m[1]}.clicvia.com/${v[1]}`));
   check(`page vidéo : les ${attendues.length} vidéos des sites listées sous la vidéo du portail, une seule liste`,
     attendues.length >= 20 && attendues.every(u => pv.includes(`href="${u}"`)) && pv.split("<!-- liste des vidéos des sites").length === 2); }
+// 17/11/2026 (Ahmed : « Page introuvable » fait partir le visiteur) : la page 404 CHERCHE l'adresse sur nos sites avant de dire « introuvable »
+{ const h = lire("404.html"), js = lire("assets/404.js");
+  check("page 404 : cherche la page sur nos sites (« Recherche de la page… »), CSP qui le permet, « introuvable » seulement après",
+    /connect-src 'self' https:\/\/\*\.clicvia\.com/.test(h) && /id="titre"/.test(h) && /id="texte-ar"/.test(h) &&
+    js.includes("Recherche de la page") && /method: "HEAD"/.test(js) && js.includes('fetch("/"')); }
 console.log(pb ? `\n${pb} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(pb ? 1 : 0);
