@@ -83,5 +83,13 @@ check("pied de page : lien « Instagram » vers @immobilier.clicvia à côté de
   check("page 404 : cherche la page sur nos sites (« Recherche de la page… »), CSP qui le permet, « introuvable » seulement après",
     /connect-src 'self' https:\/\/\*\.clicvia\.com/.test(h) && /id="titre"/.test(h) && /id="texte-ar"/.test(h) &&
     js.includes("Recherche de la page") && /method: "HEAD"/.test(js) && js.includes('fetch("/"')); }
+// 17/11/2026 (20 points d'Ahmed, règle commune § 58) : pages Confidentialité et Conditions COMMUNES à tous les sites, en 3 langues,
+// liées en bas de chaque page du portail et dans le plan du site (les autres sites mettent un lien vers elles).
+for (const [fr, ar, en] of [["confidentialite/index.html", "ar/confidentialite/index.html", "en/confidentialite/index.html"], ["conditions/index.html", "ar/conditions/index.html", "en/conditions/index.html"]]) {
+  const slug = fr.split("/")[0];
+  check(`page ${slug} : 3 langues, loi 2004-63 / droit tunisien, dans le plan du site et en bas des 3 accueils`,
+    [fr, ar, en].every(f => existsSync(join(root, f)) && /<h1>/.test(lire(f))) && /2004-63|droit tunisien/.test(lire(fr)) && /2004|للقانون التونسي/.test(lire(ar)) &&
+    ["", "ar/", "en/"].every(l => lire("sitemap.xml").includes(`<loc>${BASE}${l}${slug}/</loc>`) && lire((l || "") + "index.html").includes(`href="/${l}${slug}/"`)));
+}
 console.log(pb ? `\n${pb} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(pb ? 1 : 0);

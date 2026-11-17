@@ -5,6 +5,7 @@
 Usage :  python tools/construire.py        puis  node tools/test_video.mjs  et  node tools/test_portail.mjs
 Ajouter un site : une ligne dans SITES (nom et description dans les 3 langues), son icône dans assets/sites/, relancer.
 NE PAS modifier index.html, ar/ ni en/ à la main : ils sont réécrits ici."""
+from pages_legales import CONFIDENTIALITE, CONDITIONS, MAJ
 import datetime, html, io, json, os, re
 
 ICI = os.path.dirname(os.path.abspath(__file__))
@@ -238,7 +239,7 @@ def pied(l):
     """Pied de page commun : Facebook, lien « Comment fonctionne le site ? » (règle commune § 44), mentions."""
     T = lambda k: TEXTES[k][l]
     return f'''<footer><p class="suivre"><a href="https://www.facebook.com/1327283777142447" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.3H7.7V13h2.7v8h3.1z"/></svg> {E(T("facebook"))}</a> <a class="ig" href="https://www.instagram.com/immobilier.clicvia/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM12 2.2c-2.7 0-3 0-4.1.1-1 .1-1.8.2-2.4.5-.7.3-1.2.6-1.8 1.2S2.8 5.2 2.6 5.9c-.3.6-.4 1.4-.5 2.4C2 9.4 2 9.7 2 12.4s0 3 .1 4.1c.1 1 .2 1.8.5 2.4.3.7.6 1.2 1.2 1.8s1.1.9 1.8 1.2c.6.3 1.4.4 2.4.5 1.1.1 1.4.1 4.1.1s3 0 4.1-.1c1-.1 1.8-.2 2.4-.5.7-.3 1.2-.6 1.8-1.2s.9-1.1 1.2-1.8c.3-.6.4-1.4.5-2.4.1-1.1.1-1.4.1-4.1s0-3-.1-4.1c-.1-1-.2-1.8-.5-2.4-.3-.7-.6-1.2-1.2-1.8s-1.1-.9-1.8-1.2c-.6-.3-1.4-.4-2.4-.5C15 2.2 14.7 2.2 12 2.2zm0 1.8c2.6 0 2.9 0 4 .1.9 0 1.5.2 1.8.3.5.2.8.4 1.1.7.3.3.6.7.7 1.1.1.3.3.9.3 1.8.1 1 .1 1.4.1 4s0 2.9-.1 4c0 .9-.2 1.5-.3 1.8-.2.5-.4.8-.7 1.1-.3.3-.7.6-1.1.7-.3.1-.9.3-1.8.3-1 .1-1.4.1-4 .1s-2.9 0-4-.1c-.9 0-1.5-.2-1.8-.3-.5-.2-.8-.4-1.1-.7-.3-.3-.6-.7-.7-1.1-.1-.3-.3-.9-.3-1.8-.1-1-.1-1.4-.1-4s0-2.9.1-4c0-.9.2-1.5.3-1.8.2-.5.4-.8.7-1.1.3-.3.7-.6 1.1-.7.3-.1.9-.3 1.8-.3 1-.1 1.4-.1 4-.1z"/></svg> {E(T("instagram"))}</a></p>
-<p class="pied-liens"><a href="{chemin_a_propos(l)}">{E(T("a_propos"))}</a> · <a href="{"/" if l == "fr" else "/" + l + "/"}">{E(T("tous"))}</a> · <a class="prive" href="/tableau-bord/" rel="nofollow">{E(T("prive"))}</a> · <a class="stats" href="https://prix-eaux-tunisie.goatcounter.com/" rel="nofollow noopener" target="_blank">{E(T("stats"))}</a></p>
+<p class="pied-liens"><a href="{chemin_a_propos(l)}">{E(T("a_propos"))}</a> · <a href="{chemin_page(l, "confidentialite")}">{E(CONFIDENTIALITE[l]["nom"])}</a> · <a href="{chemin_page(l, "conditions")}">{E(CONDITIONS[l]["nom"])}</a> · <a href="{"/" if l == "fr" else "/" + l + "/"}">{E(T("tous"))}</a> · <a class="prive" href="/tableau-bord/" rel="nofollow">{E(T("prive"))}</a> · <a class="stats" href="https://prix-eaux-tunisie.goatcounter.com/" rel="nofollow noopener" target="_blank">{E(T("stats"))}</a></p>
 {E(T("pied"))}</footer>
 </body>
 </html>
@@ -247,6 +248,10 @@ def pied(l):
 
 def chemin_a_propos(l):
     return "/a-propos/" if l == "fr" else "/" + l + "/a-propos/"
+
+
+def chemin_page(l, slug):
+    return "/" + slug + "/" if l == "fr" else "/" + l + "/" + slug + "/"
 
 
 def page(l, gabarit, jour):
@@ -394,18 +399,21 @@ def insecable(l, t):
     return re.sub(r" ([?!:;»])", "\u00a0\\1", re.sub(r"« ", "«\u00a0", t)) if l == "fr" else t
 
 
-def page_a_propos(l, gabarit):
-    A, T = A_PROPOS[l], (lambda k: TEXTES[k][l])
-    url_de = lambda x: BASE + ("" if x == "fr" else x + "/") + "a-propos/"
-    ld = {"@context": "https://schema.org", "@type": "AboutPage", "name": T("a_propos"), "url": url_de(l), "inLanguage": l,
+def page_a_propos(l, gabarit, A=None, slug="a-propos", type_ld="AboutPage"):
+    """Page de texte du portail : « Comment fonctionne le site ? » ; aussi Confidentialité et Conditions (17/11/2026, pages_legales.py)."""
+    T = lambda k: TEXTES[k][l]
+    A = A or A_PROPOS[l]
+    nom = A.get("nom") or T("a_propos")
+    url_de = lambda x: BASE + ("" if x == "fr" else x + "/") + slug + "/"
+    ld = {"@context": "https://schema.org", "@type": type_ld, "name": nom, "url": url_de(l), "inLanguage": l,
           "isPartOf": {"@type": "WebSite", "name": "Clicvia", "url": BASE}}
     tete = tete_page(l, gabarit, A["titre"], A["description"], A["titre"], A["description"], url_de, ld)
-    choix = "".join(f'<a href="{chemin_a_propos(x)}" lang="{code}" data-langue="{x}"{COURANT if x == l else ""}>{nom}</a>' for x, nom, code in NOM_LANGUE)
+    choix = "".join(f'<a href="{chemin_page(x, slug)}" lang="{code}" data-langue="{x}"{COURANT if x == l else ""}>{nom}</a>' for x, nom, code in NOM_LANGUE)
     I = lambda t: E(insecable(l, t))
     corps = [f'''<section class="hero hero-court"><div class="wrap">
   <nav class="langues" aria-label="{E(T("langue_aria"))}">{choix}</nav>
   <p class="marque"><a class="retour-portail" href="{"/" if l == "fr" else "/" + l + "/"}"><img class="logo-portail" src="/assets/logo.svg" alt="" width="64" height="64"><span lang="en" dir="ltr">Clicvia</span></a></p>
-  <h1>{I(T("a_propos"))}</h1>
+  <h1>{I(nom)}</h1>
   <p>{I(A["intro"].format(n=len(SITES)))}</p>
 </div></section>
 
@@ -423,6 +431,8 @@ def page_a_propos(l, gabarit):
             if ligne:
                 corps.append(f"<p>{I(ligne)}</p>")
         corps.append("</section>")
+    if A.get("maj"):
+        corps.append(f'<p class="ap-maj">{E(A["maj"])}</p>')
     corps.append(f'<p class="ap-retour"><a href="{"/" if l == "fr" else "/" + l + "/"}">{"→" if l == "ar" else "←"} {E(T("tous"))}</a></p>')
     corps.append("</main>\n\n" + pied(l))
     return tete + "<body>\n" + "\n".join(corps)
@@ -483,11 +493,14 @@ def main():
     for l in LANGUES:
         ecrire("index.html" if l == "fr" else l + "/index.html", page(l, gabarit, jour))
         ecrire(chemin_a_propos(l).strip("/") + "/index.html", page_a_propos(l, gabarit))
+        for slug, D in (("confidentialite", CONFIDENTIALITE), ("conditions", CONDITIONS)):   # 17/11/2026, règle commune § 58
+            ecrire(chemin_page(l, slug).strip("/") + "/index.html", page_a_propos(l, gabarit, dict(D[l], maj=MAJ[l]), slug, "WebPage"))
     liens = "".join(f'<xhtml:link rel="alternate" hreflang="{x}" href="{BASE if x == "fr" else BASE + x + "/"}"/>' for x in LANGUES) \
         + f'<xhtml:link rel="alternate" hreflang="x-default" href="{BASE}"/>'
     ecrire("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
            + "".join(f'<url><loc>{BASE if l == "fr" else BASE + l + "/"}</loc><lastmod>{jour}</lastmod>{liens}</url>\n' for l in LANGUES)
            + "".join(f'<url><loc>{BASE}{chemin_a_propos(l)[1:]}</loc><lastmod>{jour}</lastmod></url>\n' for l in LANGUES)
+           + "".join(f'<url><loc>{BASE}{chemin_page(l, x)[1:]}</loc></url>\n' for x in ("confidentialite", "conditions") for l in LANGUES)
            + f'  <url><loc>{BASE}video/</loc></url>\n</urlset>\n')
     # llms.txt : présentation du portail et de ses sites pour les assistants IA (référencement sur les IA, 13/10/2026)
     ia = ["# Clicvia — services pratiques gratuits pour la Tunisie", "", "> " + TEXTES["description"]["fr"], "",
