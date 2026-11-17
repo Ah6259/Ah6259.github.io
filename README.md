@@ -47,3 +47,9 @@ Tests : `node tools/test_video.mjs` et `node tools/test_portail.mjs`. `assets/la
 - **25/10/2026 — page « Comment fonctionne le site ? »** (règle commune § 44) : https://clicvia.com/a-propos/ (aussi `/ar/a-propos/`, `/en/a-propos/`),
   fabriquée par `python tools/construire.py` (textes `A_PROPOS`), lien dans le pied de page. À mettre à jour à chaque modification visible ;
   le test `FONCTIONS` de `tools/test_portail.mjs` échoue si une fonction du portail n'y est pas expliquée.
+
+- **17/11/2026 — 20 points d'Ahmed (règle commune § 58)** : pages COMMUNES à tous les sites **Confidentialité** (`/confidentialite/`, `/ar/…`,
+  `/en/…`) et **Conditions d'utilisation** (`/conditions/`…), textes dans `tools/pages_legales.py`, fabriquées par `construire.py` (même gabarit
+  que « Comment fonctionne le site ? »), liens dans `pied()`, dans le plan du site ; test dans `tools/test_portail.mjs`. Une donnée nouvelle
+  recueillie par un site = une ligne dans pages_legales.py (3 langues). **Page 404** (`404.html` + `assets/404.js`) : cherche l'adresse sur tous
+  nos sites (« Recherche de la page… ») avant « Page introuvable » ; les autres sites ont la même (`outils communs/page-404` de projets-ahmed).
