@@ -82,3 +82,5 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   (lien cliquable). Heure : 3 lancements tôt (02:13, 04:47, 08:23 UTC) et étape « Attendre l'heure de publication » (PHASE=attendre, fonction
   `attente()`) jusqu'à 12:20 UTC = 13h20 à Tunis ; après 20:30 UTC pas de publication (journal, pas de rouge) ; lancement à la main sans
   attente ; timeout 360 min (dépôt public : gratuit). Tests ajoutés (heure, format du Reel, musique propre, fabrication si ffmpeg est là).
+  Leçon (essai du 18/11) : une sortie d'étape SAUTÉE est vide, et GitHub compare vide == '0' (conversion en nombre) → toutes les étapes
+  sautées ; sortie en `oui`/`non`. Essai sur GitHub ensuite : 12/12 vérifications, Reel fabriqué. Règle : jamais 0/1 dans une sortie testée par `!=`.
