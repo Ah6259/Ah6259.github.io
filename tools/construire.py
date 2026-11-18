@@ -372,7 +372,7 @@ def page(l, gabarit, jour):
   <div class="actions"><button class="partager" type="button" data-partager-video aria-label="{E(T("partager_aria"))}">{SVG_PARTAGER}{E(T("partager"))}</button>
   <ul class="promesses">{promesses}</ul></div>
   </div>
-  <div class="motif" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="or"></i><i></i><i></i><i></i><i></i></div>
+  <div class="motif" aria-hidden="true"><i><s></s><s></s></i><i><s></s><s></s></i><i><s></s><s></s></i><i><s></s><s></s></i><i class="or"><s></s><s></s></i><i><s></s><s></s></i><i><s></s><s></s></i><i><s></s><s></s></i><i><s></s><s></s></i></div>
   </div>
 </section>
 <nav class="cats" aria-label="{E(T("cats_aria"))}"><div class="cats-in">{menu}</div></nav>

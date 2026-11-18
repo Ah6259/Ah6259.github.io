@@ -100,16 +100,32 @@ html[dir="rtl"] .partager{font-family:"Noto Kufi Arabic",Figtree,sans-serif}
 @media (min-width:960px){
   .barre{padding:22px 24px 0}
   .hero-in{grid-template-columns:minmax(0,1fr) auto;gap:64px;padding:64px 24px 80px}
-  .motif{display:grid;grid-template-columns:repeat(3,84px);gap:14px;transform:rotate(-6deg)}
-  .motif i{display:block;width:84px;height:84px;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
-  .motif i.or{background:linear-gradient(160deg,#F7C866,#E7A11E);border-color:transparent;box-shadow:0 22px 50px -14px rgba(242,179,61,.6)}
+  /* 19/11/2026 (Ahmed : « le cube du logo doit bouger en 3D ») : neuf petits cubes sur un plateau vu de biais (CSS 3D, sans image),
+     chaque cube = une face du dessus (la case) + 4 côtés (les ::before/::after des deux <s>) ; le plateau tourne lentement,
+     les cubes ondulent en vague, le cube doré monte au-dessus des autres en tournant. Mouvement réduit demandé : scène immobile. */
+  .motif{display:grid;grid-template-columns:repeat(3,96px);gap:18px;margin:8px 56px 0;transform-style:preserve-3d;
+    transform:perspective(1000px) rotateX(54deg) rotateZ(-34deg)}
+  .motif i{--h:0px;--c1:#1B2840;--c2:#142033;--c3:#0E1828;position:relative;display:block;width:96px;height:96px;border-radius:9px;
+    background:var(--c1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);transform-style:preserve-3d;transform:translateZ(var(--h))}
+  .motif i s{position:absolute;inset:0;transform-style:preserve-3d;text-decoration:none}
+  .motif i s::before,.motif i s::after{content:"";position:absolute;background:var(--c2)}
+  .motif i s:first-child::before{left:3px;right:3px;bottom:100%;height:30px;transform-origin:bottom;transform:rotateX(90deg);background:var(--c3)}
+  .motif i s:first-child::after{left:3px;right:3px;top:100%;height:30px;transform-origin:top;transform:rotateX(-90deg)}
+  .motif i s:last-child::before{top:3px;bottom:3px;left:100%;width:30px;transform-origin:left;transform:rotateY(90deg)}
+  .motif i s:last-child::after{top:3px;bottom:3px;right:100%;width:30px;transform-origin:right;transform:rotateY(-90deg);background:var(--c3)}
+  .motif i.or{--h:36px;--c1:#F4BC4A;--c2:#C98A17;--c3:#A06A0A;background:linear-gradient(160deg,#F9CD6E,#E9A21F);box-shadow:0 0 60px 6px rgba(242,179,61,.45)}
 }
 @media (min-width:960px) and (prefers-reduced-motion:no-preference){
-  .motif i{animation:case .7s cubic-bezier(.2,.7,.2,1) both}
-  .motif i:nth-child(2){animation-delay:.04s}.motif i:nth-child(3){animation-delay:.08s}.motif i:nth-child(4){animation-delay:.12s}
-  .motif i:nth-child(5){animation-delay:.32s}.motif i:nth-child(6){animation-delay:.16s}.motif i:nth-child(7){animation-delay:.2s}
-  .motif i:nth-child(8){animation-delay:.24s}.motif i:nth-child(9){animation-delay:.28s}
-  @keyframes case{from{opacity:0;transform:translateY(10px) scale(.94)}}
+  .motif{animation:plateau 48s linear infinite}
+  .motif i{animation:vague 5s ease-in-out infinite}
+  .motif i:nth-child(2),.motif i:nth-child(4){animation-delay:-.6s}
+  .motif i:nth-child(3),.motif i:nth-child(7){animation-delay:-1.2s}
+  .motif i:nth-child(6),.motif i:nth-child(8){animation-delay:-1.8s}
+  .motif i:nth-child(9){animation-delay:-2.4s}
+  .motif i.or{animation:cube-or 6s ease-in-out infinite}
+  @keyframes plateau{from{transform:perspective(1000px) rotateX(54deg) rotateZ(-34deg)}to{transform:perspective(1000px) rotateX(54deg) rotateZ(326deg)}}
+  @keyframes vague{0%,100%{transform:translateZ(0)}50%{transform:translateZ(18px)}}
+  @keyframes cube-or{0%{transform:translateZ(36px) rotateZ(0)}50%{transform:translateZ(64px) rotateZ(45deg)}100%{transform:translateZ(36px) rotateZ(90deg)}}
 }
 
 /* menu des catégories : reste en haut de l'écran */
@@ -207,7 +223,7 @@ footer.pied{margin-top:72px;background:var(--surface);border-top:1px solid var(-
   <div class="actions"><button class="partager" type="button" data-partager-video aria-label="شارك هذه المواقع"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>شارك</button>
   <ul class="promesses"><li>مجاني في الأساس</li><li>تحيين آلي</li><li>دون حساب ودون ملفات تعريف الارتباط</li></ul></div>
   </div>
-  <div class="motif" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="or"></i><i></i><i></i><i></i><i></i></div>
+  <div class="motif" aria-hidden="true"><i><s></s><s></s></i><i><s></s><s></s></i><i><s></s><s></s></i><i><s></s><s></s></i><i class="or"><s></s><s></s></i><i><s></s><s></s></i><i><s></s><s></s></i><i><s></s><s></s></i><i><s></s><s></s></i></div>
   </div>
 </section>
 <nav class="cats" aria-label="الأقسام"><div class="cats-in"><a href="#maison">السكن</a><a href="#travail">الشغل</a><a href="#papiers">الوثائق</a><a href="#argent">المال</a><a href="#prix">الأسعار</a><a href="#voiture">السيارة</a><a href="#pros">الحرفيون</a><a href="#religion">الدين</a><a href="#recherche">البحث</a></div></nav>

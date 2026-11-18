@@ -95,3 +95,6 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   Adresses, liens des 20 sites, H1, titres et descriptions SEO INCHANGÉS. Aperçu de partage : nombre de sites calculé (disait « 18 »).
   Analyse stratégique écrite : `etude strategie clicvia 2026-11-18.md` de projets-ahmed. Leçon : le test FONCTIONS ignorait en silence une
   fonction dont le repère avait disparu (la section « Prix et achats » aurait pu casser sans rouge) : c'est maintenant un échec.
+- **19/11/2026 — motif du logo en 3D (Ahmed : « le cube du logo doit bouger en 3D »)** : CSS 3D seul (tools/gabarit.html, bloc .motif) : 9 petits cubes
+  (face du dessus = la case, 4 côtés = ::before/::after des deux <s> de chaque case, balisage dans page()) sur un plateau vu de biais qui tourne en 48 s,
+  vague de hauteur, cube doré qui monte et tourne sur lui-même ; ordinateur seulement (≥ 960 px) ; mouvement réduit demandé = scène 3D immobile.
