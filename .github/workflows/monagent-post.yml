@@ -6,8 +6,11 @@
 name: monagent-post
 on:
   schedule:
-    - cron: "17 12 * * *"    # 13h17 à Tunis (GitHub a lancé avec 7 h de retard les 10 et 11/11 : minute inhabituelle + 2e chance)
-    - cron: "41 14 * * *"    # 15h41 à Tunis : 2e chance si le passage du midi n'a pas publié (déjà publié = rien à faire)
+    # 18/11/2026 : GitHub lance ce dépôt avec 7 à 9 h de retard (publications sorties entre 20h et minuit) -> 3 lancements tôt, et le
+    # robot ATTEND 13h20 à Tunis (étape « Attendre l'heure de publication ») ; après 21h30 à Tunis il ne publie pas (pas de rouge).
+    - cron: "13 2 * * *"
+    - cron: "47 4 * * *"
+    - cron: "23 8 * * *"
   workflow_dispatch:
     inputs:
       essai:
@@ -27,13 +30,20 @@ concurrency:
 jobs:
   publier:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 360   # attente de l'heure de publication comprise (dépôt public : minutes gratuites)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Attendre l'heure de publication (13h20 à Tunis ; lancement à la main = pas d'attente)
+        id: heure
+        if: github.event_name == 'schedule'
+        run: node tools/monagent_post.mjs && git pull -q --rebase --autostash
+        env:
+          PHASE: attendre
       - name: Outils (ffmpeg, polices arabes de secours)
+        if: steps.heure.outputs.publier != '0'
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-core > /dev/null
       - name: Vérifier le jeton seulement (verifier = 1)
         if: github.event.inputs.verifier == '1'
@@ -46,10 +56,10 @@ jobs:
           MONAGENT_FB_PAGE_TOKEN: ${{ secrets.MONAGENT_FB_PAGE_TOKEN }}
           MONAGENT_IG_USER_ID: ${{ secrets.MONAGENT_IG_USER_ID }}
       - name: Test du robot (données du site en ligne)
-        if: github.event.inputs.verifier != '1'
+        if: steps.heure.outputs.publier != '0' && github.event.inputs.verifier != '1'
         run: node tools/test_monagent_post.mjs
       - name: Fabriquer l'image et la légende du jour
-        if: github.event.inputs.verifier != '1'
+        if: steps.heure.outputs.publier != '0' && github.event.inputs.verifier != '1'
         run: node tools/monagent_post.mjs
         env:
           PHASE: fabriquer
@@ -62,11 +72,12 @@ jobs:
           name: publication-monagent
           path: |
             monagent/*.jpg
+            monagent/*.mp4
             monagent/*.txt
           retention-days: 7
           if-no-files-found: ignore
       - name: Enregistrer l'image dans le dépôt (servie par clicvia.com, lue là par Facebook et Instagram)
-        if: github.event.inputs.essai != '1' && github.event.inputs.verifier != '1'
+        if: steps.heure.outputs.publier != '0' && github.event.inputs.essai != '1' && github.event.inputs.verifier != '1'
         run: |
           git config user.name "robot-monagent"
           git config user.email "robot-monagent@users.noreply.github.com"
@@ -77,7 +88,7 @@ jobs:
           for essai in 1 2 3 4; do git pull --rebase -X theirs --autostash -q && git push -q && exit 0; sleep $((essai * 5)); done
           echo "ÉCHEC : image non enregistrée (rien ne peut être publié)"; exit 1
       - name: Publier (Facebook ; Instagram si Mon agent a son compte)
-        if: github.event.inputs.essai != '1' && github.event.inputs.verifier != '1'
+        if: steps.heure.outputs.publier != '0' && github.event.inputs.essai != '1' && github.event.inputs.verifier != '1'
         run: node tools/monagent_post.mjs
         env:
           PHASE: publier
@@ -88,7 +99,7 @@ jobs:
           MONAGENT_FB_PAGE_TOKEN: ${{ secrets.MONAGENT_FB_PAGE_TOKEN }}
           MONAGENT_IG_USER_ID: ${{ secrets.MONAGENT_IG_USER_ID }}
       - name: Noter les liens de la publication
-        if: always() && github.event.inputs.essai != '1' && github.event.inputs.verifier != '1'
+        if: always() && steps.heure.outputs.publier != '0' && github.event.inputs.essai != '1' && github.event.inputs.verifier != '1'
         run: |
           git add donnees/monagent-posts.json
           git diff --cached --quiet && exit 0

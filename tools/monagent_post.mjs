@@ -350,6 +350,48 @@ export function enJpeg(png, jpg) {
   return jpg;
 }
 
+// ---------------------------------------------------------------- Reel (18/11/2026, Ahmed : « zéro vue sur Instagram, alors que l'Immobilier a des vues »)
+// Cause : une PHOTO n'est montrée par Instagram qu'aux abonnés (le compte neuf n'en a pas) ; un REEL est proposé à des inconnus (onglet
+// Reels, Explorer) : c'est ce que fait l'Immobilier. L'image du jour devient donc un Reel vertical 1080 × 1920 de quelques secondes :
+// image sur le fond de sa palette, zoom lent, fondu, musique du DOMAINE PUBLIC (Vivaldi, concerto pour mandoline RV 425, Milan Baroque
+// Soloists, Wikimedia Commons, tools/monagent/musique-licence.json) — jamais le Bach des Reels de l'Immobilier (personne ne fait le lien).
+// L'extrait change chaque jour (règle § 49). Si la vidéo ne se fait pas ou est refusée : la photo est publiée comme avant (jamais rien perdu).
+export const VW = 1080, VH = 1920, VDUREE = 9, VHAUT = 170;
+export const MUSIQUE = join(RACINE, "tools", "monagent", "musique.m4a");
+export function commandeVideo(jpg, mp4, style, n, ff = process.env.FFMPEG || "ffmpeg") {
+  const fond = "0x" + PALETTES[style % PALETTES.length][0].slice(1);
+  const debut = (n * 7) % 48, avant = n % 2 === 0;           // extrait de musique et sens du zoom différents chaque jour
+  const z = avant ? `(1+0.05*t/${VDUREE})` : `(1.05-0.05*t/${VDUREE})`;
+  const filtres = [
+    `[0:v]fps=30,scale=w='trunc(${W}*${z}/2)*2':h=-2:eval=frame,crop=${W}:${H},setsar=1,scale=in_range=pc:out_range=tv,format=yuv420p[img]`,
+    `color=c=${fond}:s=${VW}x${VH}:d=${VDUREE}:r=30[fond]`,
+    `[fond][img]overlay=0:${VHAUT}:shortest=1,fade=t=in:st=0:d=0.5:color=${fond},format=yuv420p[v]`,
+    `[1:a]afade=t=in:d=0.6,afade=t=out:st=${VDUREE - 1.3}:d=1.3,volume=0.8[a]`];
+  return [ff, "-y", "-loglevel", "error", "-loop", "1", "-t", String(VDUREE), "-i", jpg, "-ss", String(debut), "-t", String(VDUREE), "-i", MUSIQUE,
+    "-filter_complex", filtres.join(";"), "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "medium", "-crf", "21", "-pix_fmt", "yuv420p", "-color_range", "tv",
+    "-r", "30", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", "-t", String(VDUREE), mp4];
+}
+export function enVideo(jpg, mp4, style, n) {
+  const [ff, ...args] = commandeVideo(jpg, mp4, style, n);
+  const r = spawnSync(ff, args, { timeout: 180000 });
+  if (r.status !== 0 || !existsSync(mp4) || statSync(mp4).size < 50000) throw new Error("vidéo non fabriquée — " + String(r.stderr || r.error || "").slice(-300));
+  return mp4;
+}
+
+// ---------------------------------------------------------------- heure de publication (18/11/2026)
+// GitHub lance les robots programmés de ce dépôt avec 7 à 9 HEURES de retard : la publication de « 13h20 » sortait entre 20h et minuit
+// (heure de Tunis), quand presque personne ne regarde. Maintenant : 3 lancements tôt le matin, et le robot ATTEND l'heure prévue
+// (12:20 UTC = 13h20 à Tunis). Trop tard (après 20:30 UTC = 21h30 à Tunis) : il ne publie pas, le journal le dit, pas de rouge ;
+// attente de plus de 5 h 30 (limite d'un passage GitHub : 6 h) : un passage suivant s'en charge. Lancement à la main : pas d'attente.
+export const CIBLE_UTC = 12 * 60 + 20, LIMITE_UTC = 20 * 60 + 30, ATTENTE_MAX = 330;
+export function attente(maintenant = new Date()) {
+  const m = maintenant.getUTCHours() * 60 + maintenant.getUTCMinutes();
+  if (m > LIMITE_UTC) return { publier: false, raison: `trop tard (${String(maintenant.getUTCHours()).padStart(2, "0")}h${String(maintenant.getUTCMinutes()).padStart(2, "0")} UTC) : pas de publication à une heure où personne ne regarde` };
+  const min = Math.max(0, CIBLE_UTC - m);
+  if (min > ATTENTE_MAX) return { publier: false, raison: `trop tôt (${min} min d'attente, plus qu'un passage GitHub ne permet) : un passage suivant publiera` };
+  return { publier: true, minutes: min };
+}
+
 // ---------------------------------------------------------------- légende
 export function lien(choix, source, date) {
   return `${SITE}?q=${encodeURIComponent(choix.texte)}&utm_source=${source}&utm_medium=post&utm_campaign=monagent-${date}`;
@@ -430,13 +472,34 @@ async function publierFacebook(imageUrl, texte, repere) {
   console.log("Publié sur Facebook : " + lienFb);
   return lienFb;
 }
-async function publierInstagram(imageUrl, texte, repere) {
+async function publierReel(ig, jeton, video, coverUrl, texte) {
+  const cont = await api("POST", `${ig}/media`, jeton, { media_type: "REELS", upload_type: "resumable", caption: texte, share_to_feed: "true", cover_url: coverUrl });
+  const corps = readFileSync(video);
+  const r = await fetch(cont.uri, { method: "POST", body: corps, headers: { Authorization: "OAuth " + jeton, offset: "0", file_size: String(corps.length) } });
+  if (!r.ok) throw new Error(`envoi de la vidéo refusé (${r.status})`);
+  for (let i = 0; i < 48; i++) {                 // Instagram prépare la vidéo (souvent 30 s à 2 min)
+    const e = await api("GET", `${cont.id}?fields=status_code,status`, jeton);
+    if (e.status_code === "FINISHED") break;
+    if (e.status_code === "ERROR" || e.status_code === "EXPIRED") throw new Error("Instagram a refusé la vidéo — " + e.status);
+    if (i === 47) throw new Error("vidéo toujours en préparation chez Instagram après 8 minutes");
+    await new Promise(x => setTimeout(x, 10000));
+  }
+  const pub = await api("POST", `${ig}/media_publish`, jeton, { creation_id: cont.id });
+  const lienIg = (await api("GET", `${pub.id}?fields=permalink`, jeton)).permalink || pub.id;
+  console.log("Publié sur Instagram (Reel) : " + lienIg);
+  return lienIg;
+}
+async function publierInstagram(imageUrl, texte, repere, video) {
   const ig = process.env.MONAGENT_IG_USER_ID, jeton = process.env.MONAGENT_FB_PAGE_TOKEN || process.env.FB_PAGE_TOKEN;
   if (!ig) { console.log("Instagram : pas encore de compte propre à Mon agent (secret MONAGENT_IG_USER_ID) — voir GERER SANS CLAUDE ; Facebook seulement."); return null; }
   try {
     const recents = (await api("GET", `${ig}/media?fields=caption&limit=12`, jeton)).data || [];
     if (recents.some(x => (x.caption || "").includes(repere))) { console.log("Instagram : déjà publiée"); return "déjà publiée"; }
   } catch (e) { console.log("Instagram : lecture des dernières publications impossible (" + e.message + ") — contrôle des doublons sauté"); }
+  if (video && existsSync(video)) {
+    try { return await publierReel(ig, jeton, video, imageUrl, texte); }
+    catch (e) { console.log("Instagram : Reel non publié (" + e.message + ") — la PHOTO est publiée à la place (rien n'est perdu)"); }
+  } else console.log("Instagram : pas de vidéo du jour — publication en photo");
   const cont = await api("POST", `${ig}/media`, jeton, { image_url: imageUrl, caption: texte });
   for (let i = 0; i < 30; i++) {
     const e = await api("GET", `${cont.id}?fields=status_code,status`, jeton);
@@ -468,6 +531,8 @@ export function fabriquer(date, D, comprendre, dossier = DOSSIER) {
   writeFileSync(base + ".html", page);
   photographier(base + ".html", base + ".png");
   enJpeg(base + ".png", base + ".jpg");
+  try { enVideo(base + ".jpg", base + ".mp4", style, n); console.log("Reel du jour : " + base + ".mp4"); }
+  catch (e) { console.log("Reel non fabriqué (" + e.message + ") : Instagram recevra la photo"); }
   writeFileSync(base + ".txt", textes.facebook + "\n\n=== Instagram ===\n" + textes.instagram, "utf8");
   const post = { date, style, question: choix.texte, langue: choix.langue, g: choix.g, type: choix.type, tr: choix.tr, pieces: choix.pieces, n: rep.n,
     palette: style % PALETTES.length, mise: MISES[style % MISES.length], police: POLICES[style % POLICES.length][0], image: date + ".jpg" };
@@ -487,7 +552,7 @@ async function publier(date) {
   await examinerJeton();
   if (!(await attendreEnLigne(imageUrl))) throw new Error("image toujours pas en ligne sur clicvia.com après 8 minutes : " + imageUrl);
   post.fb = await publierFacebook(imageUrl, textes[0], repere);
-  try { post.ig = await publierInstagram(imageUrl, textes[1], repere); } catch (e) { console.log("ÉCHEC Instagram : " + e.message); post.ig_erreur = e.message; }
+  try { post.ig = await publierInstagram(imageUrl, textes[1], repere, join(DOSSIER, date + ".mp4")); } catch (e) { console.log("ÉCHEC Instagram : " + e.message); post.ig_erreur = e.message; }
   writeFileSync(MEMOIRE, JSON.stringify(memoire, null, 0) + "\n");
 }
 
@@ -495,6 +560,13 @@ async function main() {
   const date = process.env.JOUR || new Date().toISOString().slice(0, 10);
   const phase = process.env.PHASE || "fabriquer";
   if (process.env.VERIFIER === "1") { await examinerJeton(); console.log("Vérification terminée : jeton durable, rien n'est publié."); return; }
+  if (phase === "attendre") {                    // workflow : écrit publier=1|0 dans GITHUB_OUTPUT
+    const a = attente();
+    if (a.publier && a.minutes > 0) { console.log(`attente de l'heure de publication : ${a.minutes} min (13h20 à Tunis)`); await new Promise(x => setTimeout(x, a.minutes * 60000)); }
+    if (!a.publier) console.log("Pas de publication par ce passage : " + a.raison);
+    if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `publier=${a.publier ? 1 : 0}\n`, { flag: "a" });
+    return;
+  }
   if (phase === "fabriquer") { fabriquer(date, chargerDonnees(), chargerComprendre()); if (process.env.ESSAI === "1") console.log("ESSAI : rien n'est publié."); }
   else if (phase === "publier") await publier(date);
   else throw new Error("PHASE inconnue : " + phase);

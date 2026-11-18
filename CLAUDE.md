@@ -73,3 +73,12 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   Pages répond `Access-Control-Allow-Origin: *`) et y renvoie dès qu'un site l'a ; « Page introuvable » seulement si aucun ne l'a (8 s au plus).
   CSP de 404.html : `connect-src 'self' https://*.clicvia.com`. Cas d'origine : `clicvia.com/fiche/…` = statistique GoatCounter d'un annuaire
   comptée SANS son préfixe (compteur lancé avant page.js, réparé dans le moteur des annuaires). Test dans `tools/test_portail.mjs`.
+- **18/11/2026 — Mon agent : zéro vue sur Instagram (Ahmed) → REEL + heure garantie.** Causes : (1) une PHOTO n'est montrée qu'aux abonnés
+  (compte neuf = aucun), alors que les REELS de l'Immobilier sont proposés à des inconnus ; (2) GitHub lance ce dépôt avec 7 à 9 h de retard :
+  les publications de « 13h20 » sortaient entre 20h et minuit ; (3) 4 publications seulement (10-14/11 perdues, jeton). Réparé dans
+  `tools/monagent_post.mjs` : l'image du jour devient aussi un Reel 1080 × 1920 de 9 s (fond de la palette, zoom lent, fondu, musique du
+  domaine public Vivaldi RV 425 `tools/monagent/musique.m4a` + licence, extrait et sens du zoom changeant chaque jour ; jamais le Bach de
+  l'Immobilier), couverture = l'image JPEG ; Reel refusé ou non fabriqué = la photo est publiée (rien de perdu). Facebook : photo comme avant
+  (lien cliquable). Heure : 3 lancements tôt (02:13, 04:47, 08:23 UTC) et étape « Attendre l'heure de publication » (PHASE=attendre, fonction
+  `attente()`) jusqu'à 12:20 UTC = 13h20 à Tunis ; après 20:30 UTC pas de publication (journal, pas de rouge) ; lancement à la main sans
+  attente ; timeout 360 min (dépôt public : gratuit). Tests ajoutés (heure, format du Reel, musique propre, fabrication si ffmpeg est là).

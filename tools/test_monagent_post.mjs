@@ -48,6 +48,15 @@ check("mots interdits : le contrôle attrape bien « Immobilier Tunisie », « c
 check("couleurs et polices : rien de la terre cuite / sable / or ni des polices des Reels de l'Immobilier",
   !M.PALETTES.some(p => p.some(c => /^#(c2410c|fdf3e7|f7dcc0|f2c14e|b4532f|f7f2ea)$/i.test(c))) && !M.POLICES.flat().some(f => /Fraunces|Poppins|Montserrat|Cairo|Tajawal|Amiri|Changa|Almarai|Archivo|Space Grotesk|DM Serif/.test(f)));
 
+// 18/11/2026 : Reel (Instagram montre les Reels aux inconnus, les photos presque seulement aux abonnés) et heure de publication
+const t = (h, m) => new Date(Date.UTC(2026, 10, 18, h, m));
+check("heure : lancé à 10h00 UTC -> attend 140 min jusqu'à 12h20 UTC (13h20 à Tunis) ; 15h00 -> publie tout de suite ; 21h00 -> ne publie pas ; 02h13 (GitHub à l'heure) -> laisse un passage suivant",
+  M.attente(t(10, 0)).publier && M.attente(t(10, 0)).minutes === 140 && M.attente(t(15, 0)).minutes === 0 && !M.attente(t(21, 0)).publier && !M.attente(t(2, 13)).publier && M.attente(t(8, 23)).publier);
+const cmd = M.commandeVideo("a.jpg", "a.mp4", 3, 5), cmd2 = M.commandeVideo("a.jpg", "a.mp4", 4, 6);
+check("Reel : vidéo verticale 1080 × 1920, musique du domaine public propre à Mon agent (jamais le Bach de l'Immobilier), extrait et zoom différents d'un jour à l'autre",
+  cmd.join(" ").includes("s=1080x1920") && existsSync(M.MUSIQUE) && !/reels[\/]musique/.test(M.MUSIQUE) && /Vivaldi/.test(readFileSync(M.MUSIQUE.replace("musique.m4a", "musique-licence.json"), "utf8"))
+  && cmd[cmd.indexOf("-ss") + 1] !== cmd2[cmd2.indexOf("-ss") + 1] && cmd.join(" ").includes("(1.05-") !== cmd2.join(" ").includes("(1.05-"));
+
 // image : 1080 × 1350 en JPEG (seulement si Chrome est là)
 if (M.navigateur()) {
   const dossier = mkdtempSync(join(tmpdir(), "monagent-"));
@@ -61,6 +70,12 @@ if (M.navigateur()) {
     const j = readFileSync(base + ".jpg");
     const dims = (() => { let i = 2; while (i < j.length) { if (j[i] !== 0xff) return null; const m = j[i + 1], l = j.readUInt16BE(i + 2); if (m >= 0xc0 && m <= 0xc2) return [j.readUInt16BE(i + 7), j.readUInt16BE(i + 5)]; i += 2 + l; } return null; })();
     check("image : JPEG de 1080 × 1350 (recadrée : le navigateur sans écran ne dessine pas le bas de la fenêtre)", j[0] === 0xff && j[1] === 0xd8 && dims && dims[0] === M.W && dims[1] === M.H && statSync(base + ".jpg").size > 20000);
+    const ff = (await import("child_process")).spawnSync(process.env.FFMPEG || "ffmpeg", ["-version"]);
+    if (ff.status === 0) {
+      M.enVideo(base + ".jpg", base + ".mp4", 2, 3);
+      const v = readFileSync(base + ".mp4");
+      check("Reel : fichier MP4 fabriqué (image + musique), de taille raisonnable pour Instagram", v.slice(4, 8).toString() === "ftyp" && v.length > 50000 && v.length < 15e6);
+    } else console.log("(Reel non testé : ffmpeg introuvable)");
   } finally { rmSync(dossier, { recursive: true, force: true }); }
 } else console.log("(image non testée : Chrome introuvable)");
 
