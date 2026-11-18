@@ -560,11 +560,11 @@ async function main() {
   const date = process.env.JOUR || new Date().toISOString().slice(0, 10);
   const phase = process.env.PHASE || "fabriquer";
   if (process.env.VERIFIER === "1") { await examinerJeton(); console.log("Vérification terminée : jeton durable, rien n'est publié."); return; }
-  if (phase === "attendre") {                    // workflow : écrit publier=1|0 dans GITHUB_OUTPUT
+  if (phase === "attendre") {                    // workflow : écrit publier=oui|non dans GITHUB_OUTPUT (pas 1/0 : GitHub compare une sortie vide d étape sautée égale à « 0 »)
     const a = attente();
     if (a.publier && a.minutes > 0) { console.log(`attente de l'heure de publication : ${a.minutes} min (13h20 à Tunis)`); await new Promise(x => setTimeout(x, a.minutes * 60000)); }
     if (!a.publier) console.log("Pas de publication par ce passage : " + a.raison);
-    if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `publier=${a.publier ? 1 : 0}\n`, { flag: "a" });
+    if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `publier=${a.publier ? "oui" : "non"}\n`, { flag: "a" });
     return;
   }
   if (phase === "fabriquer") { fabriquer(date, chargerDonnees(), chargerComprendre()); if (process.env.ESSAI === "1") console.log("ESSAI : rien n'est publié."); }
