@@ -6,36 +6,42 @@ Portail de 20 sites gratuits et indépendants (non officiels), en français et e
 Chaque site a son propre fichier llms.txt à sa racine (exemple : https://concours.clicvia.com/llms.txt).
 Données fraîches au format JSON (concours ouverts, appels d'offres, prix de l'eau, conférences, mosquées, points d'eau) : index dans https://clicvia.com/donnees.json
 
-## Permis et voiture
+## Logement et immobilier
 
-- [Code de la route Tunisie](https://code.clicvia.com/) : Leçons, panneaux, entraînement, examen blanc et amendes.
-- [Auto-écoles Tunisie](https://auto-ecoles.clicvia.com/) : Trouver une auto-école près de chez vous, dans les 24 gouvernorats.
-- [Ma voiture Tunisie](https://voiture.clicvia.com/) : Vignette, visite technique, assurance, vidange : vos échéances et des rappels dans l'agenda. Prix des carburants.
+- [Immobilier Tunisie](https://immobilier.clicvia.com/) : Logements, bureaux, commerces, usines et terrains à vendre ou à louer dans les 24 gouvernorats ; déposez votre annonce gratuitement.
+- [Mon agent immobilier](https://monagent.clicvia.com/) : Décrivez en une phrase le bien que vous cherchez, en français, en arabe ou en tunisien : toutes les annonces de Tunisie qui correspondent.
+
+## Emploi et marchés publics
+
+- [Appels d'offres Tunisie](https://appels-offres.clicvia.com/) : Les appels d'offres publics du jour, par métier et par gouvernorat, et les ventes aux enchères.
+- [Tendances de recherche en Tunisie](https://tendances.clicvia.com/) : Ce que les Tunisiens cherchent sur Google chaque jour : recherches en hausse, nouveautés, catégories, opportunités pour les entrepreneurs.
+- [Alerte Concours Tunisie](https://concours.clicvia.com/) : Tous les concours publics ouverts, par gouvernorat et par métier : date limite, postes et lien officiel.
 
 ## Papiers, démarches et justice
 
 - [Documents Tunisie](https://documents.clicvia.com/) : Modèles prêts à remplir en PDF (français et arabe) et les étapes expliquées.
 - [Avocats et notaires Tunisie](https://avocats.clicvia.com/) : Avocats, notaires, huissiers et traducteurs, par gouvernorat.
 
-## Travail, argent et entreprises
+## Argent et budget
 
 - [Outils pratiques Tunisie](https://outils.clicvia.com/) : Salaire net, impôt sur le revenu, crédit, auto-entrepreneur, retenue à la source.
 - [Comptables Tunisie](https://comptables.clicvia.com/) : Comptables, experts-comptables et conseillers fiscaux, par gouvernorat.
-- [Appels d'offres Tunisie](https://appels-offres.clicvia.com/) : Les appels d'offres publics du jour, par métier et par gouvernorat, et les ventes aux enchères.
-- [Tendances de recherche en Tunisie](https://tendances.clicvia.com/) : Ce que les Tunisiens cherchent sur Google chaque jour : recherches en hausse, nouveautés, catégories, opportunités pour les entrepreneurs.
-- [Alerte Concours Tunisie](https://concours.clicvia.com/) : Tous les concours publics ouverts, par gouvernorat et par métier : date limite, postes et lien officiel.
-
-## Maison, famille et artisans
-
-- [Immobilier Tunisie](https://immobilier.clicvia.com/) : Logements, bureaux, commerces, usines et terrains à vendre ou à louer dans les 24 gouvernorats ; déposez votre annonce gratuitement.
-- [Mon agent immobilier](https://monagent.clicvia.com/) : Décrivez en une phrase le bien que vous cherchez, en français, en arabe ou en tunisien : toutes les annonces de Tunisie qui correspondent.
 - [Mes comptes](https://comptes.clicvia.com/) : Loyers, salaire, dépenses, impôt et rappels sur votre téléphone. Gratuit 3 mois.
-- [Professionnels Tunisie](https://pros.clicvia.com/) : Annuaire gratuit des artisans et professionnels, gouvernorat par gouvernorat.
-- [Mariage Tunisie](https://mariage.clicvia.com/) : Salles des fêtes, photographes, traiteurs, pâtisseries, coiffure et beauté.
 
 ## Prix et achats
 
 - [Prix des Eaux de Tunisie](https://prix-eau.clicvia.com/) : Les prix de l'eau minérale dans les magasins, comparés chaque jour.
+
+## Permis et voiture
+
+- [Code de la route Tunisie](https://code.clicvia.com/) : Leçons, panneaux, entraînement, examen blanc et amendes.
+- [Auto-écoles Tunisie](https://auto-ecoles.clicvia.com/) : Trouver une auto-école près de chez vous, dans les 24 gouvernorats.
+- [Ma voiture Tunisie](https://voiture.clicvia.com/) : Vignette, visite technique, assurance, vidange : vos échéances et des rappels dans l'agenda. Prix des carburants.
+
+## Artisans, fêtes et services
+
+- [Professionnels Tunisie](https://pros.clicvia.com/) : Annuaire gratuit des artisans et professionnels, gouvernorat par gouvernorat.
+- [Mariage Tunisie](https://mariage.clicvia.com/) : Salles des fêtes, photographes, traiteurs, pâtisseries, coiffure et beauté.
 
 ## Religion et patrimoine
 

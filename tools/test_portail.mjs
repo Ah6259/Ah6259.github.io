@@ -49,11 +49,15 @@ check("fabrication : index.html est bien celui de tools/construire.py (gabarit +
     ["moteurs de recherche prévenus (IndexNow)", existsSync(join(root, "tools/indexnow.mjs")), { fr: /moteurs de recherche sont prévenus/, ar: /محركات البحث/, en: /search engines are notified/ }],
     ["gratuit / partie payante (Pass) des sites", true, { fr: /gratuit[\s\S]*« Pass »/, ar: /Pass/, en: /free[\s\S]*“Pass”/ }],
     ["sites indépendants, non officiels", /indépendants, non officiels/.test(acc), { fr: /indépendants et non officiels/, ar: /مستقلة وغير رسمية/, en: /independent and unofficial/ }],
-    ["section « Prix et achats » (sites de prix)", /<h2 class="theme">Prix et achats<\/h2>\s*<a class="site" href="https:\/\/prix-eau\.clicvia\.com\/"/.test(acc), { fr: /prix et achats/, ar: /الأسعار والمشتريات/, en: /prices and shopping/ }],
+    // 18/11/2026 (refonte) : chaque catégorie est une <section class="cat"> (titre + phrase, puis ses cartes)
+    ["section « Prix et achats » (sites de prix)", /<h2 class="theme"[^>]*>Prix et achats<\/h2><p class="cat-sous">[^<]*<\/p><\/div>\s*<div class="cartes">\s*<a class="site" href="https:\/\/prix-eau\.clicvia\.com\/"/.test(acc), { fr: /prix et achats/, ar: /الأسعار والمشتريات/, en: /prices and shopping/ }],
     ["lien privé des prix des gaufrettes, biscuits et chips (sous Prix des Eaux)", /class="lien-prive" href="\/tableau-bord\/prix-snacks\/" rel="nofollow"/.test(acc), { fr: /Espace privé des prix/, ar: /الفضاء الخاص بالأسعار/, en: /Private price area/ }],
+    // 18/11/2026 (refonte de l'accueil) : recherche instantanée dans les cartes et menu des catégories qui reste en haut de l'écran
+    ["recherche d'un service (accueil)", /<form class="cherche" role="search" hidden/.test(acc) && /data-mots="[^"]+"/.test(acc) && existsSync(join(root, "assets/accueil.js")), { fr: /La recherche : tapez/, ar: /البحث: اكتب/, en: /Search: type/ }],
+    ["menu des catégories", /<nav class="cats"/.test(acc) && /<section class="cat" id="maison"/.test(acc), { fr: /menu des catégories/, ar: /قائمة الأقسام/, en: /category menu/ }],
     ["fabrication automatique (construire.py)", /def page_a_propos/.test(cons), { fr: /fabriqués automatiquement/, ar: /تُصنع آليًا/, en: /built automatically/ }]];
   const manque = [];
-  for (const [nom, sur, re] of FONCTIONS) for (const l of Object.keys(ap)) if (sur && !re[l].test(txt(ap[l]))) manque.push(`${nom} (${l})`);
+  for (const [nom, sur, re] of FONCTIONS) { if (!sur) manque.push(`${nom} : repère introuvable dans le site`); else for (const l of Object.keys(ap)) if (!re[l].test(txt(ap[l]))) manque.push(`${nom} (${l})`); }
   check(`page « Comment fonctionne le site ? » à jour : chaque fonction du portail y est expliquée, en 3 langues (${FONCTIONS.length} fonctions)` + (manque.length ? " — manque : " + manque.join(", ") : ""),
     manque.length === 0);
   const titres = { fr: "<h1>Comment fonctionne le site\u00a0?</h1>", ar: "<h1>كيف يعمل الموقع؟</h1>", en: "<h1>How does the site work?</h1>" };
@@ -90,6 +94,25 @@ for (const [fr, ar, en] of [["confidentialite/index.html", "ar/confidentialite/i
   check(`page ${slug} : 3 langues, loi 2004-63 / droit tunisien, dans le plan du site et en bas des 3 accueils`,
     [fr, ar, en].every(f => existsSync(join(root, f)) && /<h1>/.test(lire(f))) && /2004-63|droit tunisien/.test(lire(fr)) && /2004|للقانون التونسي/.test(lire(ar)) &&
     ["", "ar/", "en/"].every(l => lire("sitemap.xml").includes(`<loc>${BASE}${l}${slug}/</loc>`) && lire((l || "") + "index.html").includes(`href="/${l}${slug}/"`)));
+}
+// 18/11/2026 (refonte de l'accueil) : la recherche marche VRAIMENT (jsdom) : « notaire » ne laisse que Avocats et notaires,
+// « كراء » trouve l'Immobilier, un mot inconnu affiche le message ; chaque catégorie du menu a sa section ; chaque site une seule fois.
+{ const { JSDOM } = await import("jsdom").catch(() => ({}));
+  for (const [l, f] of Object.entries(PAGES)) {
+    const h = lire(f), nav = (h.match(/<nav class="cats"[\s\S]*?<\/nav>/) || [""])[0], ids = [...nav.matchAll(/href="#([a-z]+)"/g)].map(m => m[1]);
+    check(`${f} : menu des catégories (${ids.length}) = sections de la page, chaque site une seule fois`,
+      ids.length >= 5 && ids.every(x => h.includes(`<section class="cat" id="${x}"`)) && new Set(liens(h)).size === liens(h).length);
+    if (!JSDOM) { check("jsdom présent pour essayer la recherche (npm install --no-save jsdom)", false); continue; }
+    const dom = new JSDOM(h.replace(/<script[^>]*src=[^>]*><\/script>/g, ""), { runScripts: "outside-only", url: adresse(l) });
+    dom.window.eval(lire("assets/accueil.js"));
+    const d = dom.window.document, champ = d.querySelector("#cherche");
+    const essai = m => { champ.value = m; champ.dispatchEvent(new dom.window.Event("input")); return [...d.querySelectorAll("a.site")].filter(a => !a.hidden).map(a => a.href); };
+    const notaire = essai("notaire"), kra = essai("كراء"), rien = essai("zzzqx"), vide = !d.querySelector(".cherche-vide").hidden;
+    const tout = essai("");
+    check(`${f} : recherche instantanée (« notaire » -> avocats, « كراء » -> immobilier, mot inconnu -> message, champ vide -> toutes les cartes)`,
+      !d.querySelector(".cherche").hidden && notaire.length === 1 && notaire[0].includes("avocats.clicvia.com") && kra.some(u => u.includes("immobilier.clicvia.com"))
+      && rien.length === 0 && vide && tout.length === nFr && d.querySelector(".cherche-vide").hidden);
+  }
 }
 console.log(pb ? `\n${pb} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(pb ? 1 : 0);

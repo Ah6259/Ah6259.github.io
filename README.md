@@ -42,6 +42,18 @@ script (`SITES`, `THEMES`, `TEXTES`). **Ne plus modifier `index.html` à la main
 description dans les 3 langues, et dans quelles langues le site existe), son icône dans `assets/sites/`, puis construire.
 Tests : `node tools/test_video.mjs` et `node tools/test_portail.mjs`. `assets/langue.js` : anciens liens `/?lang=ar` → `/ar/`.
 
+## Refonte de l'accueil (18/11/2026, demande d'Ahmed : analyse stratégique + design de niveau agence)
+- Bandeau encre marine avec le motif du logo (9 cases, une dorée = « le service qu'il vous faut »), barre du haut (logo + langues)
+  commune à toutes les pages (`barre()`), pied de page avec la signature « Un besoin, un site. » (`pied()`).
+- **Recherche instantanée** dans les cartes (`assets/accueil.js`, mots de chaque site dans `MOTS` de construire.py, en français, arabe,
+  anglais et tunisien ; accents ignorés) ; sans JavaScript elle reste cachée et toutes les cartes s'affichent.
+- **9 catégories par besoin** (`THEMES`, nom court `THEMES_COURT` pour le menu, phrase `THEMES_SOUS`), dans l'ordre : logement, emploi et
+  marchés publics, papiers, argent, prix, voiture, artisans, religion, recherche. Menu des catégories qui reste en haut de l'écran.
+  Les sites sont triés selon l'ordre des catégories (`SITES.sort`). Grand écran : titre de la catégorie à gauche, cartes à droite.
+- Feuille de style unique dans `tools/gabarit.html` (couleurs en variables, mode sombre, droite à gauche, mouvement réduit respecté).
+  Après un changement de style : `python tools/construire.py`, `node tools/page_video.mjs`, de nouveau `construire.py`, puis les tests.
+- Test : un repère de fonction introuvable dans le site est désormais un ÉCHEC (avant : ignoré en silence) ; recherche essayée dans jsdom.
+
 - **19/10/2026** : `CLAUDE.md` créé (mémoire lue automatiquement par Claude Code) ; visiteur simulé avec le contrôle des espaces (règle commune § 29), 0 anomalie.
 
 - **25/10/2026 — page « Comment fonctionne le site ? »** (règle commune § 44) : https://clicvia.com/a-propos/ (aussi `/ar/a-propos/`, `/en/a-propos/`),

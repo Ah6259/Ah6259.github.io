@@ -23,7 +23,8 @@ TEXTES = {
         "fr": "Clicvia : des services gratuits pour la Tunisie, en français et en arabe : annonces immobilières dans les 24 gouvernorats, prix de l'eau minérale comparés chaque jour, calculateurs (salaire, impôt, crédit), appels d'offres et concours publics, code de la route, documents prêts à remplir, annuaires de professionnels.",
         "ar": "Clicvia: خدمات مجانية لتونس، بالعربية والفرنسية: إعلانات عقارية في الولايات الـ24، مقارنة يومية لأسعار المياه المعدنية، حاسبات (الأجر، الضريبة، القرض)، طلبات العروض والمناظرات العمومية، مجلة الطرقات، وثائق جاهزة للتعمير، ودلائل المهنيين.",
         "en": "Clicvia: free services for Tunisia: property listings in all 24 governorates, mineral water prices compared every day, calculators (salary, income tax, loan), public tenders and civil-service competitions, the highway code, ready-to-fill documents and directories of professionals."},
-    "og_titre": {"fr": "Clicvia : 18 services gratuits pour la Tunisie", "ar": "Clicvia: 18 خدمة مجانية لتونس", "en": "Clicvia: 18 free services for Tunisia"},
+    # {n} = nombre de sites (18/11/2026 : l'aperçu de partage disait encore « 18 » alors qu'il y en avait 20)
+    "og_titre": {"fr": "Clicvia : {n} services gratuits pour la Tunisie", "ar": "Clicvia: {n} خدمة مجانية لتونس", "en": "Clicvia: {n} free services for Tunisia"},
     "og_description": {
         "fr": "Annonces immobilières (logements, bureaux, usines, terrains) dans les 24 gouvernorats, prix de l'eau minérale, calculateurs (salaire, impôt, crédit), appels d'offres et concours publics, code de la route, documents prêts à remplir — en français et en arabe.",
         "ar": "إعلانات عقارية (مساكن، مكاتب، مصانع، أراضٍ) في الولايات الـ24، أسعار المياه المعدنية، حاسبات (الأجر، الضريبة، القرض)، طلبات العروض والمناظرات العمومية، مجلة الطرقات، وثائق جاهزة للتعمير — بالعربية والفرنسية.",
@@ -51,20 +52,84 @@ TEXTES = {
     "stats": {"fr": "Statistiques", "ar": "الإحصائيات", "en": "Statistics"},
     "tous": {"fr": "Tous nos services", "ar": "كل خدماتنا", "en": "All our services"},
     "liste": {"fr": "Services Clicvia", "ar": "خدمات Clicvia", "en": "Clicvia services"},
+    # 18/11/2026 : refonte de l'accueil (bandeau, recherche, menu des catégories, promesses, signature du pied de page)
+    "surtitre": {"fr": "{n} services pour la Tunisie · français et arabe", "ar": "{n} خدمة لتونس · بالعربية والفرنسية", "en": "{n} services for Tunisia"},
+    "cherche_label": {"fr": "Rechercher un service", "ar": "ابحث عن خدمة", "en": "Search for a service"},
+    "cherche_ph": {"fr": "Concours, loyer, notaire, salaire…", "ar": "مناظرة، كراء، عدل إشهاد، أجر…", "en": "Tender, rent, notary, salary…"},
+    "cherche_vide": {"fr": "Aucun service ne correspond. Essayez un autre mot ou parcourez les catégories.",
+                     "ar": "لا توجد خدمة مطابقة. جرّب كلمة أخرى أو تصفّح الأقسام.",
+                     "en": "No service matches. Try another word or browse the categories."},
+    "cherche_un": {"fr": "1 service correspond", "ar": "خدمة واحدة مطابقة", "en": "1 matching service"},
+    "cherche_n": {"fr": "{n} services correspondent", "ar": "{n} خدمات مطابقة", "en": "{n} matching services"},
+    "effacer": {"fr": "Effacer", "ar": "مسح", "en": "Clear"},
+    "cats_aria": {"fr": "Catégories", "ar": "الأقسام", "en": "Categories"},
+    "promesses": {"fr": ["Gratuit pour l'essentiel", "Mis à jour automatiquement", "Sans compte, sans cookies"],
+                  "ar": ["مجاني في الأساس", "تحيين آلي", "دون حساب ودون ملفات تعريف الارتباط"],
+                  "en": ["Free at the core", "Updated automatically", "No account, no cookies"]},
+    "signature": {"fr": "Un besoin, un site. Des services indépendants pour la Tunisie.", "ar": "لكل حاجة موقعها. خدمات مستقلة لتونس.",
+                  "en": "One need, one site. Independent services for Tunisia."},
+    "accueil_aria": {"fr": "Clicvia, accueil", "ar": "Clicvia، الصفحة الرئيسية", "en": "Clicvia, home"},
     "autre_nom": {"fr": "Clicvia — services pratiques pour la Tunisie", "ar": "Clicvia — خدمات عملية لتونس", "en": "Clicvia — practical services for Tunisia"},
 }
 NOM_LANGUE = [("fr", "Français", "fr"), ("ar", "العربية", "ar"), ("en", "English", "en")]
 LOCALE = {"fr": "fr_FR", "ar": "ar_AR", "en": "en_US"}
 
+# 18/11/2026 (refonte de l'accueil, demande d'Ahmed « analyse stratégique et design ») : catégories rangées par BESOIN du visiteur et par
+# ordre d'importance (le logement d'abord) ; chaque catégorie a un nom court (menu des catégories) et une phrase qui dit à quoi elle sert.
+# L'ordre d'affichage est celui de SITES ci-dessous. « Prix et achats » reste une section à part (Ahmed, 15/11/2026).
 THEMES = {
-    "voiture": {"fr": "Permis et voiture", "ar": "الرخصة والسيارة", "en": "Driving licence and car"},
+    "maison": {"fr": "Logement et immobilier", "ar": "السكن والعقارات", "en": "Housing and property"},
+    "travail": {"fr": "Emploi et marchés publics", "ar": "الشغل والصفقات العمومية", "en": "Jobs and public contracts"},
     "papiers": {"fr": "Papiers, démarches et justice", "ar": "الوثائق والإجراءات والعدالة", "en": "Paperwork, procedures and law"},
-    "travail": {"fr": "Travail, argent et entreprises", "ar": "الشغل والمال والمؤسسات", "en": "Work, money and business"},
-    "maison": {"fr": "Maison, famille et artisans", "ar": "المنزل والعائلة والحرفيون", "en": "Home, family and tradespeople"},
+    "argent": {"fr": "Argent et budget", "ar": "المال والميزانية", "en": "Money and budget"},
     # 15/11/2026 (Ahmed : « on aura une section pour les sites des prix ») : Prix des Eaux + espace privé des prix des snacks + futurs sites de prix
     "prix": {"fr": "Prix et achats", "ar": "الأسعار والمشتريات", "en": "Prices and shopping"},
+    "voiture": {"fr": "Permis et voiture", "ar": "الرخصة والسيارة", "en": "Driving licence and car"},
+    "pros": {"fr": "Artisans, fêtes et services", "ar": "الحرفيون والأفراح والخدمات", "en": "Tradespeople, weddings and services"},
     "religion": {"fr": "Religion et patrimoine", "ar": "الدين والتراث", "en": "Religion and heritage"},
     "recherche": {"fr": "Enseignants et chercheurs", "ar": "الأساتذة والباحثون", "en": "Teachers and researchers"},
+}
+THEMES_COURT = {
+    "maison": {"fr": "Logement", "ar": "السكن", "en": "Housing"}, "travail": {"fr": "Emploi", "ar": "الشغل", "en": "Jobs"},
+    "papiers": {"fr": "Papiers", "ar": "الوثائق", "en": "Paperwork"}, "argent": {"fr": "Argent", "ar": "المال", "en": "Money"},
+    "prix": {"fr": "Prix", "ar": "الأسعار", "en": "Prices"}, "voiture": {"fr": "Voiture", "ar": "السيارة", "en": "Car"},
+    "pros": {"fr": "Artisans", "ar": "الحرفيون", "en": "Services"}, "religion": {"fr": "Religion", "ar": "الدين", "en": "Religion"},
+    "recherche": {"fr": "Recherche", "ar": "البحث", "en": "Research"},
+}
+THEMES_SOUS = {
+    "maison": {"fr": "Acheter, louer, trouver le bon quartier : les annonces de toute la Tunisie.", "ar": "اشترِ، اكترِ، اختر الحي المناسب: إعلانات كل تونس.", "en": "Buy, rent, find the right neighbourhood: listings from all over Tunisia."},
+    "travail": {"fr": "Concours, appels d'offres et tendances, relevés chaque jour.", "ar": "المناظرات وطلبات العروض والاتجاهات، تُجمع كل يوم.", "en": "Competitions, tenders and trends, collected every day."},
+    "papiers": {"fr": "Les bons documents et les bons interlocuteurs.", "ar": "الوثائق الصحيحة والمخاطَبون المناسبون.", "en": "The right documents and the right people."},
+    "argent": {"fr": "Calculer son salaire et son impôt, suivre ses comptes.", "ar": "احسب أجرك وضريبتك وتابع حساباتك.", "en": "Work out your salary and tax, keep track of your accounts."},
+    "prix": {"fr": "Comparer avant d'acheter.", "ar": "قارن قبل أن تشتري.", "en": "Compare before you buy."},
+    "voiture": {"fr": "Du code de la route aux échéances de votre voiture.", "ar": "من مجلة الطرقات إلى مواعيد سيارتك.", "en": "From the highway code to your car's deadlines."},
+    "pros": {"fr": "Trouver le bon professionnel près de chez vous.", "ar": "اعثر على المهني المناسب قربك.", "en": "Find the right professional near you."},
+    "religion": {"fr": "Mosquées, points d'eau et le message de l'Islam.", "ar": "المساجد ونقاط الماء ورسالة الإسلام.", "en": "Mosques, water points and the message of Islam."},
+    "recherche": {"fr": "Les conférences scientifiques et leurs dates limites.", "ar": "المؤتمرات العلمية وآجالها.", "en": "Scientific conferences and their deadlines."},
+}
+# Mots de la recherche de l'accueil (en plus du nom et de la description de la carte) : ce que les gens tapent, en français, en arabe,
+# en anglais et en tunisien. Les accents et les majuscules ne comptent pas (assets/accueil.js).
+MOTS = {
+    "immobilier": "appartement maison villa terrain louer location vendre vente achat loyer s+1 s+2 s+3 bureau local commerce usine annonce prix m2 quartier estimer شقة منزل أرض كراء بيع عقار dar kra flat house rent",
+    "monagent": "agent immobilier chercher logement phrase tunisien dar kra appartement وكيل عقار بحث سكن",
+    "concours": "concours emploi travail fonction publique recrutement poste مناظرة مناظرات انتداب شغل وظيفة job exam",
+    "appels-offres": "appel offre marché public tender soumission enchère entreprise btp صفقة طلب عروض بتة مزاد",
+    "tendances": "tendance google recherche trends idée projet entrepreneur اتجاهات بحث غوغل",
+    "documents": "document papier attestation contrat modèle pdf formulaire demande procuration bail وثيقة وثائق عقد مطلب شهادة نموذج",
+    "avocats": "avocat notaire huissier traducteur justice tribunal juriste محامي عدل إشهاد عدل منفذ مترجم محكمة lawyer",
+    "outils": "salaire net brut impôt irpp crédit calcul cnss retenue auto-entrepreneur calculatrice أجر ضريبة قرض حساب salary tax loan",
+    "comptes": "budget dépenses loyer compte argent rappel أموال مصاريف ميزانية حسابات money",
+    "comptables": "comptable expert-comptable fiscal impôt déclaration محاسب خبير محاسب جباية accountant",
+    "prix-eau": "eau minérale bouteille pack prix magasin comparer stika sabrine safia ماء معدني قارورة أسعار water price",
+    "code": "code route permis examen panneau amende conduite سياقة رخصة مجلة الطرقات امتحان علامات driving licence",
+    "auto-ecoles": "auto-école permis conduite moniteur مدرسة سياقة رخصة driving school",
+    "voiture": "voiture vignette visite technique assurance vidange carburant essence prix سيارة معلوم الجولان فحص فني تأمين بنزين car fuel",
+    "pros": "artisan plombier électricien menuisier peintre médecin dentiste pharmacie clinique professionnel حرفي سباك كهربائي نجار طبيب صيدلية plumber doctor",
+    "mariage": "mariage fête salle photographe traiteur pâtisserie coiffure beauté robe عرس زواج قاعة أفراح مصور حلويات wedding",
+    "mosquees": "mosquée prière salle jumua carte proche مسجد جامع مصلى صلاة mosque prayer",
+    "eau": "point eau source fontaine robinet majel puits عين سبالة حنفية ماجل ماء water spring fountain",
+    "message": "islam coran message religion découvrir musulman إسلام قرآن رسالة quran",
+    "conferences": "conférence colloque congrès scientifique recherche comptabilité finance islamique date limite call for papers مؤتمر ندوة بحث علمي",
 }
 # « ar » / « en » : adresse du site dans cette langue. "?" = même adresse + ?lang=xx ; "dossier" = sous-dossier xx/ ; absent = le site
 # n'a pas cette langue (on ouvre alors son accueil, et la carte indique ses langues).
@@ -91,11 +156,11 @@ SITES = [
      {"fr": "Avocats et notaires Tunisie", "ar": "محامون وعدول إشهاد تونس", "en": "Lawyers and notaries Tunisia"},
      {"fr": "Avocats, notaires, huissiers et traducteurs, par gouvernorat.", "ar": "محامون، عدول إشهاد، عدول منفذون ومترجمون، حسب الولاية.",
       "en": "Lawyers, notaries, bailiffs and translators, by governorate."}),
-    ("travail", "outils", "outils-pratiques-tunisie", FR_AR,
+    ("argent", "outils", "outils-pratiques-tunisie", FR_AR,
      {"fr": "Outils pratiques Tunisie", "ar": "أدوات عملية تونس", "en": "Practical tools Tunisia"},
      {"fr": "Salaire net, impôt sur le revenu, crédit, auto-entrepreneur, retenue à la source.", "ar": "الأجر الصافي، الضريبة على الدخل، القرض، المبادر الذاتي، الخصم من المورد.",
       "en": "Net salary, income tax, loan, self-employed status, withholding tax."}),
-    ("travail", "comptables", "comptables-tunisie", FR_AR,
+    ("argent", "comptables", "comptables-tunisie", FR_AR,
      {"fr": "Comptables Tunisie", "ar": "محاسبون تونس", "en": "Accountants Tunisia"},
      {"fr": "Comptables, experts-comptables et conseillers fiscaux, par gouvernorat.", "ar": "محاسبون، خبراء محاسبون ومستشارون جبائيون، حسب الولاية.",
       "en": "Accountants, chartered accountants and tax advisers, by governorate."}),
@@ -122,15 +187,15 @@ SITES = [
      {"fr": "Décrivez en une phrase le bien que vous cherchez, en français, en arabe ou en tunisien : toutes les annonces de Tunisie qui correspondent.",
       "ar": "صف في جملة واحدة العقار الذي تبحث عنه، بالعربية أو الفرنسية أو التونسية: كل إعلانات تونس المطابقة.",
       "en": "Describe the property you want in one sentence, in French, Arabic or Tunisian: every matching listing in Tunisia."}),
-    ("maison", "comptes", "mes-comptes-tunisie", FR_AR,
+    ("argent", "comptes", "mes-comptes-tunisie", FR_AR,
      {"fr": "Mes comptes", "ar": "حساباتي", "en": "My accounts"},
      {"fr": "Loyers, salaire, dépenses, impôt et rappels sur votre téléphone. Gratuit 3 mois.", "ar": "الكراءات، الأجر، المصاريف، الضريبة وتذكيرات على هاتفك. مجانًا لمدة 3 أشهر.",
       "en": "Rents, salary, expenses, tax and reminders on your phone. Free for 3 months."}),
-    ("maison", "pros", "professionnels-tunisie", FR_AR,
+    ("pros", "pros", "professionnels-tunisie", FR_AR,
      {"fr": "Professionnels Tunisie", "ar": "المهنيون تونس", "en": "Professionals Tunisia"},
      {"fr": "Annuaire gratuit des artisans et professionnels, gouvernorat par gouvernorat.", "ar": "دليل مجاني للحرفيين والمهنيين، ولاية بولاية.",
       "en": "Free directory of tradespeople and professionals, governorate by governorate."}),
-    ("maison", "mariage", "mariage-tunisie", FR_AR,
+    ("pros", "mariage", "mariage-tunisie", FR_AR,
      {"fr": "Mariage Tunisie", "ar": "الزواج تونس", "en": "Wedding Tunisia"},
      {"fr": "Salles des fêtes, photographes, traiteurs, pâtisseries, coiffure et beauté.", "ar": "قاعات أفراح، مصورون، ممونون، حلويات، حلاقة وتجميل.",
       "en": "Wedding halls, photographers, caterers, pastry shops, hair and beauty."}),
@@ -157,6 +222,8 @@ SITES = [
       "ar": "المؤتمرات العلمية القادمة وآخر الآجال، منها المحاسبة والمالية والمالية الإسلامية (EN، FR، AR).",
       "en": "Upcoming scientific conferences and deadlines, including accounting, finance and Islamic finance (EN, FR, AR)."}),
 ]
+# ordre d'affichage = ordre des catégories (tri stable : l'ordre des sites dans une catégorie est celui de la liste)
+SITES.sort(key=lambda x: list(THEMES).index(x[0]))
 
 
 def adresse(sous, regle, l):
@@ -226,7 +293,7 @@ def tete_page(l, gabarit, titre, description, og_titre, og_description, url_de, 
         (r'<link rel="icon" href="assets/logo.svg"', '<link rel="icon" href="/assets/logo.svg"'),
         (r'<link rel="icon" href="favicon.ico"', '<link rel="icon" href="/favicon.ico"'),
         (r'<link rel="apple-touch-icon" href="assets/', '<link rel="apple-touch-icon" href="/assets/'),
-        (r'<script defer src="/assets/portail.js"></script>', '<script defer src="/assets/portail.js"></script>\n<script defer src="/assets/langue.js"></script>'),
+        (r'<script defer src="/assets/portail.js"></script>', '<script defer src="/assets/portail.js"></script>\n<script defer src="/assets/langue.js"></script>\n<script defer src="/assets/accueil.js"></script>'),
     ]
     for motif, par in rempl:
         tete, n = re.subn(motif, lambda m, par=par: par, tete, count=1, flags=re.S)
@@ -235,12 +302,33 @@ def tete_page(l, gabarit, titre, description, og_titre, og_description, url_de, 
     return tete
 
 
-def pied(l):
-    """Pied de page commun : Facebook, lien « Comment fonctionne le site ? » (règle commune § 44), mentions."""
+SVG_FB = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.3H7.7V13h2.7v8h3.1z"/></svg>'
+SVG_IG = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM12 2.2c-2.7 0-3 0-4.1.1-1 .1-1.8.2-2.4.5-.7.3-1.2.6-1.8 1.2S2.8 5.2 2.6 5.9c-.3.6-.4 1.4-.5 2.4C2 9.4 2 9.7 2 12.4s0 3 .1 4.1c.1 1 .2 1.8.5 2.4.3.7.6 1.2 1.2 1.8s1.1.9 1.8 1.2c.6.3 1.4.4 2.4.5 1.1.1 1.4.1 4.1.1s3 0 4.1-.1c1-.1 1.8-.2 2.4-.5.7-.3 1.2-.6 1.8-1.2s.9-1.1 1.2-1.8c.3-.6.4-1.4.5-2.4.1-1.1.1-1.4.1-4.1s0-3-.1-4.1c-.1-1-.2-1.8-.5-2.4-.3-.7-.6-1.2-1.2-1.8s-1.1-.9-1.8-1.2c-.6-.3-1.4-.4-2.4-.5C15 2.2 14.7 2.2 12 2.2zm0 1.8c2.6 0 2.9 0 4 .1.9 0 1.5.2 1.8.3.5.2.8.4 1.1.7.3.3.6.7.7 1.1.1.3.3.9.3 1.8.1 1 .1 1.4.1 4s0 2.9-.1 4c0 .9-.2 1.5-.3 1.8-.2.5-.4.8-.7 1.1-.3.3-.7.6-1.1.7-.3.1-.9.3-1.8.3-1 .1-1.4.1-4 .1s-2.9 0-4-.1c-.9 0-1.5-.2-1.8-.3-.5-.2-.8-.4-1.1-.7-.3-.3-.6-.7-.7-1.1-.1-.3-.3-.9-.3-1.8-.1-1-.1-1.4-.1-4s0-2.9.1-4c0-.9.2-1.5.3-1.8.2-.5.4-.8.7-1.1.3-.3.7-.6 1.1-.7.3-.1.9-.3 1.8-.3 1-.1 1.4-.1 4-.1z"/></svg>'
+SVG_LOUPE = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>'
+SVG_PARTAGER = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>'
+
+
+def accueil(l):
+    return "/" if l == "fr" else "/" + l + "/"
+
+
+def barre(l, chemin_de):
+    """Barre du haut commune (18/11/2026) : logo Clicvia (retour à l'accueil) et choix de la langue (une adresse par langue)."""
     T = lambda k: TEXTES[k][l]
-    return f'''<footer><p class="suivre"><a href="https://www.facebook.com/1327283777142447" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.3H7.7V13h2.7v8h3.1z"/></svg> {E(T("facebook"))}</a> <a class="ig" href="https://www.instagram.com/immobilier.clicvia/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM12 2.2c-2.7 0-3 0-4.1.1-1 .1-1.8.2-2.4.5-.7.3-1.2.6-1.8 1.2S2.8 5.2 2.6 5.9c-.3.6-.4 1.4-.5 2.4C2 9.4 2 9.7 2 12.4s0 3 .1 4.1c.1 1 .2 1.8.5 2.4.3.7.6 1.2 1.2 1.8s1.1.9 1.8 1.2c.6.3 1.4.4 2.4.5 1.1.1 1.4.1 4.1.1s3 0 4.1-.1c1-.1 1.8-.2 2.4-.5.7-.3 1.2-.6 1.8-1.2s.9-1.1 1.2-1.8c.3-.6.4-1.4.5-2.4.1-1.1.1-1.4.1-4.1s0-3-.1-4.1c-.1-1-.2-1.8-.5-2.4-.3-.7-.6-1.2-1.2-1.8s-1.1-.9-1.8-1.2c-.6-.3-1.4-.4-2.4-.5C15 2.2 14.7 2.2 12 2.2zm0 1.8c2.6 0 2.9 0 4 .1.9 0 1.5.2 1.8.3.5.2.8.4 1.1.7.3.3.6.7.7 1.1.1.3.3.9.3 1.8.1 1 .1 1.4.1 4s0 2.9-.1 4c0 .9-.2 1.5-.3 1.8-.2.5-.4.8-.7 1.1-.3.3-.7.6-1.1.7-.3.1-.9.3-1.8.3-1 .1-1.4.1-4 .1s-2.9 0-4-.1c-.9 0-1.5-.2-1.8-.3-.5-.2-.8-.4-1.1-.7-.3-.3-.6-.7-.7-1.1-.1-.3-.3-.9-.3-1.8-.1-1-.1-1.4-.1-4s0-2.9.1-4c0-.9.2-1.5.3-1.8.2-.5.4-.8.7-1.1.3-.3.7-.6 1.1-.7.3-.1.9-.3 1.8-.3 1-.1 1.4-.1 4-.1z"/></svg> {E(T("instagram"))}</a></p>
-<p class="pied-liens"><a href="{chemin_a_propos(l)}">{E(T("a_propos"))}</a> · <a href="{chemin_page(l, "confidentialite")}">{E(CONFIDENTIALITE[l]["nom"])}</a> · <a href="{chemin_page(l, "conditions")}">{E(CONDITIONS[l]["nom"])}</a> · <a href="{"/" if l == "fr" else "/" + l + "/"}">{E(T("tous"))}</a> · <a class="prive" href="/tableau-bord/" rel="nofollow">{E(T("prive"))}</a> · <a class="stats" href="https://prix-eaux-tunisie.goatcounter.com/" rel="nofollow noopener" target="_blank">{E(T("stats"))}</a></p>
-{E(T("pied"))}</footer>
+    choix = "".join(f'<a href="{chemin_de(x)}" lang="{code}" data-langue="{x}"{COURANT if x == l else ""}>{nom}</a>' for x, nom, code in NOM_LANGUE)
+    return (f'<div class="barre"><a class="logo" href="{accueil(l)}" aria-label="{E(T("accueil_aria"))}"><img src="/assets/logo.svg" alt="" width="36" height="36">'
+            f'<span lang="en" dir="ltr">Clicvia</span></a>\n  <nav class="langues" aria-label="{E(T("langue_aria"))}">{choix}</nav></div>')
+
+
+def pied(l):
+    """Pied de page commun : signature Clicvia, Facebook, Instagram, lien « Comment fonctionne le site ? » (règle commune § 44), mentions."""
+    T = lambda k: TEXTES[k][l]
+    return f'''<footer class="pied"><div class="pied-in">
+<div class="pied-marque"><img src="/assets/logo.svg" alt="" width="32" height="32" loading="lazy"><p><strong lang="en" dir="ltr">Clicvia</strong> {E(T("signature"))}</p></div>
+<p class="suivre"><a href="https://www.facebook.com/1327283777142447" target="_blank" rel="noopener">{SVG_FB} {E(T("facebook"))}</a> <a class="ig" href="https://www.instagram.com/immobilier.clicvia/" target="_blank" rel="noopener">{SVG_IG} {E(T("instagram"))}</a></p>
+<p class="pied-liens"><a href="{chemin_a_propos(l)}">{E(T("a_propos"))}</a> · <a href="{chemin_page(l, "confidentialite")}">{E(CONFIDENTIALITE[l]["nom"])}</a> · <a href="{chemin_page(l, "conditions")}">{E(CONDITIONS[l]["nom"])}</a> · <a href="{accueil(l)}">{E(T("tous"))}</a> · <a class="prive" href="/tableau-bord/" rel="nofollow">{E(T("prive"))}</a> · <a class="stats" href="https://prix-eaux-tunisie.goatcounter.com/" rel="nofollow noopener" target="_blank">{E(T("stats"))}</a></p>
+<p class="mentions">{E(T("pied"))}</p>
+</div></footer>
 </body>
 </html>
 '''
@@ -255,7 +343,10 @@ def chemin_page(l, slug):
 
 
 def page(l, gabarit, jour):
+    """Accueil (refonte du 18/11/2026) : barre (logo + langues), bandeau (titre, recherche instantanée, Partager, promesses),
+    menu des catégories qui reste en haut de l'écran, puis une section par catégorie avec ses cartes (grille de 1 à 3 colonnes)."""
     T = lambda k: TEXTES[k][l]
+    n = len(SITES)
     url_de = lambda x: BASE if x == "fr" else BASE + x + "/"
     liste = [{"@type": "ListItem", "position": i + 1, "name": nom[l], "description": desc[l], "url": adresse(sous, regle, l)}
              for i, (_, sous, _, regle, nom, desc) in enumerate(SITES)]
@@ -264,28 +355,44 @@ def page(l, gabarit, jour):
          "sameAs": ["https://www.facebook.com/1327283777142447", "https://www.instagram.com/immobilier.clicvia/"], "areaServed": "TN"},
         {"@type": "WebSite", "@id": BASE + "#site", "name": "Clicvia", "alternateName": T("autre_nom"), "url": BASE, "inLanguage": LANGUES,
          "publisher": {"@id": BASE + "#organisation"}},
-        {"@type": "ItemList", "name": T("liste"), "numberOfItems": len(SITES), "itemListElement": liste}]}
-    tete = tete_page(l, gabarit, T("titre"), T("description"), T("og_titre"), T("og_description"), url_de, ld)
-    choix = "".join(f'<a href="{"/" if x == "fr" else "/" + x + "/"}" lang="{code}" data-langue="{x}"{COURANT if x == l else ""}>{nom}</a>' for x, nom, code in NOM_LANGUE)
-    corps = [f'''<section class="hero"><div class="wrap">
-  <nav class="langues" aria-label="{E(T("langue_aria"))}">{choix}</nav>
-  <p class="marque"><img class="logo-portail" src="/assets/logo.svg" alt="" width="64" height="64"><span lang="en" dir="ltr">Clicvia</span></p>
+        {"@type": "ItemList", "name": T("liste"), "numberOfItems": n, "itemListElement": liste}]}
+    tete = tete_page(l, gabarit, T("titre"), T("description"), T("og_titre").format(n=n), T("og_description"), url_de, ld)
+    themes = [th for th in THEMES if any(x[0] == th for x in SITES)]
+    promesses = "".join(f"<li>{E(p)}</li>" for p in T("promesses"))
+    menu = "".join(f'<a href="#{th}">{E(THEMES_COURT[th][l])}</a>' for th in themes)
+    corps = [f'''<section class="hero">
+  {barre(l, accueil)}
+  <div class="hero-in">
+  <div class="hero-txt">
+  <p class="surtitre"><span class="pastille" aria-hidden="true"></span>{E(T("surtitre").format(n=n))}</p>
   <h1>{E(T("h1"))}</h1>
-  <p>{E(T("intro"))}</p>
-  <button class="partager" type="button" data-partager-video aria-label="{E(T("partager_aria"))}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>{E(T("partager"))}</button>
-</div></section>
+  <p class="intro">{E(T("intro"))}</p>
+  <form class="cherche" role="search" hidden data-un="{E(T("cherche_un"))}" data-n="{E(T("cherche_n"))}"><label class="cache" for="cherche">{E(T("cherche_label"))}</label>{SVG_LOUPE}<input id="cherche" type="search" autocomplete="off" enterkeyhint="search" placeholder="{E(T("cherche_ph"))}"><button class="effacer" type="button" hidden>{E(T("effacer"))}</button></form>
+  <p class="cherche-etat" role="status" aria-live="polite"></p>
+  <div class="actions"><button class="partager" type="button" data-partager-video aria-label="{E(T("partager_aria"))}">{SVG_PARTAGER}{E(T("partager"))}</button>
+  <ul class="promesses">{promesses}</ul></div>
+  </div>
+  <div class="motif" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="or"></i><i></i><i></i><i></i><i></i></div>
+  </div>
+</section>
+<nav class="cats" aria-label="{E(T("cats_aria"))}"><div class="cats-in">{menu}</div></nav>
 
-<main class="grille">''']
-    theme = None
-    for th, sous, icone, regle, nom, desc in SITES:
-        if th != theme:
-            theme = th
-            corps.append(f'  <h2 class="theme">{E(THEMES[th][l])}</h2>')
-        etiquette = f' <small class="langues-site">{E(langues_du_site(regle))}</small>' if l == "en" else ""
-        corps.append(f'  <a class="site" href="{adresse(sous, regle, l)}"><img class="ic" src="/assets/sites/{icone}.svg" alt="" width="52" height="52" loading="lazy">\n'
-                     f'    <span><h2>{E(nom[l])}{etiquette}</h2><p>{E(desc[l])}</p></span><span class="fl">{"←" if l == "ar" else "→"}</span></a>')
-        if sous == "prix-eau":
-            corps.append(f'  <a class="lien-prive" href="/tableau-bord/prix-snacks/" rel="nofollow">{E(T("prive_snacks"))}</a>')
+<main class="grille">
+<p class="cherche-vide" hidden>{E(T("cherche_vide"))}</p>''']
+    for k, th in enumerate(themes):
+        corps.append(f'<section class="cat" id="{th}" aria-labelledby="t-{th}"><div class="cat-tete"><h2 class="theme" id="t-{th}">{E(THEMES[th][l])}</h2>'
+                     f'<p class="cat-sous">{E(THEMES_SOUS[th][l])}</p></div>\n<div class="cartes">')
+        prive = ""
+        for t2, sous, icone, regle, nom, desc in SITES:
+            if t2 != th:
+                continue
+            etiquette = f' <small class="langues-site">{E(langues_du_site(regle))}</small>' if l == "en" else ""
+            charge = "eager" if k == 0 else "lazy"
+            corps.append(f'  <a class="site" href="{adresse(sous, regle, l)}" data-mots="{E(MOTS.get(sous, ""))}"><img class="ic" src="/assets/sites/{icone}.svg" alt="" width="48" height="48" loading="{charge}">\n'
+                         f'    <span class="txt"><h3>{E(nom[l])}{etiquette}</h3><p>{E(desc[l])}</p></span><span class="fl" aria-hidden="true">{"←" if l == "ar" else "→"}</span></a>')
+            if sous == "prix-eau":
+                prive = f'<a class="lien-prive" href="/tableau-bord/prix-snacks/" rel="nofollow">{E(T("prive_snacks"))}</a>'
+        corps.append("</div>" + prive + "</section>")
     corps.append("</main>\n\n" + pied(l))
     return tete + "<body>\n" + "\n".join(corps)
 
@@ -300,10 +407,12 @@ A_PROPOS = {
         "intro": "Clicvia est un portail : une seule page qui rassemble {n} sites gratuits pour la Tunisie. Voici comment il marche.",
         "sections": [
             ("À quoi sert Clicvia ?", [
-                "Il vous montre tous nos services en un coup d'œil, rangés par thème : permis et voiture, papiers, travail, maison, prix et achats, religion, enseignants et chercheurs.",
+                "Il vous montre tous nos services en un coup d'œil, rangés selon votre besoin : logement, emploi et marchés publics, papiers, argent, prix et achats, voiture, artisans, religion, enseignants et chercheurs.",
                 "Touchez une carte pour ouvrir le site. Chaque carte donne le nom du site et ce qu'il fait."]),
             ("Comment s'en servir", [
-                "- Les cartes des sites : une carte par site, rangées par thème. Elle ouvre le site dans votre langue quand il l'a.",
+                "- Les cartes des sites : une carte par site, rangées par catégorie. Elle ouvre le site dans votre langue quand il l'a.",
+                "- La recherche : tapez ce que vous cherchez en haut de la page (par exemple « concours », « loyer », « notaire », en français, en arabe ou en tunisien) ; seules les cartes qui correspondent restent affichées.",
+                "- Le menu des catégories : sous le bandeau, les boutons Logement, Emploi, Papiers, Argent, Prix… mènent directement à la catégorie. Il reste en haut de l'écran pendant que vous descendez.",
                 "- Trois langues : les boutons Français, العربية et English en haut de la page. Chaque langue a sa propre adresse (clicvia.com/ar/ et clicvia.com/en/).",
                 "- Sur la page en anglais, une petite étiquette sur chaque carte dit dans quelles langues est le site.",
                 "- Le bouton « Partager » envoie à vos proches le lien de notre vidéo de présentation et l'adresse du portail (menu de partage du téléphone, sinon WhatsApp).",
@@ -332,10 +441,12 @@ A_PROPOS = {
         "intro": "Clicvia بوابة: صفحة واحدة تجمع {n} موقعًا مجانيًا لتونس. إليك كيف تعمل.",
         "sections": [
             ("ما فائدة Clicvia؟", [
-                "تعرض لك كل خدماتنا بنظرة واحدة، مرتّبة حسب الموضوع: الرخصة والسيارة، الوثائق، الشغل، المنزل، الأسعار والمشتريات، الدين، الأساتذة والباحثون.",
+                "تعرض لك كل خدماتنا بنظرة واحدة، مرتّبة حسب حاجتك: السكن، الشغل والصفقات العمومية، الوثائق، المال، الأسعار والمشتريات، السيارة، الحرفيون، الدين، الأساتذة والباحثون.",
                 "اضغط على بطاقة لفتح الموقع. كل بطاقة تذكر اسم الموقع وما يقدّمه."]),
             ("كيف تستعملها", [
-                "- بطاقات المواقع: بطاقة لكل موقع، مرتّبة حسب الموضوع. تفتح الموقع بلغتك إن وُجدت.",
+                "- بطاقات المواقع: بطاقة لكل موقع، مرتّبة حسب القسم. تفتح الموقع بلغتك إن وُجدت.",
+                "- البحث: اكتب ما تبحث عنه في أعلى الصفحة (مثلًا «مناظرة»، «كراء»، «عدل إشهاد»، بالعربية أو الفرنسية أو التونسية)؛ تبقى فقط البطاقات المطابقة.",
+                "- قائمة الأقسام: تحت الشريط، أزرار السكن، الشغل، الوثائق، المال، الأسعار… توصلك مباشرة إلى القسم. وتبقى في أعلى الشاشة وأنت تنزل.",
                 "- ثلاث لغات: أزرار Français و العربية و English في أعلى الصفحة. لكل لغة عنوانها (clicvia.com/ar/ و clicvia.com/en/).",
                 "- في الصفحة الإنجليزية، تُبيّن علامة صغيرة على كل بطاقة لغات الموقع.",
                 "- زر «شارك» يرسل إلى أقاربك رابط الفيديو التقديمي وعنوان البوابة (قائمة المشاركة في الهاتف، وإلا واتساب).",
@@ -364,10 +475,12 @@ A_PROPOS = {
         "intro": "Clicvia is a portal: one page that brings together {n} free websites for Tunisia. Here is how it works.",
         "sections": [
             ("What is Clicvia for?", [
-                "It shows all our services at a glance, sorted by theme: driving and car, paperwork, work, home, prices and shopping, religion, teachers and researchers.",
+                "It shows all our services at a glance, sorted by need: housing, jobs and public contracts, paperwork, money, prices and shopping, car, tradespeople, religion, teachers and researchers.",
                 "Tap a card to open the website. Each card gives the website's name and what it does."]),
             ("How to use it", [
-                "- Website cards: one card per website, sorted by theme. It opens the website in your language when it has it.",
+                "- Website cards: one card per website, sorted by category. It opens the website in your language when it has it.",
+                "- Search: type what you need at the top of the page (for example “tender”, “rent”, “notary”, in English, French or Arabic); only the matching cards stay on screen.",
+                "- The category menu: below the banner, the Housing, Jobs, Paperwork, Money, Prices… buttons take you straight to the category. It stays at the top of the screen as you scroll.",
                 "- Three languages: the Français, العربية and English buttons at the top of the page. Each language has its own address (clicvia.com/ar/ and clicvia.com/en/).",
                 "- On the English page, a small label on each card says which languages the website is in.",
                 "- The “Share” button sends your friends the link to our presentation video and the portal's address (your phone's share menu, otherwise WhatsApp).",
@@ -408,14 +521,13 @@ def page_a_propos(l, gabarit, A=None, slug="a-propos", type_ld="AboutPage"):
     ld = {"@context": "https://schema.org", "@type": type_ld, "name": nom, "url": url_de(l), "inLanguage": l,
           "isPartOf": {"@type": "WebSite", "name": "Clicvia", "url": BASE}}
     tete = tete_page(l, gabarit, A["titre"], A["description"], A["titre"], A["description"], url_de, ld)
-    choix = "".join(f'<a href="{chemin_page(x, slug)}" lang="{code}" data-langue="{x}"{COURANT if x == l else ""}>{nom}</a>' for x, nom, code in NOM_LANGUE)
     I = lambda t: E(insecable(l, t))
-    corps = [f'''<section class="hero hero-court"><div class="wrap">
-  <nav class="langues" aria-label="{E(T("langue_aria"))}">{choix}</nav>
-  <p class="marque"><a class="retour-portail" href="{"/" if l == "fr" else "/" + l + "/"}"><img class="logo-portail" src="/assets/logo.svg" alt="" width="64" height="64"><span lang="en" dir="ltr">Clicvia</span></a></p>
+    corps = [f'''<section class="hero hero-court">
+  {barre(l, lambda x: chemin_page(x, slug))}
+  <div class="hero-in"><div class="hero-txt">
   <h1>{I(nom)}</h1>
-  <p>{I(A["intro"].format(n=len(SITES)))}</p>
-</div></section>
+  <p class="intro">{I(A["intro"].format(n=len(SITES)))}</p>
+</div></div></section>
 
 <main class="a-propos">''']
     for titre, lignes in A["sections"]:

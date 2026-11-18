@@ -89,3 +89,9 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   inconnus). Maintenant le Reel du jour part aussi sur la page Facebook de Mon agent (`publierReelFacebook`, /video_reels comme reels.py, lien
   cliquable dans le texte) ; Reel refusé = photo. Test ajouté. À vérifier par Ahmed : la publication se voit-elle sans être connecté (application
   Meta en mode développement = publications cachées au public).
+- **18/11/2026 — REFONTE DE L'ACCUEIL (Ahmed : analyse stratégique de Clicvia + design de niveau agence)** : bandeau marine + motif du logo,
+  recherche instantanée (`assets/accueil.js`, `MOTS`), 9 catégories par besoin (`THEMES`, `THEMES_COURT`, `THEMES_SOUS`, ordre = logement
+  d'abord), menu des catégories collant, barre du haut et pied communs (`barre()`, `pied()`), style unique dans `tools/gabarit.html`.
+  Adresses, liens des 20 sites, H1, titres et descriptions SEO INCHANGÉS. Aperçu de partage : nombre de sites calculé (disait « 18 »).
+  Analyse stratégique écrite : `etude strategie clicvia 2026-11-18.md` de projets-ahmed. Leçon : le test FONCTIONS ignorait en silence une
+  fonction dont le repère avait disparu (la section « Prix et achats » aurait pu casser sans rouge) : c'est maintenant un échec.
