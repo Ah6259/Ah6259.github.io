@@ -84,3 +84,8 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   attente ; timeout 360 min (dépôt public : gratuit). Tests ajoutés (heure, format du Reel, musique propre, fabrication si ffmpeg est là).
   Leçon (essai du 18/11) : une sortie d'étape SAUTÉE est vide, et GitHub compare vide == '0' (conversion en nombre) → toutes les étapes
   sautées ; sortie en `oui`/`non`. Essai sur GitHub ensuite : 12/12 vérifications, Reel fabriqué. Règle : jamais 0/1 dans une sortie testée par `!=`.
+- **18/11/2026 (suite, Ahmed : « l'Immobilier publie aussi sur Facebook, pas Mon agent »)** : Mon agent publiait bien chaque jour sur SA page
+  Facebook (neuve, presque sans abonnés) mais en PHOTO, montrée aux seuls abonnés ; l'Immobilier publie un REEL sur la page Clicvia (montré aux
+  inconnus). Maintenant le Reel du jour part aussi sur la page Facebook de Mon agent (`publierReelFacebook`, /video_reels comme reels.py, lien
+  cliquable dans le texte) ; Reel refusé = photo. Test ajouté. À vérifier par Ahmed : la publication se voit-elle sans être connecté (application
+  Meta en mode développement = publications cachées au public).

@@ -17,7 +17,7 @@
 //   gardés dans donnees/monagent-posts.json ; un style trop proche des 4 derniers est décalé (choisirStyle).
 // - Mesure des clics : le lien porte utm_source=facebook|instagram, utm_medium=post, utm_campaign=monagent-<date> (GoatCounter les lit).
 //
-// Publication : page Facebook (secrets MONAGENT_FB_PAGE_ID / MONAGENT_FB_PAGE_TOKEN, sinon la page Clicvia : FB_PAGE_ID / FB_PAGE_TOKEN) ;
+// Publication (depuis le 18/11/2026 : REEL sur Instagram ET sur Facebook, photo en secours) : page Facebook (secrets MONAGENT_FB_PAGE_ID / MONAGENT_FB_PAGE_TOKEN, sinon la page Clicvia : FB_PAGE_ID / FB_PAGE_TOKEN) ;
 // Instagram SEULEMENT sur un compte propre à Mon agent (secret MONAGENT_IG_USER_ID + MONAGENT_FB_PAGE_TOKEN) : le compte @immobilier.clicvia
 // et son lien de bio feraient le lien entre les deux sites. Sans ce secret : « Instagram : compte propre à créer » dans le journal, pas de rouge.
 // L'image est enregistrée dans le dépôt (monagent/<date>.jpg) et servie par clicvia.com : Instagram et Facebook la lisent à cette adresse.
@@ -458,7 +458,21 @@ async function examinerJeton() {
   }
 }
 
-async function publierFacebook(imageUrl, texte, repere) {
+// 18/11/2026 (Ahmed : « l'Immobilier publie aussi sur Facebook, pas Mon agent ») : l'Immobilier publie un REEL sur Facebook (montré aux
+// inconnus), Mon agent une PHOTO sur sa page neuve (montrée aux seuls abonnés : presque personne). Maintenant le Reel du jour part aussi sur
+// la page Facebook (le lien du texte y est cliquable, comme pour l'Immobilier) ; Reel refusé ou absent = la photo, comme avant.
+async function publierReelFacebook(page, jeton, video, texte) {
+  const debut = await api("POST", `${page}/video_reels`, jeton, { upload_phase: "start" });
+  const corps = readFileSync(video);
+  const r = await fetch(debut.upload_url, { method: "POST", body: corps, headers: { Authorization: "OAuth " + jeton, offset: "0", file_size: String(corps.length) } });
+  if (!r.ok) throw new Error(`envoi de la vidéo refusé (${r.status})`);
+  const fin = await api("POST", `${page}/video_reels`, jeton, { upload_phase: "finish", video_id: debut.video_id, video_state: "PUBLISHED", description: texte });
+  if (!fin.success) throw new Error("Reel non publié — " + JSON.stringify(fin).slice(0, 200));
+  const lienFb = `https://www.facebook.com/reel/${debut.video_id}`;
+  console.log("Publié sur Facebook (Reel) : " + lienFb);
+  return lienFb;
+}
+async function publierFacebook(imageUrl, texte, repere, video) {
   const page = process.env.MONAGENT_FB_PAGE_ID || process.env.FB_PAGE_ID, jeton = process.env.MONAGENT_FB_PAGE_TOKEN || process.env.FB_PAGE_TOKEN;
   if (!page || !jeton) throw new Error("secrets FB_PAGE_ID / FB_PAGE_TOKEN absents : rien n'est publié");
   // contrôle des doublons (relance tardive de GitHub) : une LECTURE que Facebook peut refuser à une page hors du portfolio de l'application
@@ -467,6 +481,10 @@ async function publierFacebook(imageUrl, texte, repere) {
     const recents = (await api("GET", `${page}/feed?fields=message&limit=25`, jeton)).data || [];
     if (recents.some(x => (x.message || "").includes(repere))) { console.log("Facebook : déjà publiée (relance tardive de GitHub)"); return "déjà publiée"; }
   } catch (e) { console.log("Facebook : lecture des dernières publications impossible (" + e.message + ") — contrôle des doublons sauté"); }
+  if (video && existsSync(video)) {
+    try { return await publierReelFacebook(page, jeton, video, texte); }
+    catch (e) { console.log("Facebook : Reel non publié (" + e.message + ") — la PHOTO est publiée à la place (rien n'est perdu)"); }
+  } else console.log("Facebook : pas de vidéo du jour — publication en photo");
   const r = await api("POST", `${page}/photos`, jeton, { url: imageUrl, message: texte });
   const lienFb = `https://www.facebook.com/${r.post_id || r.id}`;
   console.log("Publié sur Facebook : " + lienFb);
@@ -551,7 +569,7 @@ async function publier(date) {
   const imageUrl = HOTE_IMAGES + post.image, repere = `monagent-${date}`;
   await examinerJeton();
   if (!(await attendreEnLigne(imageUrl))) throw new Error("image toujours pas en ligne sur clicvia.com après 8 minutes : " + imageUrl);
-  post.fb = await publierFacebook(imageUrl, textes[0], repere);
+  post.fb = await publierFacebook(imageUrl, textes[0], repere, join(DOSSIER, date + ".mp4"));
   try { post.ig = await publierInstagram(imageUrl, textes[1], repere, join(DOSSIER, date + ".mp4")); } catch (e) { console.log("ÉCHEC Instagram : " + e.message); post.ig_erreur = e.message; }
   writeFileSync(MEMOIRE, JSON.stringify(memoire, null, 0) + "\n");
 }

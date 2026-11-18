@@ -57,6 +57,10 @@ check("Reel : vidéo verticale 1080 × 1920, musique du domaine public propre à
   cmd.join(" ").includes("s=1080x1920") && existsSync(M.MUSIQUE) && !/reels[\/]musique/.test(M.MUSIQUE) && /Vivaldi/.test(readFileSync(M.MUSIQUE.replace("musique.m4a", "musique-licence.json"), "utf8"))
   && cmd[cmd.indexOf("-ss") + 1] !== cmd2[cmd2.indexOf("-ss") + 1] && cmd.join(" ").includes("(1.05-") !== cmd2.join(" ").includes("(1.05-"));
 
+const src = readFileSync(new URL("./monagent_post.mjs", import.meta.url), "utf8");
+check("publication : le Reel part sur Instagram (media_type REELS) ET sur Facebook (video_reels), avec la photo en secours sur les deux (18/11/2026)",
+  /media_type: "REELS"/.test(src) && /video_reels/.test(src) && (src.match(/la PHOTO est publiée à la place/g) || []).length === 2);
+
 // image : 1080 × 1350 en JPEG (seulement si Chrome est là)
 if (M.navigateur()) {
   const dossier = mkdtempSync(join(tmpdir(), "monagent-"));
