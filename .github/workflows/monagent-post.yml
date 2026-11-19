@@ -39,7 +39,7 @@ jobs:
       - name: Attendre l'heure de publication (13h20 à Tunis ; lancement à la main = pas d'attente)
         id: heure
         if: github.event_name == 'schedule'
-        run: node tools/monagent_post.mjs && git pull -q --rebase --autostash
+        run: node tools/monagent_post.mjs && git pull -q --rebase -X theirs --autostash
         env:
           PHASE: attendre
       - name: Outils (ffmpeg, polices arabes de secours)
