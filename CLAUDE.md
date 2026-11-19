@@ -101,3 +101,6 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
 - **19/11/2026 — CV.9 (« ok » d'Ahmed : « pourquoi le cube 3D n'apparaît que sur PC ? »)** : le motif 3D existe aussi sur TÉLÉPHONE, en petit (cases
   46 px), SOUS la recherche et les promesses (titre + recherche dans le 1er écran) ; tailles en variables CSS (--t, --e, --p, --o, --v), ordinateur
   = les mêmes cubes en grand ; mouvement réduit demandé = immobile.
+- **19/11/2026 (soir, captures d'Ahmed : « les cartes ne sont pas bien positionnées, enlève le vide entre les sections »)** : sur ordinateur, le bas
+  des cartes touchait la ligne de séparation de la catégorie suivante -> `.cat` padding 32px en haut ET en bas (≥ 1024 px) ; bandeau 52/44 px au lieu
+  de 64/80 ; catégories 30 px (téléphone) / 36 px (tablette) ; pied de page 40 px au lieu de 72 ; lien vidéo 24 px. Mesuré à 1316 et 390 px.
