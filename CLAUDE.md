@@ -98,3 +98,6 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
 - **19/11/2026 — motif du logo en 3D (Ahmed : « le cube du logo doit bouger en 3D »)** : CSS 3D seul (tools/gabarit.html, bloc .motif) : 9 petits cubes
   (face du dessus = la case, 4 côtés = ::before/::after des deux <s> de chaque case, balisage dans page()) sur un plateau vu de biais qui tourne en 48 s,
   vague de hauteur, cube doré qui monte et tourne sur lui-même ; ordinateur seulement (≥ 960 px) ; mouvement réduit demandé = scène 3D immobile.
+- **19/11/2026 — CV.9 (« ok » d'Ahmed : « pourquoi le cube 3D n'apparaît que sur PC ? »)** : le motif 3D existe aussi sur TÉLÉPHONE, en petit (cases
+  46 px), SOUS la recherche et les promesses (titre + recherche dans le 1er écran) ; tailles en variables CSS (--t, --e, --p, --o, --v), ordinateur
+  = les mêmes cubes en grand ; mouvement réduit demandé = immobile.

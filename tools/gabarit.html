@@ -89,27 +89,30 @@ html[dir="rtl"] .partager{font-family:"Noto Kufi Arabic",Figtree,sans-serif}
 .promesses{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:rgba(255,255,255,.7)}
 .promesses li{display:inline-flex;align-items:center;gap:8px}
 .promesses li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--or)}
-/* le motif du logo : neuf cases, une dorée */
-.motif{display:none}
+/* le motif du logo : neuf cases, une dorée.
+   19/11/2026 (Ahmed : « le cube du logo doit bouger en 3D ») : neuf petits cubes sur un plateau vu de biais (CSS 3D, sans image),
+   chaque cube = une face du dessus (la case) + 4 côtés (les ::before/::after des deux <s>) ; le plateau tourne lentement,
+   les cubes ondulent en vague, le cube doré monte au-dessus des autres en tournant. Mouvement réduit demandé : scène immobile.
+   19/11/2026 (Ahmed, CV.9 « ok ») : aussi sur TÉLÉPHONE, en petit, SOUS la recherche et les promesses (le titre et la recherche restent
+   dans le 1er écran). Tailles en variables : --t case, --e écart, --p épaisseur, --o hauteur du cube doré, --v hauteur de la vague. */
+.motif{--t:46px;--e:11px;--p:15px;--o:18px;--v:9px;display:grid;grid-template-columns:repeat(3,var(--t));gap:var(--e);justify-self:center;
+  margin:-4px auto -10px;transform-style:preserve-3d;transform:perspective(700px) rotateX(54deg) rotateZ(-34deg)}
+.motif i{--h:0px;--c1:#1B2840;--c2:#142033;--c3:#0E1828;position:relative;display:block;width:var(--t);height:var(--t);border-radius:calc(var(--t) / 10);
+  background:var(--c1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);transform-style:preserve-3d;transform:translateZ(var(--h))}
+.motif i s{position:absolute;inset:0;transform-style:preserve-3d;text-decoration:none}
+.motif i s::before,.motif i s::after{content:"";position:absolute;background:var(--c2)}
+.motif i s:first-child::before{left:2px;right:2px;bottom:100%;height:var(--p);transform-origin:bottom;transform:rotateX(90deg);background:var(--c3)}
+.motif i s:first-child::after{left:2px;right:2px;top:100%;height:var(--p);transform-origin:top;transform:rotateX(-90deg)}
+.motif i s:last-child::before{top:2px;bottom:2px;left:100%;width:var(--p);transform-origin:left;transform:rotateY(90deg)}
+.motif i s:last-child::after{top:2px;bottom:2px;right:100%;width:var(--p);transform-origin:right;transform:rotateY(-90deg);background:var(--c3)}
+.motif i.or{--h:var(--o);--c1:#F4BC4A;--c2:#C98A17;--c3:#A06A0A;background:linear-gradient(160deg,#F9CD6E,#E9A21F);box-shadow:0 0 40px 4px rgba(242,179,61,.45)}
 @media (min-width:960px){
   .barre{padding:22px 24px 0}
   .hero-in{grid-template-columns:minmax(0,1fr) auto;gap:64px;padding:64px 24px 80px}
-  /* 19/11/2026 (Ahmed : « le cube du logo doit bouger en 3D ») : neuf petits cubes sur un plateau vu de biais (CSS 3D, sans image),
-     chaque cube = une face du dessus (la case) + 4 côtés (les ::before/::after des deux <s>) ; le plateau tourne lentement,
-     les cubes ondulent en vague, le cube doré monte au-dessus des autres en tournant. Mouvement réduit demandé : scène immobile. */
-  .motif{display:grid;grid-template-columns:repeat(3,96px);gap:18px;margin:8px 56px 0;transform-style:preserve-3d;
-    transform:perspective(1000px) rotateX(54deg) rotateZ(-34deg)}
-  .motif i{--h:0px;--c1:#1B2840;--c2:#142033;--c3:#0E1828;position:relative;display:block;width:96px;height:96px;border-radius:9px;
-    background:var(--c1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);transform-style:preserve-3d;transform:translateZ(var(--h))}
-  .motif i s{position:absolute;inset:0;transform-style:preserve-3d;text-decoration:none}
-  .motif i s::before,.motif i s::after{content:"";position:absolute;background:var(--c2)}
-  .motif i s:first-child::before{left:3px;right:3px;bottom:100%;height:30px;transform-origin:bottom;transform:rotateX(90deg);background:var(--c3)}
-  .motif i s:first-child::after{left:3px;right:3px;top:100%;height:30px;transform-origin:top;transform:rotateX(-90deg)}
-  .motif i s:last-child::before{top:3px;bottom:3px;left:100%;width:30px;transform-origin:left;transform:rotateY(90deg)}
-  .motif i s:last-child::after{top:3px;bottom:3px;right:100%;width:30px;transform-origin:right;transform:rotateY(-90deg);background:var(--c3)}
-  .motif i.or{--h:36px;--c1:#F4BC4A;--c2:#C98A17;--c3:#A06A0A;background:linear-gradient(160deg,#F9CD6E,#E9A21F);box-shadow:0 0 60px 6px rgba(242,179,61,.45)}
+  .motif{--t:96px;--e:18px;--p:30px;--o:36px;--v:18px;margin:8px 56px 0;transform:perspective(1000px) rotateX(54deg) rotateZ(-34deg)}
+  .motif i.or{box-shadow:0 0 60px 6px rgba(242,179,61,.45)}
 }
-@media (min-width:960px) and (prefers-reduced-motion:no-preference){
+@media (prefers-reduced-motion:no-preference){
   .motif{animation:plateau 48s linear infinite}
   .motif i{animation:vague 5s ease-in-out infinite}
   .motif i:nth-child(2),.motif i:nth-child(4){animation-delay:-.6s}
@@ -117,9 +120,12 @@ html[dir="rtl"] .partager{font-family:"Noto Kufi Arabic",Figtree,sans-serif}
   .motif i:nth-child(6),.motif i:nth-child(8){animation-delay:-1.8s}
   .motif i:nth-child(9){animation-delay:-2.4s}
   .motif i.or{animation:cube-or 6s ease-in-out infinite}
+  @keyframes plateau{from{transform:perspective(700px) rotateX(54deg) rotateZ(-34deg)}to{transform:perspective(700px) rotateX(54deg) rotateZ(326deg)}}
+  @keyframes vague{0%,100%{transform:translateZ(0)}50%{transform:translateZ(var(--v))}}
+  @keyframes cube-or{0%{transform:translateZ(var(--o)) rotateZ(0)}50%{transform:translateZ(calc(var(--o) * 1.8)) rotateZ(45deg)}100%{transform:translateZ(var(--o)) rotateZ(90deg)}}
+}
+@media (min-width:960px) and (prefers-reduced-motion:no-preference){
   @keyframes plateau{from{transform:perspective(1000px) rotateX(54deg) rotateZ(-34deg)}to{transform:perspective(1000px) rotateX(54deg) rotateZ(326deg)}}
-  @keyframes vague{0%,100%{transform:translateZ(0)}50%{transform:translateZ(18px)}}
-  @keyframes cube-or{0%{transform:translateZ(36px) rotateZ(0)}50%{transform:translateZ(64px) rotateZ(45deg)}100%{transform:translateZ(36px) rotateZ(90deg)}}
 }
 
 /* menu des catégories : reste en haut de l'écran */
