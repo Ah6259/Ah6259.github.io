@@ -1,12 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14A39A"/><stop offset="1" stop-color="#0A5E5E"/></linearGradient></defs><rect width="512" height="512" rx="112" fill="url(#bg)"/>
-<rect x="196" y="116" width="96" height="58" rx="14" fill="#F2B33D"/>
-<path d="M244 116 H278 Q292 116 292 130 V160 Q292 174 278 174 H244Z" fill="#DE9A26"/>
-<path d="M292 128 H352 Q366 128 366 142 V150 Q366 160 356 160 H292Z" fill="#FFFFFF"/>
-<path d="M226 174 H272 L280 206 H218Z" fill="#DCEFEC"/>
-<path d="M300 176 Q318 194 306 222" fill="none" stroke="#F2B33D" stroke-width="14" stroke-linecap="round"/>
-<path d="M210 206 H288 Q320 206 330 246 L350 380 Q356 428 312 428 H186 Q142 428 148 380 L168 246 Q178 206 210 206Z" fill="#FFFFFF"/>
-<path d="M249 206 H288 Q320 206 330 246 L350 380 Q356 428 312 428 H249Z" fill="#DCEFEC"/>
-<path d="M164 300 H334 L346 380 Q350 412 312 412 H186 Q148 412 152 380Z" fill="#7FD0C6"/>
-<path d="M249 300 H334 L346 380 Q350 412 312 412 H249Z" fill="#5BBDB2"/>
-<circle cx="396" cy="118" r="11" fill="#FFFFFF"/><circle cx="420" cy="150" r="8" fill="#FFFFFF" opacity=".85"/><circle cx="398" cy="178" r="7" fill="#FFFFFF" opacity=".7"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1B3170"/><stop offset="1" stop-color="#0D1B3E"/></linearGradient></defs><rect width="512" height="512" rx="116" fill="url(#bg)"/>
+<path d="M256 104 L410 222 Q420 230 420 243 V392 Q420 414 398 414 H114 Q92 414 92 392 V243 Q92 230 102 222 Z" fill="#FFFFFF"/>
+<path d="M256 104 L410 222 Q420 230 420 243 V392 Q420 414 398 414 H256 Z" fill="#E6ECFA"/>
+<path d="M256 186 C256 186 196 262 196 304 a60 60 0 0 0 120 0 C316 262 256 186 256 186Z" fill="#2D6BFF"/>
+<path d="M256 186 C256 186 316 262 316 304 a60 60 0 0 1 -60 60Z" fill="#1F4FD8"/>
+<ellipse cx="236" cy="306" rx="11" ry="20" fill="#FFFFFF" opacity=".55"/>
+<path d="M398 96 l9 24 24 9 -24 9 -9 24 -9 -24 -24 -9 24 -9z" fill="#FFC531"/>
+<path d="M440 160 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5z" fill="#FFC531"/>
 </svg>
