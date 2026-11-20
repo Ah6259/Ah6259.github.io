@@ -2,7 +2,7 @@
 
 > Clicvia : des services gratuits pour la Tunisie, en français et en arabe : annonces immobilières dans les 24 gouvernorats, prix de l'eau minérale comparés chaque jour, calculateurs (salaire, impôt, crédit), appels d'offres et concours publics, code de la route, documents prêts à remplir, annuaires de professionnels.
 
-Portail de 20 sites gratuits et indépendants (non officiels), en français et en arabe pour la plupart ; adresse : https://clicvia.com/ (aussi https://clicvia.com/ar/ et https://clicvia.com/en/).
+Portail de 21 sites gratuits et indépendants (non officiels), en français et en arabe pour la plupart ; adresse : https://clicvia.com/ (aussi https://clicvia.com/ar/ et https://clicvia.com/en/).
 Chaque site a son propre fichier llms.txt à sa racine (exemple : https://concours.clicvia.com/llms.txt).
 Données fraîches au format JSON (concours ouverts, appels d'offres, prix de l'eau, conférences, mosquées, points d'eau) : index dans https://clicvia.com/donnees.json
 
@@ -31,6 +31,7 @@ Données fraîches au format JSON (concours ouverts, appels d'offres, prix de l'
 ## Prix et achats
 
 - [Prix des Eaux de Tunisie](https://prix-eau.clicvia.com/) : Les prix de l'eau minérale dans les magasins, comparés chaque jour.
+- [Prix Hygiène & Maison](https://hygiene.clicvia.com/) : Lessive, javel, vaisselle, papier, couches, shampoing… les prix des grandes surfaces chaque jour, et la commande livrée partout en Tunisie.
 
 ## Permis et voiture
 
