@@ -564,7 +564,7 @@ VIDEOS = {
     "code": ["video/"], "auto-ecoles": ["video/", "video-pro/"], "voiture": ["video/"], "documents": ["video/"],
     "avocats": ["video/", "video-pro/"], "outils": ["video/"], "comptables": ["video/", "video-pro/"], "appels-offres": ["video/"],
     "pros": ["video/", "video-pro/"], "immobilier": ["video/", "instagram"], "mariage": ["video/", "video-pro/"],
-    "prix-eau": ["video/"], "eau": ["video/"], "mosquees": ["video/"], "conferences": ["video/"],
+    "prix-eau": ["video/"], "hygiene": ["video/"], "eau": ["video/"], "mosquees": ["video/"], "conferences": ["video/"],
 }
 VIDEO_LIBELLES = {
     "video/": "Présentation · فيديو تقديمي",
