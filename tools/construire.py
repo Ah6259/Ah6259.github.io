@@ -47,6 +47,8 @@ TEXTES = {
     "prive": {"fr": "Espace privé", "ar": "فضاء خاص", "en": "Private area"},
     # 15/11/2026 (Ahmed : « ajoute un lien pour mon frère avec le site Prix des Eaux ») : lien discret sous la carte Prix des Eaux vers la page
     # PRIVÉE (code) de suivi des prix des gaufrettes, biscuits et chips ; non suivi par Google (rel=nofollow, page noindex)
+    "immo_titre": {"fr": "Annonces immobilières", "ar": "إعلانات عقارية", "en": "Property listings"},
+    "immo_prix": {"fr": "Prix de l’immobilier du mois", "ar": "أسعار العقارات هذا الشهر", "en": "This month's property prices"},
     "prive_snacks": {"fr": "🔒 Espace privé des prix", "ar": "🔒 الفضاء الخاص بالأسعار", "en": "🔒 Private price area"},
     # 28/10/2026 (Ahmed) : lien vers les statistiques de visite (GoatCounter ; connexion obligatoire, rien de visible sans compte)
     "stats": {"fr": "Statistiques", "ar": "الإحصائيات", "en": "Statistics"},
@@ -232,6 +234,23 @@ SITES = [
 SITES.sort(key=lambda x: list(THEMES).index(x[0]))
 
 
+# 21/11/2026 (Ahmed : « je veux plus de vues, surtout l'immobilier ») : Google a enregistré l'accueil du portail et y revient souvent,
+# mais n'a pas encore enregistré les pages de l'immobilier. Sous la carte Immobilier Tunisie : raccourcis vers les pages des
+# gouvernorats qui ont le plus d'annonces et vers les prix du mois (liens directs pour le visiteur, et chemin pour Google).
+RACCOURCIS_IMMO = [("tunis", "Tunis", "تونس"), ("ariana", "Ariana", "أريانة"), ("ben-arous", "Ben Arous", "بن عروس"),
+                   ("nabeul", "Nabeul", "نابل"), ("sousse", "Sousse", "سوسة"), ("sfax", "Sfax", "صفاقس"),
+                   ("monastir", "Monastir", "المنستير"), ("bizerte", "Bizerte", "بنزرت"), ("medenine", "Médenine (Djerba)", "مدنين (جربة)")]
+
+
+def raccourcis_immo(l):
+    T = lambda k: TEXTES[k][l]
+    base = "https://immobilier.clicvia.com/" + ("ar/" if l == "ar" else "")
+    liens = [f'<a href="{base}{s}/">{E(ar if l == "ar" else fr)}</a>' for s, fr, ar in RACCOURCIS_IMMO]
+    liens.append(f'<a href="{base}rapports/">{E(T("immo_prix"))}</a>')
+    return (f'<nav class="raccourcis" aria-label="{E(T("immo_titre"))}"><span>{E(T("immo_titre"))} :</span> '
+            + '<span class="r-sep" aria-hidden="true"> · </span>'.join(liens) + "</nav>")
+
+
 def adresse(sous, regle, l):
     u = f"https://{sous}.clicvia.com/"
     r = regle.get(l)
@@ -396,6 +415,8 @@ def page(l, gabarit, jour):
             charge = "eager" if k == 0 else "lazy"
             corps.append(f'  <a class="site" href="{adresse(sous, regle, l)}" data-mots="{E(MOTS.get(sous, ""))}"><img class="ic" src="/assets/sites/{icone}.svg" alt="" width="48" height="48" loading="{charge}">\n'
                          f'    <span class="txt"><h3>{E(nom[l])}{etiquette}</h3><p>{E(desc[l])}</p></span><span class="fl" aria-hidden="true">{"←" if l == "ar" else "→"}</span></a>')
+            if sous == "immobilier":
+                prive += raccourcis_immo(l)
             if sous == "prix-eau":
                 prive = f'<a class="lien-prive" href="/tableau-bord/prix-snacks/" rel="nofollow">{E(T("prive_snacks"))}</a>'
         corps.append("</div>" + prive + "</section>")
@@ -421,6 +442,7 @@ A_PROPOS = {
                 "- Le menu des catégories : sous le bandeau, les boutons Logement, Emploi, Papiers, Argent, Prix… mènent directement à la catégorie. Il reste en haut de l'écran pendant que vous descendez.",
                 "- Trois langues : les boutons Français, العربية et English en haut de la page. Chaque langue a sa propre adresse (clicvia.com/ar/ et clicvia.com/en/).",
                 "- Sur la page en anglais, une petite étiquette sur chaque carte dit dans quelles langues est le site.",
+                "- Sous la carte Immobilier Tunisie, des raccourcis ouvrent directement les annonces immobilières d'un gouvernorat (Tunis, Ariana, Sousse, Sfax…) et les prix de l'immobilier du mois.",
                 "- Le bouton « Partager » envoie à vos proches le lien de notre vidéo de présentation et l'adresse du portail (menu de partage du téléphone, sinon WhatsApp).",
                 "- La vidéo de présentation : un lien en bas de la page ouvre une courte vidéo qui montre nos services ; en dessous, les vidéos de chaque site (présentation, vidéo pour les professionnels, vidéos Instagram de l'Immobilier).",
                 "- La page Facebook Clicvia : le bouton « Suivez Clicvia sur Facebook » en bas de page. Nos pages y sont publiées automatiquement chaque jour.",
@@ -455,6 +477,7 @@ A_PROPOS = {
                 "- قائمة الأقسام: تحت الشريط، أزرار السكن، الشغل، الوثائق، المال، الأسعار… توصلك مباشرة إلى القسم. وتبقى في أعلى الشاشة وأنت تنزل.",
                 "- ثلاث لغات: أزرار Français و العربية و English في أعلى الصفحة. لكل لغة عنوانها (clicvia.com/ar/ و clicvia.com/en/).",
                 "- في الصفحة الإنجليزية، تُبيّن علامة صغيرة على كل بطاقة لغات الموقع.",
+                "- تحت بطاقة عقارات تونس، روابط مختصرة تفتح مباشرة الإعلانات العقارية لولاية (تونس، أريانة، سوسة، صفاقس…) وأسعار العقارات هذا الشهر.",
                 "- زر «شارك» يرسل إلى أقاربك رابط الفيديو التقديمي وعنوان البوابة (قائمة المشاركة في الهاتف، وإلا واتساب).",
                 "- الفيديو التقديمي: رابط أسفل الصفحة يفتح فيديو قصيرًا يعرض خدماتنا؛ وتحته فيديوهات كل موقع.",
                 "- صفحة Clicvia على فيسبوك: زر «تابعوا Clicvia على فيسبوك» أسفل الصفحة. تُنشر فيها صفحاتنا آليًا كل يوم.",
@@ -489,6 +512,7 @@ A_PROPOS = {
                 "- The category menu: below the banner, the Housing, Jobs, Paperwork, Money, Prices… buttons take you straight to the category. It stays at the top of the screen as you scroll.",
                 "- Three languages: the Français, العربية and English buttons at the top of the page. Each language has its own address (clicvia.com/ar/ and clicvia.com/en/).",
                 "- On the English page, a small label on each card says which languages the website is in.",
+                "- Below the Property Tunisia card, shortcuts open the property listings of a governorate directly (Tunis, Ariana, Sousse, Sfax…) and this month's property prices.",
                 "- The “Share” button sends your friends the link to our presentation video and the portal's address (your phone's share menu, otherwise WhatsApp).",
                 "- The presentation video: a link at the bottom of the page opens a short video showing our services; below it, the videos of each site.",
                 "- The Clicvia Facebook page: the “Follow Clicvia on Facebook” button at the bottom. Our pages are posted there automatically every day.",

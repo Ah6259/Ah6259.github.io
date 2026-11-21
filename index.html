@@ -156,7 +156,7 @@ html[dir="rtl"] h2.theme{letter-spacing:0;line-height:1.5}
 @media (min-width:1024px){.cat{display:grid;grid-template-columns:272px minmax(0,1fr);gap:12px 48px;align-items:start;padding:32px 0 32px}
   .cat-tete{position:sticky;top:84px;margin:0;padding-top:6px}.cat-sous{margin-top:8px}
   .cat+.cat{border-top:1px solid var(--ligne);margin-top:0}.cat:first-of-type{padding-top:36px}
-  .cat a.lien-prive{grid-column:2;justify-self:start;margin-top:0}}
+  .cat a.lien-prive,.cat nav.raccourcis{grid-column:2;justify-self:start;margin-top:0}}
 a.site{position:relative;display:flex;gap:14px;align-items:flex-start;padding:18px;background:var(--surface);border:1px solid var(--ligne);border-radius:var(--rayon);
   color:var(--encre);text-decoration:none;transition:border-color .2s,box-shadow .2s,transform .2s}
 a.site:hover{border-color:var(--ligne-forte);box-shadow:var(--ombre);transform:translateY(-2px)}
@@ -172,6 +172,11 @@ html[dir="rtl"] a.site:hover .fl{transform:translateX(-3px)}
 .langues-site{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--doux);border:1px solid var(--ligne);border-radius:999px;padding:1px 8px;margin-inline-start:6px;vertical-align:2px;white-space:nowrap}
 a.lien-prive{display:inline-block;margin:12px 2px 0;font-size:13.5px;color:var(--doux);text-decoration:none;border-bottom:1px dotted currentColor;padding:2px 0}
 a.lien-prive:hover{color:var(--encre)}
+/* 21/11/2026 : raccourcis sous la carte Immobilier Tunisie */
+nav.raccourcis{margin:12px 2px 0;font-size:14px;line-height:1.9;color:var(--doux)}
+nav.raccourcis span:first-child{font-weight:700;color:var(--encre)}
+nav.raccourcis a{color:var(--encre);text-decoration:none;border-bottom:1px dotted var(--ligne-forte);white-space:nowrap}
+nav.raccourcis a:hover{border-bottom-color:currentColor}
 .cherche-vide{margin:40px 0 0;padding:28px 20px;text-align:center;border:1px dashed var(--ligne-forte);border-radius:var(--rayon);color:var(--doux)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
@@ -243,7 +248,7 @@ footer.pied{margin-top:40px;background:var(--surface);border-top:1px solid var(-
     <span class="txt"><h3>Immobilier Tunisie</h3><p>Logements, bureaux, commerces, usines et terrains à vendre ou à louer dans les 24 gouvernorats ; déposez votre annonce gratuitement.</p></span><span class="fl" aria-hidden="true">→</span></a>
   <a class="site" href="https://monagent.clicvia.com/" data-mots="agent immobilier chercher logement phrase tunisien dar kra appartement وكيل عقار بحث سكن"><img class="ic" src="/assets/sites/mon-agent-immobilier.svg" alt="" width="48" height="48" loading="eager">
     <span class="txt"><h3>Mon agent immobilier</h3><p>Décrivez en une phrase le bien que vous cherchez, en français, en arabe ou en tunisien : toutes les annonces de Tunisie qui correspondent.</p></span><span class="fl" aria-hidden="true">→</span></a>
-</div></section>
+</div><nav class="raccourcis" aria-label="Annonces immobilières"><span>Annonces immobilières :</span> <a href="https://immobilier.clicvia.com/tunis/">Tunis</a><span class="r-sep" aria-hidden="true"> · </span><a href="https://immobilier.clicvia.com/ariana/">Ariana</a><span class="r-sep" aria-hidden="true"> · </span><a href="https://immobilier.clicvia.com/ben-arous/">Ben Arous</a><span class="r-sep" aria-hidden="true"> · </span><a href="https://immobilier.clicvia.com/nabeul/">Nabeul</a><span class="r-sep" aria-hidden="true"> · </span><a href="https://immobilier.clicvia.com/sousse/">Sousse</a><span class="r-sep" aria-hidden="true"> · </span><a href="https://immobilier.clicvia.com/sfax/">Sfax</a><span class="r-sep" aria-hidden="true"> · </span><a href="https://immobilier.clicvia.com/monastir/">Monastir</a><span class="r-sep" aria-hidden="true"> · </span><a href="https://immobilier.clicvia.com/bizerte/">Bizerte</a><span class="r-sep" aria-hidden="true"> · </span><a href="https://immobilier.clicvia.com/medenine/">Médenine (Djerba)</a><span class="r-sep" aria-hidden="true"> · </span><a href="https://immobilier.clicvia.com/rapports/">Prix de l’immobilier du mois</a></nav></section>
 <section class="cat" id="travail" aria-labelledby="t-travail"><div class="cat-tete"><h2 class="theme" id="t-travail">Emploi et marchés publics</h2><p class="cat-sous">Concours, appels d&#x27;offres et tendances, relevés chaque jour.</p></div>
 <div class="cartes">
   <a class="site" href="https://appels-offres.clicvia.com/" data-mots="appel offre marché public tender soumission enchère entreprise btp صفقة طلب عروض بتة مزاد"><img class="ic" src="/assets/sites/appels-offres-tunisie.svg" alt="" width="48" height="48" loading="lazy">
