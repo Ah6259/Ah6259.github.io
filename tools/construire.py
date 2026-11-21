@@ -48,7 +48,9 @@ TEXTES = {
     # 15/11/2026 (Ahmed : « ajoute un lien pour mon frère avec le site Prix des Eaux ») : lien discret sous la carte Prix des Eaux vers la page
     # PRIVÉE (code) de suivi des prix des gaufrettes, biscuits et chips ; non suivi par Google (rel=nofollow, page noindex)
     "immo_titre": {"fr": "Annonces immobilières", "ar": "إعلانات عقارية", "en": "Property listings"},
-    "immo_prix": {"fr": "Prix de l’immobilier du mois", "ar": "أسعار العقارات هذا الشهر", "en": "This month's property prices"},
+    "eau_titre": {"fr": "Prix par marque", "ar": "الأسعار حسب العلامة", "en": "Prices by brand"},
+    "concours_titre": {"fr": "Concours par gouvernorat", "ar": "المناظرات حسب الولاية", "en": "Competitions by governorate"},
+    "code_titre": {"fr": "Réviser", "ar": "راجع", "en": "Revise"},
     "prive_snacks": {"fr": "🔒 Espace privé des prix", "ar": "🔒 الفضاء الخاص بالأسعار", "en": "🔒 Private price area"},
     # 28/10/2026 (Ahmed) : lien vers les statistiques de visite (GoatCounter ; connexion obligatoire, rien de visible sans compte)
     "stats": {"fr": "Statistiques", "ar": "الإحصائيات", "en": "Statistics"},
@@ -235,19 +237,36 @@ SITES.sort(key=lambda x: list(THEMES).index(x[0]))
 
 
 # 21/11/2026 (Ahmed : « je veux plus de vues, surtout l'immobilier ») : Google a enregistré l'accueil du portail et y revient souvent,
-# mais n'a pas encore enregistré les pages de l'immobilier. Sous la carte Immobilier Tunisie : raccourcis vers les pages des
-# gouvernorats qui ont le plus d'annonces et vers les prix du mois (liens directs pour le visiteur, et chemin pour Google).
-RACCOURCIS_IMMO = [("tunis", "Tunis", "تونس"), ("ariana", "Ariana", "أريانة"), ("ben-arous", "Ben Arous", "بن عروس"),
-                   ("nabeul", "Nabeul", "نابل"), ("sousse", "Sousse", "سوسة"), ("sfax", "Sfax", "صفاقس"),
-                   ("monastir", "Monastir", "المنستير"), ("bizerte", "Bizerte", "بنزرت"), ("medenine", "Médenine (Djerba)", "مدنين (جربة)")]
+# mais n'a pas encore enregistré les pages des sites. Sous certaines cartes : raccourcis vers les pages les plus utiles du site
+# (liens directs pour le visiteur, et chemin pour Google). Chaque site a une adresse par langue : ar/<chemin> ; anglais = français.
+# (chemin, français, arabe [, anglais]) ; titre = clé de TEXTES.
+_GOUV = {"tunis": ("Tunis", "تونس"), "ariana": ("Ariana", "أريانة"), "ben-arous": ("Ben Arous", "بن عروس"), "nabeul": ("Nabeul", "نابل"),
+         "sousse": ("Sousse", "سوسة"), "sfax": ("Sfax", "صفاقس"), "monastir": ("Monastir", "المنستير"), "bizerte": ("Bizerte", "بنزرت"),
+         "kairouan": ("Kairouan", "القيروان"), "medenine": ("Médenine (Djerba)", "مدنين (جربة)")}
+RACCOURCIS = {
+    "immobilier": ("immo_titre", [(f"{g}/", *_GOUV[g]) for g in ("tunis", "ariana", "ben-arous", "nabeul", "sousse", "sfax", "monastir", "bizerte", "medenine")]
+                   + [("rapports/", "Prix de l’immobilier du mois", "أسعار العقارات هذا الشهر", "This month's property prices")]),
+    "prix-eau": ("eau_titre", [(f"marque/{m}/", n, n) for m, n in (("safia", "Safia"), ("sabrine", "Sabrine"), ("marwa", "Marwa"), ("aqualine", "Aqualine"),
+                                                                    ("cristaline", "Cristaline"), ("melliti", "Melliti"))]
+                 + [("prix-stika/", "Prix de la stika", "سعر الستيكة", "Price of a pack"), ("quelle-eau/", "Quelle eau choisir ?", "أي ماء تختار؟", "Which water to choose?")]),
+    "concours": ("concours_titre", [(f"gouvernorat/{g}/", *_GOUV[g]) for g in ("tunis", "ariana", "sousse", "sfax", "nabeul", "monastir", "kairouan", "bizerte")]
+                 + [("gouvernorat/national/", "Concours nationaux", "المناظرات الوطنية", "National competitions")]),
+    "code": ("code_titre", [("examen/", "Examen blanc", "امتحان تجريبي", "Mock exam"), ("entrainement/", "Entraînement", "تدريب", "Practice"),
+                            ("panneaux/", "Panneaux", "الإشارات", "Road signs"), ("lecons/", "Leçons", "الدروس", "Lessons"),
+                            ("amendes/", "Amendes", "الخطايا", "Fines"), ("permis/", "Permis", "رخصة السياقة", "Driving licence")]),
+}
 
 
-def raccourcis_immo(l):
+def raccourcis(sous, l):
+    if sous not in RACCOURCIS:
+        return ""
     T = lambda k: TEXTES[k][l]
-    base = "https://immobilier.clicvia.com/" + ("ar/" if l == "ar" else "")
-    liens = [f'<a href="{base}{s}/">{E(ar if l == "ar" else fr)}</a>' for s, fr, ar in RACCOURCIS_IMMO]
-    liens.append(f'<a href="{base}rapports/">{E(T("immo_prix"))}</a>')
-    return (f'<nav class="raccourcis" aria-label="{E(T("immo_titre"))}"><span>{E(T("immo_titre"))} :</span> '
+    cle, liste = RACCOURCIS[sous]
+    base = f"https://{sous}.clicvia.com/" + ("ar/" if l == "ar" else "")
+    def nom(x):
+        return x[2] if l == "ar" else (x[3] if l == "en" and len(x) > 3 else x[1])
+    liens = [f'<a href="{base}{x[0]}">{E(nom(x))}</a>' for x in liste]
+    return (f'<nav class="raccourcis" aria-label="{E(T(cle))}"><span>{E(T(cle))} :</span> '
             + '<span class="r-sep" aria-hidden="true"> · </span>'.join(liens) + "</nav>")
 
 
@@ -415,10 +434,9 @@ def page(l, gabarit, jour):
             charge = "eager" if k == 0 else "lazy"
             corps.append(f'  <a class="site" href="{adresse(sous, regle, l)}" data-mots="{E(MOTS.get(sous, ""))}"><img class="ic" src="/assets/sites/{icone}.svg" alt="" width="48" height="48" loading="{charge}">\n'
                          f'    <span class="txt"><h3>{E(nom[l])}{etiquette}</h3><p>{E(desc[l])}</p></span><span class="fl" aria-hidden="true">{"←" if l == "ar" else "→"}</span></a>')
-            if sous == "immobilier":
-                prive += raccourcis_immo(l)
+            prive += raccourcis(sous, l)
             if sous == "prix-eau":
-                prive = f'<a class="lien-prive" href="/tableau-bord/prix-snacks/" rel="nofollow">{E(T("prive_snacks"))}</a>'
+                prive += f'<a class="lien-prive" href="/tableau-bord/prix-snacks/" rel="nofollow">{E(T("prive_snacks"))}</a>'
         corps.append("</div>" + prive + "</section>")
     corps.append("</main>\n\n" + pied(l))
     return tete + "<body>\n" + "\n".join(corps)
@@ -442,7 +460,7 @@ A_PROPOS = {
                 "- Le menu des catégories : sous le bandeau, les boutons Logement, Emploi, Papiers, Argent, Prix… mènent directement à la catégorie. Il reste en haut de l'écran pendant que vous descendez.",
                 "- Trois langues : les boutons Français, العربية et English en haut de la page. Chaque langue a sa propre adresse (clicvia.com/ar/ et clicvia.com/en/).",
                 "- Sur la page en anglais, une petite étiquette sur chaque carte dit dans quelles langues est le site.",
-                "- Sous la carte Immobilier Tunisie, des raccourcis ouvrent directement les annonces immobilières d'un gouvernorat (Tunis, Ariana, Sousse, Sfax…) et les prix de l'immobilier du mois.",
+                "- Sous certaines cartes, des raccourcis ouvrent directement les pages les plus utiles : les annonces immobilières d'un gouvernorat et les prix du mois, le prix d'une marque d'eau, les concours d'un gouvernorat, l'examen blanc ou les panneaux du code de la route.",
                 "- Le bouton « Partager » envoie à vos proches le lien de notre vidéo de présentation et l'adresse du portail (menu de partage du téléphone, sinon WhatsApp).",
                 "- La vidéo de présentation : un lien en bas de la page ouvre une courte vidéo qui montre nos services ; en dessous, les vidéos de chaque site (présentation, vidéo pour les professionnels, vidéos Instagram de l'Immobilier).",
                 "- La page Facebook Clicvia : le bouton « Suivez Clicvia sur Facebook » en bas de page. Nos pages y sont publiées automatiquement chaque jour.",
@@ -477,7 +495,7 @@ A_PROPOS = {
                 "- قائمة الأقسام: تحت الشريط، أزرار السكن، الشغل، الوثائق، المال، الأسعار… توصلك مباشرة إلى القسم. وتبقى في أعلى الشاشة وأنت تنزل.",
                 "- ثلاث لغات: أزرار Français و العربية و English في أعلى الصفحة. لكل لغة عنوانها (clicvia.com/ar/ و clicvia.com/en/).",
                 "- في الصفحة الإنجليزية، تُبيّن علامة صغيرة على كل بطاقة لغات الموقع.",
-                "- تحت بطاقة عقارات تونس، روابط مختصرة تفتح مباشرة الإعلانات العقارية لولاية (تونس، أريانة، سوسة، صفاقس…) وأسعار العقارات هذا الشهر.",
+                "- تحت بعض البطاقات، روابط مختصرة تفتح مباشرة أهم الصفحات: الإعلانات العقارية لولاية وأسعار الشهر، سعر علامة ماء، مناظرات ولاية، الامتحان التجريبي أو إشارات قانون الطرقات.",
                 "- زر «شارك» يرسل إلى أقاربك رابط الفيديو التقديمي وعنوان البوابة (قائمة المشاركة في الهاتف، وإلا واتساب).",
                 "- الفيديو التقديمي: رابط أسفل الصفحة يفتح فيديو قصيرًا يعرض خدماتنا؛ وتحته فيديوهات كل موقع.",
                 "- صفحة Clicvia على فيسبوك: زر «تابعوا Clicvia على فيسبوك» أسفل الصفحة. تُنشر فيها صفحاتنا آليًا كل يوم.",
@@ -512,7 +530,7 @@ A_PROPOS = {
                 "- The category menu: below the banner, the Housing, Jobs, Paperwork, Money, Prices… buttons take you straight to the category. It stays at the top of the screen as you scroll.",
                 "- Three languages: the Français, العربية and English buttons at the top of the page. Each language has its own address (clicvia.com/ar/ and clicvia.com/en/).",
                 "- On the English page, a small label on each card says which languages the website is in.",
-                "- Below the Property Tunisia card, shortcuts open the property listings of a governorate directly (Tunis, Ariana, Sousse, Sfax…) and this month's property prices.",
+                "- Below some cards, shortcuts open the most useful pages directly: the property listings of a governorate and this month's prices, the price of a water brand, the competitions of a governorate, the mock exam or the road signs.",
                 "- The “Share” button sends your friends the link to our presentation video and the portal's address (your phone's share menu, otherwise WhatsApp).",
                 "- The presentation video: a link at the bottom of the page opens a short video showing our services; below it, the videos of each site.",
                 "- The Clicvia Facebook page: the “Follow Clicvia on Facebook” button at the bottom. Our pages are posted there automatically every day.",
