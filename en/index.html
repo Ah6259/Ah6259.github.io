@@ -177,6 +177,27 @@ nav.raccourcis{margin:12px 2px 0;font-size:14px;line-height:1.9;color:var(--doux
 nav.raccourcis span:first-child{font-weight:700;color:var(--encre)}
 nav.raccourcis a{color:var(--encre);text-decoration:none;border-bottom:1px dotted var(--ligne-forte);white-space:nowrap}
 nav.raccourcis a:hover{border-bottom-color:currentColor}
+/* 23/11/2026 : « Vos projets » = parcours de vie (CE.5 du cercle économique), parties repliées (règle § 66) */
+.parcours-liste{display:grid;gap:10px;align-items:start}
+@media (min-width:640px){.parcours-liste{grid-template-columns:repeat(2,minmax(0,1fr))}}
+details.parcours{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--rayon);min-width:0}
+details.parcours[open]{border-color:var(--ligne-forte);box-shadow:var(--ombre)}
+.parcours summary{display:flex;align-items:center;gap:10px;padding:15px 16px;cursor:pointer;list-style:none;border-radius:var(--rayon)}
+.parcours summary::-webkit-details-marker{display:none}
+.parcours summary::before{content:"";flex:none;width:8px;height:8px;border:solid var(--doux);border-width:0 2px 2px 0;transform:rotate(-45deg);transition:transform .2s}
+html[dir="rtl"] .parcours summary::before{transform:rotate(135deg)}
+.parcours[open] summary::before,html[dir="rtl"] .parcours[open] summary::before{transform:rotate(45deg)}
+.parcours summary:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.p-titre{flex:1;min-width:0;font-weight:700;font-size:16px;line-height:1.35}
+.p-nb{flex:none;font-size:12.5px;font-weight:700;color:var(--or-texte);background:var(--surface-2);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.parcours ol{list-style:none;margin:0;padding:0 16px 14px;counter-reset:etape}
+.parcours li{counter-increment:etape;position:relative;padding-inline-start:38px}
+.parcours li::before{content:counter(etape);position:absolute;inset-inline-start:0;top:9px;width:26px;height:26px;border-radius:50%;background:var(--encre);color:var(--surface);font-size:13px;font-weight:800;line-height:26px;text-align:center}
+.parcours li+li{border-top:1px solid var(--ligne)}
+.parcours li a{display:block;padding:9px 0;color:var(--encre);text-decoration:none;overflow-wrap:anywhere}
+.parcours li a strong{display:block;font-size:15px;line-height:1.35}
+.parcours li a span{display:block;color:var(--doux);font-size:14px;line-height:1.45}
+.parcours li a:hover strong{text-decoration:underline}
 .cherche-vide{margin:40px 0 0;padding:28px 20px;text-align:center;border:1px dashed var(--ligne-forte);border-radius:var(--rayon);color:var(--doux)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
@@ -242,6 +263,12 @@ footer.pied{margin-top:40px;background:var(--surface);border-top:1px solid var(-
 
 <main class="grille">
 <p class="cherche-vide" hidden>No service matches. Try another word or browse the categories.</p>
+<section class="cat projets" id="projets" aria-labelledby="t-projets"><div class="cat-tete"><h2 class="theme" id="t-projets">Your plans</h2><p class="cat-sous">One moment in life, our sites in the order you will need them.</p></div>
+<div class="parcours-liste"><details class="parcours" id="parcours-logement"><summary><span class="p-titre">Buying or renting a home</span><span class="p-nb">6 steps</span></summary><ol><li><a href="https://immobilier.clicvia.com/" data-lien="portail-immobilier"><strong>Property Tunisia</strong><span>See the listings and neighbourhood prices</span></a></li><li><a href="https://monagent.clicvia.com/" data-lien="portail-monagent"><strong>My property agent</strong><span>Describe what you want in one sentence</span></a></li><li><a href="https://outils.clicvia.com/" data-lien="portail-outils"><strong>Practical tools Tunisia</strong><span>Work out the loan repayments</span></a></li><li><a href="https://avocats.clicvia.com/" data-lien="portail-avocats"><strong>Lawyers and notaries Tunisia</strong><span>Find a notary or a lawyer for the deed</span></a></li><li><a href="https://pros.clicvia.com/" data-lien="portail-pros"><strong>Professionals Tunisia</strong><span>Moving, building work, tradespeople</span></a></li><li><a href="https://comptes.clicvia.com/" data-lien="portail-comptes"><strong>My accounts</strong><span>Keep track of rent and budget</span></a></li></ol></details>
+<details class="parcours" id="parcours-mariage"><summary><span class="p-titre">Getting married</span><span class="p-nb">4 steps</span></summary><ol><li><a href="https://mariage.clicvia.com/" data-lien="portail-mariage"><strong>Wedding Tunisia</strong><span>Halls, photographers, caterers, beauty</span></a></li><li><a href="https://comptes.clicvia.com/" data-lien="portail-comptes"><strong>My accounts</strong><span>Keep the wedding budget</span></a></li><li><a href="https://immobilier.clicvia.com/" data-lien="portail-immobilier"><strong>Property Tunisia</strong><span>Find your first home</span></a></li><li><a href="https://hygiene.clicvia.com/" data-lien="portail-hygiene"><strong>Cleaning &amp; hygiene prices</strong><span>Stock up the home, delivered</span></a></li></ol></details>
+<details class="parcours" id="parcours-voiture"><summary><span class="p-titre">Getting a licence and a car</span><span class="p-nb">4 steps</span></summary><ol><li><a href="https://code.clicvia.com/" data-lien="portail-code"><strong>Tunisia Highway Code</strong><span>Revise the code and take the mock exam</span></a></li><li><a href="https://auto-ecoles.clicvia.com/" data-lien="portail-auto-ecoles"><strong>Driving schools Tunisia</strong><span>Choose a driving school near you</span></a></li><li><a href="https://outils.clicvia.com/" data-lien="portail-outils"><strong>Practical tools Tunisia</strong><span>Work out the car loan</span></a></li><li><a href="https://voiture.clicvia.com/" data-lien="portail-voiture"><strong>My car Tunisia</strong><span>Road tax, roadworthiness test, insurance: reminders</span></a></li></ol></details>
+<details class="parcours" id="parcours-emploi"><summary><span class="p-titre">Looking for a job</span><span class="p-nb">3 steps</span></summary><ol><li><a href="https://concours.clicvia.com/" data-lien="portail-concours"><strong>Competition Alert Tunisia</strong><span>Open competitions near you</span></a></li><li><a href="https://documents.clicvia.com/" data-lien="portail-documents"><strong>Documents Tunisia</strong><span>Prepare the job application and certificates</span></a></li><li><a href="https://outils.clicvia.com/" data-lien="portail-outils"><strong>Practical tools Tunisia</strong><span>Work out the net salary offered</span></a></li></ol></details>
+<details class="parcours" id="parcours-maison"><summary><span class="p-titre">Everyday home</span><span class="p-nb">3 steps</span></summary><ol><li><a href="https://hygiene.clicvia.com/" data-lien="portail-hygiene"><strong>Cleaning &amp; hygiene prices</strong><span>Compare detergent, bleach, nappies… and order</span></a></li><li><a href="https://prix-eau.clicvia.com/" data-lien="portail-prix-eau"><strong>Water prices in Tunisia</strong><span>Mineral water prices, shop by shop</span></a></li><li><a href="https://comptes.clicvia.com/" data-lien="portail-comptes"><strong>My accounts</strong><span>Keep track of the month&#x27;s spending</span></a></li></ol></details></div></section>
 <section class="cat" id="maison" aria-labelledby="t-maison"><div class="cat-tete"><h2 class="theme" id="t-maison">Housing and property</h2><p class="cat-sous">Buy, rent, find the right neighbourhood: listings from all over Tunisia.</p></div>
 <div class="cartes">
   <a class="site" href="https://immobilier.clicvia.com/" data-mots="appartement maison villa terrain louer location vendre vente achat loyer s+1 s+2 s+3 bureau local commerce usine annonce prix m2 quartier estimer شقة منزل أرض كراء بيع عقار dar kra flat house rent"><img class="ic" src="/assets/sites/immobilier-tunis.svg" alt="" width="48" height="48" loading="eager">

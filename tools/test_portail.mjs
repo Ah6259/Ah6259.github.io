@@ -57,6 +57,8 @@ check("fabrication : index.html est bien celui de tools/construire.py (gabarit +
     // 18/11/2026 (refonte de l'accueil) : recherche instantanée dans les cartes et menu des catégories qui reste en haut de l'écran
     ["recherche d'un service (accueil)", /<form class="cherche" role="search" hidden/.test(acc) && /data-mots="[^"]+"/.test(acc) && existsSync(join(root, "assets/accueil.js")), { fr: /La recherche : tapez/, ar: /البحث: اكتب/, en: /Search: type/ }],
     ["menu des catégories", /<nav class="cats"/.test(acc) && /<section class="cat" id="maison"/.test(acc), { fr: /menu des catégories/, ar: /قائمة الأقسام/, en: /category menu/ }],
+    // 23/11/2026 (CE.5 du cercle économique) : parcours de vie « Vos projets » avant les catégories
+    ["parcours de vie « Vos projets »", /<section class="cat projets" id="projets"/.test(acc) && /<details class="parcours"/.test(acc), { fr: /« Vos projets »[\s\S]*parcours de vie/, ar: /«مشاريعكم»/, en: /“Your plans”[\s\S]*life journeys/ }],
     ["fabrication automatique (construire.py)", /def page_a_propos/.test(cons), { fr: /fabriqués automatiquement/, ar: /تُصنع آليًا/, en: /built automatically/ }]];
   const manque = [];
   for (const [nom, sur, re] of FONCTIONS) { if (!sur) manque.push(`${nom} : repère introuvable dans le site`); else for (const l of Object.keys(ap)) if (!re[l].test(txt(ap[l]))) manque.push(`${nom} (${l})`); }
@@ -114,7 +116,50 @@ for (const [fr, ar, en] of [["confidentialite/index.html", "ar/confidentialite/i
     check(`${f} : recherche instantanée (« notaire » -> avocats, « كراء » -> immobilier, mot inconnu -> message, champ vide -> toutes les cartes)`,
       !d.querySelector(".cherche").hidden && notaire.length === 1 && notaire[0].includes("avocats.clicvia.com") && kra.some(u => u.includes("immobilier.clicvia.com"))
       && rien.length === 0 && vide && tout.length === nFr && d.querySelector(".cherche-vide").hidden);
+    // 23/11/2026 : parcours cachés pendant une recherche, revenus quand le champ est vide ; un clic compté « lien-site/portail-<site> »
+    const projets = d.querySelector("section.projets");
+    essai("notaire"); const cacheRecherche = projets.hidden; essai(""); const revenu = !projets.hidden;
+    const comptes = []; dom.window.goatcounter = { count: o => comptes.push(o) };
+    const lien = d.querySelector('.parcours a[data-lien="portail-immobilier"]');
+    lien.addEventListener("click", e => e.preventDefault());
+    lien.querySelector("strong").dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true, cancelable: true }));
+    dom.window.dispatchEvent(new dom.window.Event("beforeprint")); const toutOuvert = [...d.querySelectorAll("details.parcours")].every(x => x.open);
+    dom.window.dispatchEvent(new dom.window.Event("afterprint")); const refermes = [...d.querySelectorAll("details.parcours")].every(x => !x.open);
+    check(`${f} : parcours cachés pendant une recherche puis revenus, clic compté (lien-site/portail-immobilier, événement), tout ouvert à l'impression puis refermé`,
+      cacheRecherche && revenu && comptes.length === 1 && comptes[0].path === "lien-site/portail-immobilier" && comptes[0].event === true && toutOuvert && refermes);
   }
+}
+// 23/11/2026 (Ahmed, « fais » pour CE.5 du cercle économique) : parcours de vie « Vos projets » sur les 3 accueils : au moins logement,
+// mariage, voiture, emploi ; parties repliées au départ (règle § 66) avec leur nombre d'étapes ; chaque lien vers un site de la liste
+// (même adresse que sa carte, donc https://<site>.clicvia.com/ dans la langue de la page), compté lien-site/portail-<site> ;
+// jamais The Message, Mosquées ni Points d'eau (hors du cercle commercial) ; placés avant les catégories.
+{ const TITRES = { fr: ["J&#x27;achète ou je loue un logement", "Je me marie", "Je passe le permis", "Je cherche un emploi"],
+                   ar: ["أشتري أو أكتري مسكنًا", "أستعدّ للزواج", "أجتاز الرخصة", "أبحث عن شغل"],
+                   en: ["Buying or renting a home", "Getting married", "Getting a licence and a car", "Looking for a job"] };
+  const NB = { fr: /^(\d+) étapes$/, ar: /^(\d+) مراحل$/, en: /^(\d+) steps$/ };
+  for (const [l, f] of Object.entries(PAGES)) {
+    const h = lire(f), sec = (h.match(/<section class="cat projets"[\s\S]*?<\/section>/) || [""])[0];
+    const cartes = new Set(liens(h)), det = [...sec.matchAll(/<details class="parcours"[^>]*>([\s\S]*?)<\/details>/g)];
+    const pb2 = [];
+    if (!sec || h.indexOf(sec) > h.indexOf('<section class="cat" id=')) pb2.push("partie absente ou après les catégories");
+    if (det.length < 4) pb2.push(`${det.length} parcours`);
+    if (/<details class="parcours"[^>]* open/.test(sec)) pb2.push("un parcours ouvert au départ");
+    for (const t of TITRES[l]) if (!sec.includes(t)) pb2.push("titre manquant : " + t);
+    for (const [, d] of det) {
+      const nb = (d.match(/<span class="p-nb">([^<]+)<\/span>/) || [])[1] || "", n = +((nb.match(NB[l]) || [])[1] || -1);
+      const ls = [...d.matchAll(/<li><a href="([^"]+)" data-lien="portail-([a-z-]+)"><strong>[^<]+<\/strong><span>[^<]+<\/span><\/a><\/li>/g)];
+      if (ls.length < 3 || n !== ls.length || ls.length !== (d.match(/<li>/g) || []).length) pb2.push(`nombre d'étapes faux (${nb})`);
+      for (const [, u, id] of ls) {
+        if (!cartes.has(u) || !u.startsWith(`https://${id}.clicvia.com/`)) pb2.push("lien hors de la liste des sites : " + u);
+        if (["message", "mosquees", "eau"].includes(id)) pb2.push("site hors du cercle : " + id);
+      }
+    }
+    check(`${f} : « ${l === "fr" ? "Vos projets" : l === "ar" ? "مشاريعكم" : "Your plans"} », ${det.length} parcours repliés avec leur nombre d'étapes, liens vers nos sites comptés lien-site/portail-<site>` + (pb2.length ? " — " + pb2.join(" ; ") : ""),
+      pb2.length === 0);
+  }
+  const js = lire("assets/accueil.js");
+  check("assets/accueil.js : clic d'un parcours compté dans GoatCounter (\"lien-site/\" + data-lien, event: true), sans bloquer la navigation",
+    /closest\("\.parcours a\[data-lien\]"\)/.test(js) && /path: "lien-site\/" \+ a\.getAttribute\("data-lien"\)/.test(js) && /event: true/.test(js));
 }
 console.log(pb ? `\n${pb} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(pb ? 1 : 0);

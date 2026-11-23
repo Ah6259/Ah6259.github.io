@@ -74,6 +74,11 @@ TEXTES = {
                   "en": "One need, one site. Independent services for Tunisia."},
     "accueil_aria": {"fr": "Clicvia, accueil", "ar": "Clicvia، الصفحة الرئيسية", "en": "Clicvia, home"},
     "autre_nom": {"fr": "Clicvia — services pratiques pour la Tunisie", "ar": "Clicvia — خدمات عملية لتونس", "en": "Clicvia — practical services for Tunisia"},
+    # 23/11/2026 (Ahmed, « fais » pour CE.5 du cercle économique) : parcours de vie (PARCOURS ci-dessous)
+    "projets": {"fr": "Vos projets", "ar": "مشاريعكم", "en": "Your plans"},
+    "projets_sous": {"fr": "Un moment de vie, nos sites dans l'ordre où vous en aurez besoin.", "ar": "لكل مرحلة من حياتك، مواقعنا بالترتيب الذي ستحتاجها به.",
+                     "en": "One moment in life, our sites in the order you will need them."},
+    "etapes": {"fr": "{n} étapes", "ar": "{n} مراحل", "en": "{n} steps"},
 }
 NOM_LANGUE = [("fr", "Français", "fr"), ("ar", "العربية", "ar"), ("en", "English", "en")]
 LOCALE = {"fr": "fr_FR", "ar": "ar_AR", "en": "en_US"}
@@ -257,6 +262,60 @@ RACCOURCIS = {
 }
 
 
+# 23/11/2026 (Ahmed : « fais » pour la solution CE.5 du cercle économique, `cercle economique Clicvia.md` § 2 de projets-ahmed) :
+# PARCOURS DE VIE sur l'accueil, partie « Vos projets » placée avant les catégories. Autre angle que les 9 catégories (règle § 42) :
+# un moment de vie = nos sites dans l'ordre logique. Chaque parcours est une partie repliée (règle § 66 : titre + nombre d'étapes).
+# Chaque clic est compté dans GoatCounter : événement « lien-site/portail-<site> » (assets/accueil.js, règle CE.1).
+# The Message, Mosquées et Points d'eau restent hors de ces parcours (hors du cercle commercial, § 4 du document).
+# (identifiant, titre, [(sous-domaine du site, ce qu'on y fait)]) ; le nom du site vient de SITES.
+PARCOURS = [
+    ("logement", {"fr": "J'achète ou je loue un logement", "ar": "أشتري أو أكتري مسكنًا", "en": "Buying or renting a home"}, [
+        ("immobilier", {"fr": "Voir les annonces et les prix du quartier", "ar": "شاهد الإعلانات وأسعار الحي", "en": "See the listings and neighbourhood prices"}),
+        ("monagent", {"fr": "Décrire en une phrase ce que vous cherchez", "ar": "صف في جملة ما تبحث عنه", "en": "Describe what you want in one sentence"}),
+        ("outils", {"fr": "Calculer les mensualités du crédit", "ar": "احسب أقساط القرض", "en": "Work out the loan repayments"}),
+        ("avocats", {"fr": "Trouver un notaire ou un avocat pour l'acte", "ar": "اعثر على عدل إشهاد أو محامٍ للعقد", "en": "Find a notary or a lawyer for the deed"}),
+        ("pros", {"fr": "Déménagement, travaux, artisans", "ar": "النقل والأشغال والحرفيون", "en": "Moving, building work, tradespeople"}),
+        ("comptes", {"fr": "Suivre le loyer et le budget", "ar": "تابع الكراء والميزانية", "en": "Keep track of rent and budget"})]),
+    ("mariage", {"fr": "Je me marie", "ar": "أستعدّ للزواج", "en": "Getting married"}, [
+        ("mariage", {"fr": "Salles, photographes, traiteurs, beauté", "ar": "القاعات والمصوّرون والممونون والتجميل", "en": "Halls, photographers, caterers, beauty"}),
+        ("comptes", {"fr": "Tenir le budget du mariage", "ar": "تابع ميزانية الزواج", "en": "Keep the wedding budget"}),
+        ("immobilier", {"fr": "Trouver votre premier logement", "ar": "اعثر على مسكنك الأول", "en": "Find your first home"}),
+        ("hygiene", {"fr": "Équiper la maison, livré chez vous", "ar": "جهّز البيت مع التوصيل", "en": "Stock up the home, delivered"})]),
+    ("voiture", {"fr": "Je passe le permis, j'achète une voiture", "ar": "أجتاز الرخصة وأشتري سيارة", "en": "Getting a licence and a car"}, [
+        ("code", {"fr": "Réviser le code et passer l'examen blanc", "ar": "راجع مجلة الطرقات واجتز الامتحان التجريبي", "en": "Revise the code and take the mock exam"}),
+        ("auto-ecoles", {"fr": "Choisir une auto-école près de chez vous", "ar": "اختر مدرسة سياقة قريبة منك", "en": "Choose a driving school near you"}),
+        ("outils", {"fr": "Calculer le crédit de la voiture", "ar": "احسب قرض السيارة", "en": "Work out the car loan"}),
+        ("voiture", {"fr": "Vignette, visite technique, assurance : les rappels", "ar": "معلوم الجولان والفحص الفني والتأمين: التذكيرات", "en": "Road tax, roadworthiness test, insurance: reminders"})]),
+    ("emploi", {"fr": "Je cherche un emploi", "ar": "أبحث عن شغل", "en": "Looking for a job"}, [
+        ("concours", {"fr": "Les concours ouverts près de chez vous", "ar": "المناظرات المفتوحة قربك", "en": "Open competitions near you"}),
+        ("documents", {"fr": "Préparer la demande d'emploi et les attestations", "ar": "حضّر مطلب الشغل والشهادات", "en": "Prepare the job application and certificates"}),
+        ("outils", {"fr": "Calculer le salaire net proposé", "ar": "احسب الأجر الصافي المقترح", "en": "Work out the net salary offered"})]),
+    ("maison", {"fr": "La maison au quotidien", "ar": "البيت كل يوم", "en": "Everyday home"}, [
+        ("hygiene", {"fr": "Comparer lessive, javel, couches… et commander", "ar": "قارن الغسيل والجافال والحفاظات… واطلب", "en": "Compare detergent, bleach, nappies… and order"}),
+        ("prix-eau", {"fr": "Le prix de l'eau minérale, magasin par magasin", "ar": "سعر الماء المعدني، مغازة بمغازة", "en": "Mineral water prices, shop by shop"}),
+        ("comptes", {"fr": "Suivre les dépenses du mois", "ar": "تابع مصاريف الشهر", "en": "Keep track of the month's spending"})]),
+]
+HORS_CERCLE = {"message", "mosquees", "eau"}
+
+
+def parcours(l):
+    """Partie « Vos projets » de l'accueil : un <details> replié par parcours (titre + nombre d'étapes), liste numérotée de liens."""
+    T = lambda k: TEXTES[k][l]
+    site = {x[1]: x for x in SITES}
+    blocs = []
+    for pid, titre, etapes in PARCOURS:
+        lis = []
+        for sous, quoi in etapes:
+            if sous not in site or sous in HORS_CERCLE:
+                raise SystemExit(f"parcours {pid} : site inconnu ou hors du cercle : {sous}")
+            _, _, _, regle, nom, _ = site[sous]
+            lis.append(f'<li><a href="{adresse(sous, regle, l)}" data-lien="portail-{sous}"><strong>{E(nom[l])}</strong><span>{E(insecable(l, quoi[l]))}</span></a></li>')
+        blocs.append(f'<details class="parcours" id="parcours-{pid}"><summary><span class="p-titre">{E(insecable(l, titre[l]))}</span>'
+                     f'<span class="p-nb">{E(T("etapes").format(n=len(etapes)))}</span></summary><ol>{"".join(lis)}</ol></details>')
+    return (f'<section class="cat projets" id="projets" aria-labelledby="t-projets"><div class="cat-tete"><h2 class="theme" id="t-projets">{E(T("projets"))}</h2>'
+            f'<p class="cat-sous">{E(T("projets_sous"))}</p></div>\n<div class="parcours-liste">' + "\n".join(blocs) + "</div></section>")
+
+
 def raccourcis(sous, l):
     if sous not in RACCOURCIS:
         return ""
@@ -422,7 +481,7 @@ def page(l, gabarit, jour):
 <nav class="cats" aria-label="{E(T("cats_aria"))}"><div class="cats-in">{menu}</div></nav>
 
 <main class="grille">
-<p class="cherche-vide" hidden>{E(T("cherche_vide"))}</p>''']
+<p class="cherche-vide" hidden>{E(T("cherche_vide"))}</p>''', parcours(l)]
     for k, th in enumerate(themes):
         corps.append(f'<section class="cat" id="{th}" aria-labelledby="t-{th}"><div class="cat-tete"><h2 class="theme" id="t-{th}">{E(THEMES[th][l])}</h2>'
                      f'<p class="cat-sous">{E(THEMES_SOUS[th][l])}</p></div>\n<div class="cartes">')
@@ -460,6 +519,7 @@ A_PROPOS = {
                 "- Le menu des catégories : sous le bandeau, les boutons Logement, Emploi, Papiers, Argent, Prix… mènent directement à la catégorie. Il reste en haut de l'écran pendant que vous descendez.",
                 "- Trois langues : les boutons Français, العربية et English en haut de la page. Chaque langue a sa propre adresse (clicvia.com/ar/ et clicvia.com/en/).",
                 "- Sur la page en anglais, une petite étiquette sur chaque carte dit dans quelles langues est le site.",
+                "- « Vos projets » : avant les catégories, des parcours de vie (j'achète ou je loue un logement, je me marie, je passe le permis, je cherche un emploi, la maison au quotidien). Touchez un parcours pour voir nos sites dans l'ordre où vous en aurez besoin.",
                 "- Sous certaines cartes, des raccourcis ouvrent directement les pages les plus utiles : les annonces immobilières d'un gouvernorat et les prix du mois, le prix d'une marque d'eau, les concours d'un gouvernorat, l'examen blanc ou les panneaux du code de la route.",
                 "- Le bouton « Partager » envoie à vos proches le lien de notre vidéo de présentation et l'adresse du portail (menu de partage du téléphone, sinon WhatsApp).",
                 "- La vidéo de présentation : un lien en bas de la page ouvre une courte vidéo qui montre nos services ; en dessous, les vidéos de chaque site (présentation, vidéo pour les professionnels, vidéos Instagram de l'Immobilier).",
@@ -495,6 +555,7 @@ A_PROPOS = {
                 "- قائمة الأقسام: تحت الشريط، أزرار السكن، الشغل، الوثائق، المال، الأسعار… توصلك مباشرة إلى القسم. وتبقى في أعلى الشاشة وأنت تنزل.",
                 "- ثلاث لغات: أزرار Français و العربية و English في أعلى الصفحة. لكل لغة عنوانها (clicvia.com/ar/ و clicvia.com/en/).",
                 "- في الصفحة الإنجليزية، تُبيّن علامة صغيرة على كل بطاقة لغات الموقع.",
+                "- «مشاريعكم»: قبل الأقسام، مسارات حسب مراحل الحياة (أشتري أو أكتري مسكنًا، أستعدّ للزواج، أجتاز الرخصة، أبحث عن شغل، البيت كل يوم). اضغط على مسار لترى مواقعنا بالترتيب الذي ستحتاجها به.",
                 "- تحت بعض البطاقات، روابط مختصرة تفتح مباشرة أهم الصفحات: الإعلانات العقارية لولاية وأسعار الشهر، سعر علامة ماء، مناظرات ولاية، الامتحان التجريبي أو إشارات قانون الطرقات.",
                 "- زر «شارك» يرسل إلى أقاربك رابط الفيديو التقديمي وعنوان البوابة (قائمة المشاركة في الهاتف، وإلا واتساب).",
                 "- الفيديو التقديمي: رابط أسفل الصفحة يفتح فيديو قصيرًا يعرض خدماتنا؛ وتحته فيديوهات كل موقع.",
@@ -530,6 +591,7 @@ A_PROPOS = {
                 "- The category menu: below the banner, the Housing, Jobs, Paperwork, Money, Prices… buttons take you straight to the category. It stays at the top of the screen as you scroll.",
                 "- Three languages: the Français, العربية and English buttons at the top of the page. Each language has its own address (clicvia.com/ar/ and clicvia.com/en/).",
                 "- On the English page, a small label on each card says which languages the website is in.",
+                "- “Your plans”: before the categories, life journeys (buying or renting a home, getting married, getting a licence and a car, looking for a job, everyday home). Tap a journey to see our sites in the order you will need them.",
                 "- Below some cards, shortcuts open the most useful pages directly: the property listings of a governorate and this month's prices, the price of a water brand, the competitions of a governorate, the mock exam or the road signs.",
                 "- The “Share” button sends your friends the link to our presentation video and the portal's address (your phone's share menu, otherwise WhatsApp).",
                 "- The presentation video: a link at the bottom of the page opens a short video showing our services; below it, the videos of each site.",

@@ -53,6 +53,11 @@ Tests : `node tools/test_video.mjs` et `node tools/test_portail.mjs`. `assets/la
 - Feuille de style unique dans `tools/gabarit.html` (couleurs en variables, mode sombre, droite à gauche, mouvement réduit respecté).
   Après un changement de style : `python tools/construire.py`, `node tools/page_video.mjs`, de nouveau `construire.py`, puis les tests.
 - Test : un repère de fonction introuvable dans le site est désormais un ÉCHEC (avant : ignoré en silence) ; recherche essayée dans jsdom.
+- **23/11/2026 — « Vos projets » (parcours de vie, solution CE.5 du cercle économique)** : partie placée avant les catégories, liste `PARCOURS`
+  de construire.py (logement, mariage, permis et voiture, emploi, maison au quotidien) ; chaque parcours = une partie repliée (`<details>`,
+  titre + nombre d'étapes, règle § 66) avec nos sites dans l'ordre (même adresse que leur carte). Clic compté dans GoatCounter :
+  `lien-site/portail-<site>` (`assets/accueil.js`) ; cachée pendant une recherche ; tout s'ouvre à l'impression. Jamais The Message,
+  Mosquées ni Points d'eau (hors du cercle commercial, `HORS_CERCLE`). Tests dans `tools/test_portail.mjs`.
 
 - **19/10/2026** : `CLAUDE.md` créé (mémoire lue automatiquement par Claude Code) ; visiteur simulé avec le contrôle des espaces (règle commune § 29), 0 anomalie.
 

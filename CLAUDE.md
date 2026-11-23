@@ -104,3 +104,7 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
 - **19/11/2026 (soir, captures d'Ahmed : « les cartes ne sont pas bien positionnées, enlève le vide entre les sections »)** : sur ordinateur, le bas
   des cartes touchait la ligne de séparation de la catégorie suivante -> `.cat` padding 32px en haut ET en bas (≥ 1024 px) ; bandeau 52/44 px au lieu
   de 64/80 ; catégories 30 px (téléphone) / 36 px (tablette) ; pied de page 40 px au lieu de 72 ; lien vidéo 24 px. Mesuré à 1316 et 390 px.
+- **23/11/2026 — « Vos projets » sur l'accueil (Ahmed, « fais » pour CE.5 du cercle économique, `cercle economique Clicvia.md` de projets-ahmed)** :
+  parcours de vie (`PARCOURS` de construire.py, 3 langues) avant les catégories, parties repliées (§ 66), clics comptés `lien-site/portail-<site>`
+  (assets/accueil.js) ; un parcours ne contient que des sites de `SITES`, jamais The Message / Mosquées / Points d'eau (`HORS_CERCLE`, la
+  construction s'arrête sinon). Nouveau parcours ou nouvelle étape : une ligne dans `PARCOURS`, puis construire + tests.

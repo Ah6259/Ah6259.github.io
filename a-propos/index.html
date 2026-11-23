@@ -177,6 +177,27 @@ nav.raccourcis{margin:12px 2px 0;font-size:14px;line-height:1.9;color:var(--doux
 nav.raccourcis span:first-child{font-weight:700;color:var(--encre)}
 nav.raccourcis a{color:var(--encre);text-decoration:none;border-bottom:1px dotted var(--ligne-forte);white-space:nowrap}
 nav.raccourcis a:hover{border-bottom-color:currentColor}
+/* 23/11/2026 : « Vos projets » = parcours de vie (CE.5 du cercle économique), parties repliées (règle § 66) */
+.parcours-liste{display:grid;gap:10px;align-items:start}
+@media (min-width:640px){.parcours-liste{grid-template-columns:repeat(2,minmax(0,1fr))}}
+details.parcours{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--rayon);min-width:0}
+details.parcours[open]{border-color:var(--ligne-forte);box-shadow:var(--ombre)}
+.parcours summary{display:flex;align-items:center;gap:10px;padding:15px 16px;cursor:pointer;list-style:none;border-radius:var(--rayon)}
+.parcours summary::-webkit-details-marker{display:none}
+.parcours summary::before{content:"";flex:none;width:8px;height:8px;border:solid var(--doux);border-width:0 2px 2px 0;transform:rotate(-45deg);transition:transform .2s}
+html[dir="rtl"] .parcours summary::before{transform:rotate(135deg)}
+.parcours[open] summary::before,html[dir="rtl"] .parcours[open] summary::before{transform:rotate(45deg)}
+.parcours summary:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.p-titre{flex:1;min-width:0;font-weight:700;font-size:16px;line-height:1.35}
+.p-nb{flex:none;font-size:12.5px;font-weight:700;color:var(--or-texte);background:var(--surface-2);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.parcours ol{list-style:none;margin:0;padding:0 16px 14px;counter-reset:etape}
+.parcours li{counter-increment:etape;position:relative;padding-inline-start:38px}
+.parcours li::before{content:counter(etape);position:absolute;inset-inline-start:0;top:9px;width:26px;height:26px;border-radius:50%;background:var(--encre);color:var(--surface);font-size:13px;font-weight:800;line-height:26px;text-align:center}
+.parcours li+li{border-top:1px solid var(--ligne)}
+.parcours li a{display:block;padding:9px 0;color:var(--encre);text-decoration:none;overflow-wrap:anywhere}
+.parcours li a strong{display:block;font-size:15px;line-height:1.35}
+.parcours li a span{display:block;color:var(--doux);font-size:14px;line-height:1.45}
+.parcours li a:hover strong{text-decoration:underline}
 .cherche-vide{margin:40px 0 0;padding:28px 20px;text-align:center;border:1px dashed var(--ligne-forte);border-radius:var(--rayon);color:var(--doux)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
@@ -236,7 +257,7 @@ footer.pied{margin-top:40px;background:var(--surface);border-top:1px solid var(-
 <p>Touchez une carte pour ouvrir le site. Chaque carte donne le nom du site et ce qu&#x27;il fait.</p>
 </section>
 <section class="ap-carte"><h2>Comment s&#x27;en servir</h2>
-<ul><li>Les cartes des sites : une carte par site, rangées par catégorie. Elle ouvre le site dans votre langue quand il l&#x27;a.</li><li>La recherche : tapez ce que vous cherchez en haut de la page (par exemple « concours », « loyer », « notaire », en français, en arabe ou en tunisien) ; seules les cartes qui correspondent restent affichées.</li><li>Le menu des catégories : sous le bandeau, les boutons Logement, Emploi, Papiers, Argent, Prix… mènent directement à la catégorie. Il reste en haut de l&#x27;écran pendant que vous descendez.</li><li>Trois langues : les boutons Français, العربية et English en haut de la page. Chaque langue a sa propre adresse (clicvia.com/ar/ et clicvia.com/en/).</li><li>Sur la page en anglais, une petite étiquette sur chaque carte dit dans quelles langues est le site.</li><li>Sous certaines cartes, des raccourcis ouvrent directement les pages les plus utiles : les annonces immobilières d&#x27;un gouvernorat et les prix du mois, le prix d&#x27;une marque d&#x27;eau, les concours d&#x27;un gouvernorat, l&#x27;examen blanc ou les panneaux du code de la route.</li><li>Le bouton « Partager » envoie à vos proches le lien de notre vidéo de présentation et l&#x27;adresse du portail (menu de partage du téléphone, sinon WhatsApp).</li><li>La vidéo de présentation : un lien en bas de la page ouvre une courte vidéo qui montre nos services ; en dessous, les vidéos de chaque site (présentation, vidéo pour les professionnels, vidéos Instagram de l&#x27;Immobilier).</li><li>La page Facebook Clicvia : le bouton « Suivez Clicvia sur Facebook » en bas de page. Nos pages y sont publiées automatiquement chaque jour.</li><li>Le compte Instagram de Clicvia Immobilier : le bouton « Clicvia Immobilier sur Instagram » à côté. Chaque jour, deux courtes vidéos y présentent automatiquement les annonces d&#x27;un gouvernorat ; le lien du profil mène aux annonces du gouvernorat de la vidéo.</li></ul>
+<ul><li>Les cartes des sites : une carte par site, rangées par catégorie. Elle ouvre le site dans votre langue quand il l&#x27;a.</li><li>La recherche : tapez ce que vous cherchez en haut de la page (par exemple « concours », « loyer », « notaire », en français, en arabe ou en tunisien) ; seules les cartes qui correspondent restent affichées.</li><li>Le menu des catégories : sous le bandeau, les boutons Logement, Emploi, Papiers, Argent, Prix… mènent directement à la catégorie. Il reste en haut de l&#x27;écran pendant que vous descendez.</li><li>Trois langues : les boutons Français, العربية et English en haut de la page. Chaque langue a sa propre adresse (clicvia.com/ar/ et clicvia.com/en/).</li><li>Sur la page en anglais, une petite étiquette sur chaque carte dit dans quelles langues est le site.</li><li>« Vos projets » : avant les catégories, des parcours de vie (j&#x27;achète ou je loue un logement, je me marie, je passe le permis, je cherche un emploi, la maison au quotidien). Touchez un parcours pour voir nos sites dans l&#x27;ordre où vous en aurez besoin.</li><li>Sous certaines cartes, des raccourcis ouvrent directement les pages les plus utiles : les annonces immobilières d&#x27;un gouvernorat et les prix du mois, le prix d&#x27;une marque d&#x27;eau, les concours d&#x27;un gouvernorat, l&#x27;examen blanc ou les panneaux du code de la route.</li><li>Le bouton « Partager » envoie à vos proches le lien de notre vidéo de présentation et l&#x27;adresse du portail (menu de partage du téléphone, sinon WhatsApp).</li><li>La vidéo de présentation : un lien en bas de la page ouvre une courte vidéo qui montre nos services ; en dessous, les vidéos de chaque site (présentation, vidéo pour les professionnels, vidéos Instagram de l&#x27;Immobilier).</li><li>La page Facebook Clicvia : le bouton « Suivez Clicvia sur Facebook » en bas de page. Nos pages y sont publiées automatiquement chaque jour.</li><li>Le compte Instagram de Clicvia Immobilier : le bouton « Clicvia Immobilier sur Instagram » à côté. Chaque jour, deux courtes vidéos y présentent automatiquement les annonces d&#x27;un gouvernorat ; le lien du profil mène aux annonces du gouvernorat de la vidéo.</li></ul>
 </section>
 <section class="ap-carte"><h2>D&#x27;où viennent les informations ?</h2>
 <p>Chaque site relève lui-même ses informations (sources officielles, sites des magasins, données libres) et écrit sa source et sa date sur ses pages.</p>

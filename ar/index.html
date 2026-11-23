@@ -177,6 +177,27 @@ nav.raccourcis{margin:12px 2px 0;font-size:14px;line-height:1.9;color:var(--doux
 nav.raccourcis span:first-child{font-weight:700;color:var(--encre)}
 nav.raccourcis a{color:var(--encre);text-decoration:none;border-bottom:1px dotted var(--ligne-forte);white-space:nowrap}
 nav.raccourcis a:hover{border-bottom-color:currentColor}
+/* 23/11/2026 : « Vos projets » = parcours de vie (CE.5 du cercle économique), parties repliées (règle § 66) */
+.parcours-liste{display:grid;gap:10px;align-items:start}
+@media (min-width:640px){.parcours-liste{grid-template-columns:repeat(2,minmax(0,1fr))}}
+details.parcours{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--rayon);min-width:0}
+details.parcours[open]{border-color:var(--ligne-forte);box-shadow:var(--ombre)}
+.parcours summary{display:flex;align-items:center;gap:10px;padding:15px 16px;cursor:pointer;list-style:none;border-radius:var(--rayon)}
+.parcours summary::-webkit-details-marker{display:none}
+.parcours summary::before{content:"";flex:none;width:8px;height:8px;border:solid var(--doux);border-width:0 2px 2px 0;transform:rotate(-45deg);transition:transform .2s}
+html[dir="rtl"] .parcours summary::before{transform:rotate(135deg)}
+.parcours[open] summary::before,html[dir="rtl"] .parcours[open] summary::before{transform:rotate(45deg)}
+.parcours summary:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.p-titre{flex:1;min-width:0;font-weight:700;font-size:16px;line-height:1.35}
+.p-nb{flex:none;font-size:12.5px;font-weight:700;color:var(--or-texte);background:var(--surface-2);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.parcours ol{list-style:none;margin:0;padding:0 16px 14px;counter-reset:etape}
+.parcours li{counter-increment:etape;position:relative;padding-inline-start:38px}
+.parcours li::before{content:counter(etape);position:absolute;inset-inline-start:0;top:9px;width:26px;height:26px;border-radius:50%;background:var(--encre);color:var(--surface);font-size:13px;font-weight:800;line-height:26px;text-align:center}
+.parcours li+li{border-top:1px solid var(--ligne)}
+.parcours li a{display:block;padding:9px 0;color:var(--encre);text-decoration:none;overflow-wrap:anywhere}
+.parcours li a strong{display:block;font-size:15px;line-height:1.35}
+.parcours li a span{display:block;color:var(--doux);font-size:14px;line-height:1.45}
+.parcours li a:hover strong{text-decoration:underline}
 .cherche-vide{margin:40px 0 0;padding:28px 20px;text-align:center;border:1px dashed var(--ligne-forte);border-radius:var(--rayon);color:var(--doux)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
@@ -242,6 +263,12 @@ footer.pied{margin-top:40px;background:var(--surface);border-top:1px solid var(-
 
 <main class="grille">
 <p class="cherche-vide" hidden>لا توجد خدمة مطابقة. جرّب كلمة أخرى أو تصفّح الأقسام.</p>
+<section class="cat projets" id="projets" aria-labelledby="t-projets"><div class="cat-tete"><h2 class="theme" id="t-projets">مشاريعكم</h2><p class="cat-sous">لكل مرحلة من حياتك، مواقعنا بالترتيب الذي ستحتاجها به.</p></div>
+<div class="parcours-liste"><details class="parcours" id="parcours-logement"><summary><span class="p-titre">أشتري أو أكتري مسكنًا</span><span class="p-nb">6 مراحل</span></summary><ol><li><a href="https://immobilier.clicvia.com/?lang=ar" data-lien="portail-immobilier"><strong>عقارات تونس</strong><span>شاهد الإعلانات وأسعار الحي</span></a></li><li><a href="https://monagent.clicvia.com/?lang=ar" data-lien="portail-monagent"><strong>وكيلي العقاري</strong><span>صف في جملة ما تبحث عنه</span></a></li><li><a href="https://outils.clicvia.com/?lang=ar" data-lien="portail-outils"><strong>أدوات عملية تونس</strong><span>احسب أقساط القرض</span></a></li><li><a href="https://avocats.clicvia.com/?lang=ar" data-lien="portail-avocats"><strong>محامون وعدول إشهاد تونس</strong><span>اعثر على عدل إشهاد أو محامٍ للعقد</span></a></li><li><a href="https://pros.clicvia.com/?lang=ar" data-lien="portail-pros"><strong>المهنيون تونس</strong><span>النقل والأشغال والحرفيون</span></a></li><li><a href="https://comptes.clicvia.com/?lang=ar" data-lien="portail-comptes"><strong>حساباتي</strong><span>تابع الكراء والميزانية</span></a></li></ol></details>
+<details class="parcours" id="parcours-mariage"><summary><span class="p-titre">أستعدّ للزواج</span><span class="p-nb">4 مراحل</span></summary><ol><li><a href="https://mariage.clicvia.com/?lang=ar" data-lien="portail-mariage"><strong>الزواج تونس</strong><span>القاعات والمصوّرون والممونون والتجميل</span></a></li><li><a href="https://comptes.clicvia.com/?lang=ar" data-lien="portail-comptes"><strong>حساباتي</strong><span>تابع ميزانية الزواج</span></a></li><li><a href="https://immobilier.clicvia.com/?lang=ar" data-lien="portail-immobilier"><strong>عقارات تونس</strong><span>اعثر على مسكنك الأول</span></a></li><li><a href="https://hygiene.clicvia.com/?lang=ar" data-lien="portail-hygiene"><strong>أسعار مواد التنظيف والنظافة</strong><span>جهّز البيت مع التوصيل</span></a></li></ol></details>
+<details class="parcours" id="parcours-voiture"><summary><span class="p-titre">أجتاز الرخصة وأشتري سيارة</span><span class="p-nb">4 مراحل</span></summary><ol><li><a href="https://code.clicvia.com/?lang=ar" data-lien="portail-code"><strong>مجلة الطرقات تونس</strong><span>راجع مجلة الطرقات واجتز الامتحان التجريبي</span></a></li><li><a href="https://auto-ecoles.clicvia.com/?lang=ar" data-lien="portail-auto-ecoles"><strong>مدارس تعليم السياقة تونس</strong><span>اختر مدرسة سياقة قريبة منك</span></a></li><li><a href="https://outils.clicvia.com/?lang=ar" data-lien="portail-outils"><strong>أدوات عملية تونس</strong><span>احسب قرض السيارة</span></a></li><li><a href="https://voiture.clicvia.com/?lang=ar" data-lien="portail-voiture"><strong>مواعيد سيارتك</strong><span>معلوم الجولان والفحص الفني والتأمين: التذكيرات</span></a></li></ol></details>
+<details class="parcours" id="parcours-emploi"><summary><span class="p-titre">أبحث عن شغل</span><span class="p-nb">3 مراحل</span></summary><ol><li><a href="https://concours.clicvia.com/?lang=ar" data-lien="portail-concours"><strong>تنبيه المناظرات تونس</strong><span>المناظرات المفتوحة قربك</span></a></li><li><a href="https://documents.clicvia.com/?lang=ar" data-lien="portail-documents"><strong>وثائق تونس</strong><span>حضّر مطلب الشغل والشهادات</span></a></li><li><a href="https://outils.clicvia.com/?lang=ar" data-lien="portail-outils"><strong>أدوات عملية تونس</strong><span>احسب الأجر الصافي المقترح</span></a></li></ol></details>
+<details class="parcours" id="parcours-maison"><summary><span class="p-titre">البيت كل يوم</span><span class="p-nb">3 مراحل</span></summary><ol><li><a href="https://hygiene.clicvia.com/?lang=ar" data-lien="portail-hygiene"><strong>أسعار مواد التنظيف والنظافة</strong><span>قارن الغسيل والجافال والحفاظات… واطلب</span></a></li><li><a href="https://prix-eau.clicvia.com/?lang=ar" data-lien="portail-prix-eau"><strong>أسعار المياه في تونس</strong><span>سعر الماء المعدني، مغازة بمغازة</span></a></li><li><a href="https://comptes.clicvia.com/?lang=ar" data-lien="portail-comptes"><strong>حساباتي</strong><span>تابع مصاريف الشهر</span></a></li></ol></details></div></section>
 <section class="cat" id="maison" aria-labelledby="t-maison"><div class="cat-tete"><h2 class="theme" id="t-maison">السكن والعقارات</h2><p class="cat-sous">اشترِ، اكترِ، اختر الحي المناسب: إعلانات كل تونس.</p></div>
 <div class="cartes">
   <a class="site" href="https://immobilier.clicvia.com/?lang=ar" data-mots="appartement maison villa terrain louer location vendre vente achat loyer s+1 s+2 s+3 bureau local commerce usine annonce prix m2 quartier estimer شقة منزل أرض كراء بيع عقار dar kra flat house rent"><img class="ic" src="/assets/sites/immobilier-tunis.svg" alt="" width="48" height="48" loading="eager">

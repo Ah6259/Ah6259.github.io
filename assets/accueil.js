@@ -3,13 +3,32 @@
      ignorant accents et majuscules ; une catégorie sans carte qui correspond est cachée ; message si rien ne correspond.
    - Sans JavaScript, la recherche reste cachée (attribut hidden) et la page montre toutes les cartes.
    - Le menu des catégories marque la catégorie affichée à l'écran (aria-current). Aucun cookie, rien n'est enregistré. */
+/* 23/11/2026 (CE.5 du cercle économique) : partie « Vos projets » (parcours de vie, <details class="parcours">).
+   - Chaque clic sur un lien d'un parcours est compté, anonymement, dans GoatCounter : événement « lien-site/portail-<site> »
+     (attribut data-lien) ; la navigation n'attend pas le comptage.
+   - Impression : tous les parcours s'ouvrent, puis reviennent comme avant (règle commune § 66). */
+(function () {
+  "use strict";
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest(".parcours a[data-lien]");
+    if (!a) return;
+    try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: "lien-site/" + a.getAttribute("data-lien"), title: "Lien vers " + a.getAttribute("data-lien"), event: true }); } catch (x) {}
+  });
+  var fermes = [];
+  window.addEventListener("beforeprint", function () {
+    fermes = [].filter.call(document.querySelectorAll("details.parcours"), function (d) { return !d.open; });
+    fermes.forEach(function (d) { d.open = true; });
+  });
+  window.addEventListener("afterprint", function () { fermes.forEach(function (d) { d.open = false; }); fermes = []; });
+})();
 (function () {
   "use strict";
   var form = document.querySelector(".cherche");
   if (!form) return;
   var champ = form.querySelector("input"), effacer = form.querySelector(".effacer");
   var etat = document.querySelector(".cherche-etat"), vide = document.querySelector(".cherche-vide");
-  var cartes = [].slice.call(document.querySelectorAll("a.site")), cats = [].slice.call(document.querySelectorAll("section.cat"));
+  var cartes = [].slice.call(document.querySelectorAll("a.site")), cats = [].slice.call(document.querySelectorAll("section.cat:not(.projets)"));
+  var projets = document.querySelector("section.projets");   // parcours de vie : cachés pendant une recherche
   function norme(t) {
     return (t || "").toLowerCase().normalize("NFD").replace(/[̀-ًͯ-ٰٟ]/g, "")   // accents et voyelles arabes
       .replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي").replace(/[’'`-]/g, " ");
@@ -26,6 +45,7 @@
     cats.forEach(function (c) { c.hidden = !c.querySelector("a.site:not([hidden])"); });
     var actif = mots.length > 0;
     effacer.hidden = !actif;
+    if (projets) projets.hidden = actif;
     document.body.classList.toggle("en-recherche", actif);
     vide.hidden = !actif || n > 0;
     etat.textContent = !actif ? "" : n === 0 ? vide.textContent : n === 1 ? form.getAttribute("data-un") : form.getAttribute("data-n").replace("{n}", n);

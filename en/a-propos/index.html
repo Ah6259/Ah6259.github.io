@@ -177,6 +177,27 @@ nav.raccourcis{margin:12px 2px 0;font-size:14px;line-height:1.9;color:var(--doux
 nav.raccourcis span:first-child{font-weight:700;color:var(--encre)}
 nav.raccourcis a{color:var(--encre);text-decoration:none;border-bottom:1px dotted var(--ligne-forte);white-space:nowrap}
 nav.raccourcis a:hover{border-bottom-color:currentColor}
+/* 23/11/2026 : « Vos projets » = parcours de vie (CE.5 du cercle économique), parties repliées (règle § 66) */
+.parcours-liste{display:grid;gap:10px;align-items:start}
+@media (min-width:640px){.parcours-liste{grid-template-columns:repeat(2,minmax(0,1fr))}}
+details.parcours{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--rayon);min-width:0}
+details.parcours[open]{border-color:var(--ligne-forte);box-shadow:var(--ombre)}
+.parcours summary{display:flex;align-items:center;gap:10px;padding:15px 16px;cursor:pointer;list-style:none;border-radius:var(--rayon)}
+.parcours summary::-webkit-details-marker{display:none}
+.parcours summary::before{content:"";flex:none;width:8px;height:8px;border:solid var(--doux);border-width:0 2px 2px 0;transform:rotate(-45deg);transition:transform .2s}
+html[dir="rtl"] .parcours summary::before{transform:rotate(135deg)}
+.parcours[open] summary::before,html[dir="rtl"] .parcours[open] summary::before{transform:rotate(45deg)}
+.parcours summary:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.p-titre{flex:1;min-width:0;font-weight:700;font-size:16px;line-height:1.35}
+.p-nb{flex:none;font-size:12.5px;font-weight:700;color:var(--or-texte);background:var(--surface-2);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.parcours ol{list-style:none;margin:0;padding:0 16px 14px;counter-reset:etape}
+.parcours li{counter-increment:etape;position:relative;padding-inline-start:38px}
+.parcours li::before{content:counter(etape);position:absolute;inset-inline-start:0;top:9px;width:26px;height:26px;border-radius:50%;background:var(--encre);color:var(--surface);font-size:13px;font-weight:800;line-height:26px;text-align:center}
+.parcours li+li{border-top:1px solid var(--ligne)}
+.parcours li a{display:block;padding:9px 0;color:var(--encre);text-decoration:none;overflow-wrap:anywhere}
+.parcours li a strong{display:block;font-size:15px;line-height:1.35}
+.parcours li a span{display:block;color:var(--doux);font-size:14px;line-height:1.45}
+.parcours li a:hover strong{text-decoration:underline}
 .cherche-vide{margin:40px 0 0;padding:28px 20px;text-align:center;border:1px dashed var(--ligne-forte);border-radius:var(--rayon);color:var(--doux)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
@@ -236,7 +257,7 @@ footer.pied{margin-top:40px;background:var(--surface);border-top:1px solid var(-
 <p>Tap a card to open the website. Each card gives the website&#x27;s name and what it does.</p>
 </section>
 <section class="ap-carte"><h2>How to use it</h2>
-<ul><li>Website cards: one card per website, sorted by category. It opens the website in your language when it has it.</li><li>Search: type what you need at the top of the page (for example “tender”, “rent”, “notary”, in English, French or Arabic); only the matching cards stay on screen.</li><li>The category menu: below the banner, the Housing, Jobs, Paperwork, Money, Prices… buttons take you straight to the category. It stays at the top of the screen as you scroll.</li><li>Three languages: the Français, العربية and English buttons at the top of the page. Each language has its own address (clicvia.com/ar/ and clicvia.com/en/).</li><li>On the English page, a small label on each card says which languages the website is in.</li><li>Below some cards, shortcuts open the most useful pages directly: the property listings of a governorate and this month&#x27;s prices, the price of a water brand, the competitions of a governorate, the mock exam or the road signs.</li><li>The “Share” button sends your friends the link to our presentation video and the portal&#x27;s address (your phone&#x27;s share menu, otherwise WhatsApp).</li><li>The presentation video: a link at the bottom of the page opens a short video showing our services; below it, the videos of each site.</li><li>The Clicvia Facebook page: the “Follow Clicvia on Facebook” button at the bottom. Our pages are posted there automatically every day.</li><li>The Clicvia Real Estate Instagram account: the button next to it. Every day, two short videos automatically present the listings of one governorate; the profile link leads to the listings of the video&#x27;s governorate.</li></ul>
+<ul><li>Website cards: one card per website, sorted by category. It opens the website in your language when it has it.</li><li>Search: type what you need at the top of the page (for example “tender”, “rent”, “notary”, in English, French or Arabic); only the matching cards stay on screen.</li><li>The category menu: below the banner, the Housing, Jobs, Paperwork, Money, Prices… buttons take you straight to the category. It stays at the top of the screen as you scroll.</li><li>Three languages: the Français, العربية and English buttons at the top of the page. Each language has its own address (clicvia.com/ar/ and clicvia.com/en/).</li><li>On the English page, a small label on each card says which languages the website is in.</li><li>“Your plans”: before the categories, life journeys (buying or renting a home, getting married, getting a licence and a car, looking for a job, everyday home). Tap a journey to see our sites in the order you will need them.</li><li>Below some cards, shortcuts open the most useful pages directly: the property listings of a governorate and this month&#x27;s prices, the price of a water brand, the competitions of a governorate, the mock exam or the road signs.</li><li>The “Share” button sends your friends the link to our presentation video and the portal&#x27;s address (your phone&#x27;s share menu, otherwise WhatsApp).</li><li>The presentation video: a link at the bottom of the page opens a short video showing our services; below it, the videos of each site.</li><li>The Clicvia Facebook page: the “Follow Clicvia on Facebook” button at the bottom. Our pages are posted there automatically every day.</li><li>The Clicvia Real Estate Instagram account: the button next to it. Every day, two short videos automatically present the listings of one governorate; the profile link leads to the listings of the video&#x27;s governorate.</li></ul>
 </section>
 <section class="ap-carte"><h2>Where does the information come from?</h2>
 <p>Each website collects its own information (official sources, shop websites, open data) and writes its source and date on its pages.</p>
