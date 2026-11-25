@@ -32,6 +32,7 @@ jobs:
         run: python3 tools/test_lastmod.py donnees/lastmod.json
       - name: Test du robot « publication du jour de Mon agent » (données du site en ligne, image avec Chrome et ffmpeg)
         run: |
+          sudo apt-get update -qq > /dev/null || true   # 25/11/2026 : index apt périmé = paquets 404 (robot rouge sans faute du site)
           sudo apt-get install -y -qq ffmpeg > /dev/null
           node tools/test_monagent_post.mjs
       - name: Visiteur simule (comme un visiteur sur telephone, avant le vrai visiteur - regle generale du 18/10/2026)
