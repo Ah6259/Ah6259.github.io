@@ -724,6 +724,12 @@ def main():
            + "".join(f'<url><loc>{BASE}{chemin_a_propos(l)[1:]}</loc><lastmod>{jour}</lastmod></url>\n' for l in LANGUES)
            + "".join(f'<url><loc>{BASE}{chemin_page(l, x)[1:]}</loc></url>\n' for x in ("confidentialite", "conditions") for l in LANGUES)
            + f'  <url><loc>{BASE}video/</loc></url>\n</urlset>\n')
+    # plan Google du 25/11/2026 (B.2) : date du dernier VRAI changement de chaque page (empreinte du contenu gardée dans
+    # donnees/lastmod.json, outil commun tools/lastmod.py) au lieu de la date du jour ; chaque adresse a sa date ; noindex = hors du plan
+    import sys
+    sys.path.insert(0, ICI)
+    import lastmod
+    ecrire("sitemap.xml", lastmod.honnete(lire("sitemap.xml"), RACINE, BASE, "donnees/lastmod.json"))
     # llms.txt : présentation du portail et de ses sites pour les assistants IA (référencement sur les IA, 13/10/2026)
     ia = ["# Clicvia — services pratiques gratuits pour la Tunisie", "", "> " + TEXTES["description"]["fr"], "",
           f"Portail de {len(SITES)} sites gratuits et indépendants (non officiels), en français et en arabe pour la plupart ; adresse : {BASE} (aussi {BASE}ar/ et {BASE}en/).",

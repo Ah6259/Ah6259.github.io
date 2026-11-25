@@ -28,6 +28,8 @@ jobs:
         run: node tools/test_video.mjs
       - name: Test du portail en trois langues (français, arabe, anglais)
         run: node tools/test_portail.mjs
+      - name: Test des dates honnetes du plan du site (lastmod) et des pages noindex
+        run: python3 tools/test_lastmod.py donnees/lastmod.json
       - name: Test du robot « publication du jour de Mon agent » (données du site en ligne, image avec Chrome et ffmpeg)
         run: |
           sudo apt-get install -y -qq ffmpeg > /dev/null

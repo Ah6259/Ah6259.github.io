@@ -117,3 +117,9 @@ Le détail de chaque fonction est dans **README.md** (à tenir à jour en même 
   parcours de vie (`PARCOURS` de construire.py, 3 langues) avant les catégories, parties repliées (§ 66), clics comptés `lien-site/portail-<site>`
   (assets/accueil.js) ; un parcours ne contient que des sites de `SITES`, jamais The Message / Mosquées / Points d'eau (`HORS_CERCLE`, la
   construction s'arrête sinon). Nouveau parcours ou nouvelle étape : une ligne dans `PARCOURS`, puis construire + tests.
+
+## 25/11/2026 — plan Google (B.2, « fais » d'Ahmed après la chute Google d'octobre)
+- **lastmod HONNÊTE** : `python tools/construire.py` passe sitemap.xml par `tools/lastmod.py` (outil COMMUN, copié tel quel) : date du
+  dernier VRAI changement du contenu de chaque page (empreinte sans menus, pied, scripts, ?v= ni dates, gardée dans
+  `donnees/lastmod.json`) au lieu de la date du jour ; les 13 adresses ont maintenant une date (avant : 7 sans). Test :
+  `python3 tools/test_lastmod.py donnees/lastmod.json` (tests.yml ; données inventées + vrai plan ; vérifié par sabotage). Aucune page maigre.
